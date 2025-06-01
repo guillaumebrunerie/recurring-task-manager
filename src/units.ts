@@ -2,7 +2,7 @@ import { DocumentByName } from "convex/server";
 import { DataModel } from "../convex/_generated/dataModel";
 
 export const units = ["seconds", "minutes", "hours", "days", "weeks"] as const;
-type TimeUnit = (typeof units)[number];
+export type TimeUnit = (typeof units)[number];
 
 const timePeriods: Record<TimeUnit, number> = {
 	seconds: 1000,

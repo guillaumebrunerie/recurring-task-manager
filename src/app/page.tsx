@@ -3,6 +3,7 @@
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import * as styles from "./tasks.css";
+import * as common from "./common.css";
 import { useTimestamp } from "./useTimestamp";
 import {
 	convertDurationFromUnit,
@@ -14,12 +15,13 @@ import {
 } from "@/units";
 import { TaskWithLastCompletionTime } from "../../convex/tasks";
 import { useState } from "react";
+import Link from "next/link";
 
 type TaskStatus =
 	| "new" // New task, never completed
 	| "overdue" // Task is overdue
-	| "due" // Task is due now
-	| "waiting"; // Task does not need to be completed again yet
+	| "due" // Task is due now or soon
+	| "waiting"; // Task does not need to be completed again for now
 
 const taskStatus = (
 	task: TaskWithLastCompletionTime,
@@ -74,9 +76,8 @@ const Home = () => {
 	const now = useTimestamp();
 	const tasks = useQuery(api.tasks.getAllWithLastCompletionTime);
 
-	const [showOther, setShowOther] = useState(false);
 	if (tasks === undefined) {
-		return <div>Chargement des tâches...</div>;
+		return <div className={common.loading}>Chargement...</div>;
 	}
 	tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
 	const overdueTasks = tasks.filter(
@@ -95,17 +96,10 @@ const Home = () => {
 		<div className={styles.taskPage}>
 			<Section title="En retard" tasks={overdueTasks} now={now} />
 			<Section title="À faire" tasks={dueTasks} now={now} />
-			{/* <div className={styles.otherSection}> */}
-			{/* 	<button */}
-			{/* 		onClick={() => setShowOther((s) => !s)} */}
-			{/* 		className={styles.toggleOther} */}
-			{/* 	> */}
-			{/* 		{showOther ? "Masquer les autres" : "Afficher les autres"} */}
-			{/* 	</button> */}
-			{/* 	{showOther && ( */}
-			<Section title="Autres" tasks={waitingTasks} now={now} />
-			{/* 	)} */}
-			{/* </div> */}
+			<Section title="En attente" tasks={waitingTasks} now={now} />
+			<Link href="/task/new" className={styles.addTaskButton}>
+				➕ Nouvelle tâche
+			</Link>
 		</div>
 	);
 };
@@ -130,6 +124,20 @@ const Section = ({
 		</div>
 	</div>
 );
+
+const getLocalDateTimeString = (date: Date) => {
+	const pad = (n: number) => String(n).padStart(2, "0");
+
+	const year = date.getFullYear();
+	const month = pad(date.getMonth() + 1); // getMonth is 0-based
+	const day = pad(date.getDate());
+	const hours = pad(date.getHours());
+	const minutes = pad(date.getMinutes());
+
+	return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+const nbsp = "\u00A0";
 
 const Task = ({
 	task,
@@ -178,8 +186,7 @@ const Task = ({
 
 	const openModal = () => {
 		setOpen(true);
-		const now = new Date();
-		setDoneTime(now.toISOString().slice(0, 16));
+		setDoneTime(getLocalDateTimeString(new Date()));
 	};
 
 	return (
@@ -192,7 +199,7 @@ const Task = ({
 				role="button"
 				tabIndex={0}
 			>
-				<div className={styles.name}>{task.task.task}</div>
+				<div className={styles.name}>{task.task.name}</div>
 				<div className={styles.time}>({timeString})</div>
 			</div>
 			{open && (
@@ -202,15 +209,15 @@ const Task = ({
 							className={styles.modalContent}
 							onClick={(e) => e.stopPropagation()}
 						>
-							<button
-								className={styles.closeButton}
-								onClick={() => setOpen(false)}
-								aria-label="Fermer"
-							>
-								✕
-							</button>
 							<div className={styles.modalHeader}>
-								{task.task.task}
+								{task.task.name}
+								{nbsp}
+								<Link
+									href={`/task/${task.task._id}`}
+									className={styles.editButton}
+								>
+									✏️
+								</Link>
 							</div>
 							Intervalle:{" "}
 							{durationUnitToString(
@@ -269,7 +276,7 @@ const TaskHistory = ({ task }: { task: TaskWithLastCompletionTime }) => {
 								{new Date(
 									accomplishment.completionTime,
 								).toLocaleString("fr-FR", {
-									dateStyle: "medium",
+									dateStyle: "full",
 									timeStyle: "short",
 								})}
 							</li>

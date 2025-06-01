@@ -246,3 +246,26 @@ export const toggleOther = style({
 	textDecoration: "underline",
 	padding: 0,
 });
+
+export const addTaskButton = style({
+	alignSelf: "flex-start",
+	padding: "0.6rem 1rem",
+	backgroundColor: "#4CAF50",
+	color: "#fff",
+	border: "none",
+	borderRadius: "8px",
+	fontSize: "1rem",
+	textDecoration: "none",
+});
+
+export const editButton = style({
+	fontSize: "1rem",
+	background: "none",
+	border: "none",
+	cursor: "pointer",
+	color: "#555",
+	textDecoration: "none",
+	":hover": {
+		color: "#000",
+	},
+});

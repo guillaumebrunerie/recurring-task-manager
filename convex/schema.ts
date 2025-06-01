@@ -3,7 +3,8 @@ import { v } from "convex/values";
 
 export default defineSchema({
 	tasks: defineTable({
-		task: v.string(),
+		name: v.string(),
+		description: v.optional(v.string()),
 		unit: v.union(
 			v.literal("seconds"),
 			v.literal("minutes"),
