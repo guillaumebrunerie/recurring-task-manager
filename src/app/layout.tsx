@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
 	title: "Project Happy Home",
+	themeColor: "#4f46e5",
+	manifest: "/manifest.json",
+	icons: {
+		icon: "/icon-192.png",
+		apple: "/icon-192.png",
+	},
 };
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
