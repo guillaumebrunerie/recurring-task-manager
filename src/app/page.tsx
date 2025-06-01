@@ -98,7 +98,7 @@ const Home = () => {
 			<Section title="À faire" tasks={dueTasks} now={now} />
 			<Section title="En attente" tasks={waitingTasks} now={now} />
 			<Link href="/task/new" className={styles.addTaskButton}>
-				➕ Nouvelle tâche
+				➕{"\uFE0E"} Nouvelle tâche
 			</Link>
 		</div>
 	);
@@ -231,7 +231,7 @@ const Task = ({
 										task.task.unit,
 									)}
 							<label className={styles.label}>
-								Effectué le :
+								Effectuée le :
 								<input
 									type="datetime-local"
 									value={doneTime}
@@ -246,7 +246,7 @@ const Task = ({
 									className={styles.primaryButton}
 									onClick={handleSubmit}
 								>
-									Marquer comme effectué
+									Marquer comme effectuée
 								</button>
 							</div>
 							<TaskHistory task={task} />
