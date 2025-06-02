@@ -1,5 +1,4 @@
-import { DocumentByName } from "convex/server";
-import { DataModel } from "../convex/_generated/dataModel";
+import { Doc } from "../convex/_generated/dataModel";
 
 export const units = ["seconds", "minutes", "hours", "days", "weeks"] as const;
 export type TimeUnit = (typeof units)[number];
@@ -62,7 +61,7 @@ export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {
 /** Returns the earliest time at which the task should be completed again. If
     this is after the current time, the task is not due yet. */
 export const getMinTimeLeft = (
-	task: DocumentByName<DataModel, "tasks">,
+	task: Doc<"tasks">,
 	lastCompletionTime: number,
 ) => {
 	const lastCompletionTimeInUnit = convertToUnit(
@@ -76,10 +75,7 @@ export const getMinTimeLeft = (
 };
 
 /** Returns the time at which the task should be completed again */
-export const getTimeLeft = (
-	task: DocumentByName<DataModel, "tasks">,
-	lastCompletionTime: number,
-) => {
+export const getTimeLeft = (task: Doc<"tasks">, lastCompletionTime: number) => {
 	const lastCompletionTimeInUnit = convertToUnit(
 		lastCompletionTime,
 		task.unit,
@@ -90,7 +86,7 @@ export const getTimeLeft = (
 /** Returns the latest time at which the task should be completed again. If this
     is before the current time, the task is overdue. */
 export const getMaxTimeLeft = (
-	task: DocumentByName<DataModel, "tasks">,
+	task: Doc<"tasks">,
 	lastCompletionTime: number,
 ) => {
 	const lastCompletionTimeInUnit = convertToUnit(

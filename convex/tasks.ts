@@ -1,6 +1,5 @@
-import { DocumentByName, GenericQueryCtx } from "convex/server";
-import { query, mutation } from "./_generated/server";
-import { DataModel } from "./_generated/dataModel";
+import { query, mutation, QueryCtx } from "./_generated/server";
+import { Doc } from "./_generated/dataModel";
 import { v } from "convex/values";
 
 export const get = query({
@@ -20,7 +19,7 @@ export const get = query({
 });
 
 export type TaskWithLastCompletionTime = {
-	task: DocumentByName<DataModel, "tasks">;
+	task: Doc<"tasks">;
 	lastCompletionTime: number | null;
 };
 
@@ -45,10 +44,7 @@ export const getAllWithLastCompletionTime = query({
 	},
 });
 
-const getLastCompletionTime = async (
-	ctx: GenericQueryCtx<DataModel>,
-	task: DocumentByName<DataModel, "tasks">,
-) => {
+const getLastCompletionTime = async (ctx: QueryCtx, task: Doc<"tasks">) => {
 	const accomplishments = await ctx.db
 		.query("accomplishments")
 		.filter((q) => q.eq(q.field("taskId"), task._id))
