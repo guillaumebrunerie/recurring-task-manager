@@ -19,11 +19,11 @@ export const getUser = query({
 	args: { userId: v.optional(v.id("users")) },
 	handler: async (ctx, { userId }) => {
 		if (!userId) {
-			return null;
+			return;
 		}
 		const user = await ctx.db.get(userId);
 		if (!user) {
-			return null;
+			return;
 		}
 		return parseUser(user);
 	},
@@ -34,11 +34,11 @@ export const getCurrentUser = query({
 	handler: async (ctx) => {
 		const userId = await getAuthUserId(ctx);
 		if (userId === null) {
-			return null;
+			return;
 		}
 		const user = await ctx.db.get(userId);
 		if (!user) {
-			return null;
+			return;
 		}
 		return parseUser(user);
 	},
