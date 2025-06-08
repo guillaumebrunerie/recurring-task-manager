@@ -2,6 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
 export const card = style({
+	position: "relative",
 	padding: "1rem",
 	borderRadius: "12px",
 	boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
@@ -19,6 +20,23 @@ export const name = style({
 export const time = style({
 	fontSize: "0.9rem",
 	textAlign: "right",
+});
+
+export const lock = style({
+	position: "absolute",
+	top: "0.5rem",
+	right: "0.5rem",
+});
+
+export const assignee = style({
+	width: "24px",
+	height: "24px",
+	borderRadius: "50%",
+	objectFit: "cover",
+	marginLeft: "0.5rem",
+	position: "absolute",
+	bottom: "0.7rem",
+	left: "0.5rem",
 });
 
 export const statusVariants = recipe({
@@ -68,6 +86,8 @@ export const modalContent = style({
 	padding: "1.5rem",
 	width: "90%",
 	maxWidth: "420px",
+	maxHeight: "90vh",
+	overflowY: "auto",
 	boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
 	display: "flex",
 	flexDirection: "column",
@@ -134,7 +154,7 @@ export const input = style({
 
 export const modalButtons = style({
 	display: "flex",
-	justifyContent: "flex-end",
+	justifyContent: "space-between",
 	gap: "0.75rem",
 	marginTop: "0.5rem",
 });
@@ -147,6 +167,7 @@ export const primaryButton = style({
 	borderRadius: "8px",
 	cursor: "pointer",
 	fontWeight: 500,
+	fontSize: "1rem",
 	":hover": {
 		backgroundColor: "#005fa3",
 	},
@@ -198,12 +219,23 @@ export const completionList = style({
 });
 
 export const completionItem = style({
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "center",
 	fontSize: "0.9rem",
 	color: "#333",
 	padding: "0.4rem 0.6rem",
 	backgroundColor: "#f6f6f6",
 	borderRadius: "8px",
 });
+
+export const accomplishedBy = style({
+	width: "20px",
+	height: "20px",
+	borderRadius: "50%",
+	objectFit: "cover",
+});
+
 export const taskPage = style({
 	display: "flex",
 	flexDirection: "column",

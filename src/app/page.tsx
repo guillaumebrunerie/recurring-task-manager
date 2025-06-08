@@ -5,76 +5,17 @@ import { api } from "@/../convex/_generated/api";
 import * as styles from "./tasks.css";
 import * as common from "./common.css";
 import { useTimestamp } from "./useTimestamp";
-import {
-	convertDurationFromUnit,
-	durationToString,
-	durationUnitToString,
-	getMaxTimeLeft,
-	getMinTimeLeft,
-	getTimeLeft,
-} from "@/units";
-import { TaskWithLastCompletionTime } from "../../convex/tasks";
+import { durationToString, durationUnitToString } from "@/units";
 import { useState } from "react";
 import Link from "next/link";
-
-type TaskStatus =
-	| "new" // New task, never completed
-	| "overdue" // Task is overdue
-	| "due" // Task is due now or soon
-	| "waiting"; // Task does not need to be completed again for now
-
-const taskStatus = (
-	task: TaskWithLastCompletionTime,
-	now: number,
-): { status: TaskStatus; time: number } => {
-	if (task.lastCompletionTime == null) {
-		return {
-			status: "new",
-			time: convertDurationFromUnit(task.task.period, task.task.unit),
-		};
-	}
-	const minTimeLeft = getMinTimeLeft(task.task, task.lastCompletionTime);
-	const timeLeft = getTimeLeft(task.task, task.lastCompletionTime);
-	const maxTimeLeft = getMaxTimeLeft(task.task, task.lastCompletionTime);
-	if (maxTimeLeft < now) {
-		return { status: "overdue", time: now - maxTimeLeft };
-	}
-	if (minTimeLeft > now) {
-		return { status: "waiting", time: timeLeft - now };
-	}
-	return { status: "due", time: maxTimeLeft - now };
-};
-
-const compareTasks = (
-	taskA: TaskWithLastCompletionTime,
-	taskB: TaskWithLastCompletionTime,
-	now: number,
-) => {
-	const statusA = taskStatus(taskA, now);
-	const statusB = taskStatus(taskB, now);
-	const statusOrder: TaskStatus[] = ["overdue", "due", "new", "waiting"];
-	if (statusA.status !== statusB.status) {
-		return (
-			statusOrder.indexOf(statusA.status) -
-			statusOrder.indexOf(statusB.status)
-		);
-	} else {
-		switch (statusA.status) {
-			case "overdue":
-				return statusB.time - statusA.time;
-			case "new":
-				return statusA.time - statusB.time;
-			case "due":
-				return statusA.time - statusB.time;
-			case "waiting":
-				return statusA.time - statusB.time;
-		}
-	}
-};
+import { Task } from "../../convex/tasks";
+import { compareTasks, taskStatus } from "@/tasks";
+import { Accomplishment } from "../../convex/accomplishments";
+import { App } from "./app";
 
 const Home = () => {
 	const now = useTimestamp();
-	const tasks = useQuery(api.tasks.getAllWithLastCompletionTime);
+	const tasks = useQuery(api.tasks.getAll);
 
 	if (tasks === undefined) {
 		return <div className={common.loading}>Chargement...</div>;
@@ -93,14 +34,16 @@ const Home = () => {
 	);
 
 	return (
-		<div className={styles.taskPage}>
-			<Section title="En retard" tasks={overdueTasks} now={now} />
-			<Section title="À faire" tasks={dueTasks} now={now} />
-			<Section title="En attente" tasks={waitingTasks} now={now} />
-			<Link href="/task/new" className={styles.addTaskButton}>
-				➕{"\uFE0E"} Nouvelle tâche
-			</Link>
-		</div>
+		<App title="Project Happy Home">
+			<div className={styles.taskPage}>
+				<Section title="En retard" tasks={overdueTasks} now={now} />
+				<Section title="À faire" tasks={dueTasks} now={now} />
+				<Section title="En attente" tasks={waitingTasks} now={now} />
+				<Link href="/task/new" className={styles.addTaskButton}>
+					➕{"\uFE0E"} Nouvelle tâche
+				</Link>
+			</div>
+		</App>
 	);
 };
 
@@ -110,7 +53,7 @@ const Section = ({
 	now,
 }: {
 	title: string;
-	tasks: TaskWithLastCompletionTime[];
+	tasks: Task[];
 	now: number;
 }) => (
 	<div className={styles.section2}>
@@ -118,7 +61,7 @@ const Section = ({
 		<div className={styles.taskList}>
 			{tasks.length > 0 ?
 				tasks.map((task) => (
-					<Task key={task.task._id} task={task} now={now} />
+					<TaskCard key={task.id} task={task} now={now} />
 				))
 			:	"Aucune tâche à afficher."}
 		</div>
@@ -139,13 +82,7 @@ const getLocalDateTimeString = (date: Date) => {
 
 const nbsp = "\u00A0";
 
-const Task = ({
-	task,
-	now,
-}: {
-	task: TaskWithLastCompletionTime;
-	now: number;
-}) => {
+const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const { status, time } = taskStatus(task, now);
 	const addAccomplishment = useMutation(
 		api.accomplishments.addAccomplishment,
@@ -157,13 +94,13 @@ const Task = ({
 			timeString = "nouvelle tâche";
 			break;
 		case "overdue":
-			timeString = `en retard de ${durationToString(time, task.task.unit)}`;
+			timeString = `en retard de ${durationToString(time, task.unit)}`;
 			break;
 		case "due":
-			timeString = `temps restant: ${durationToString(time, task.task.unit)}`;
+			timeString = `temps restant: ${durationToString(time, task.unit)}`;
 			break;
 		case "waiting":
-			timeString = `à faire dans ${durationToString(time, task.task.unit)}`;
+			timeString = `à faire dans ${durationToString(time, task.unit)}`;
 			break;
 	}
 
@@ -177,7 +114,7 @@ const Task = ({
 		const timestamp = new Date(doneTime).getTime();
 
 		await addAccomplishment({
-			taskId: task.task._id,
+			taskId: task.id,
 			completionTime: timestamp,
 		});
 
@@ -189,6 +126,12 @@ const Task = ({
 		setDoneTime(getLocalDateTimeString(new Date()));
 	};
 
+	const isPrivate = task.visibleTo?.length == 1;
+	const user = useQuery(api.users.getUser, {
+		userId: task.toBeCompletedBy || undefined,
+	});
+	const imageUrl = user?.image;
+
 	return (
 		<>
 			<div
@@ -199,8 +142,16 @@ const Task = ({
 				role="button"
 				tabIndex={0}
 			>
-				<div className={styles.name}>{task.task.name}</div>
+				<div className={styles.name}>{task.name}</div>
 				<div className={styles.time}>({timeString})</div>
+				{isPrivate && <div className={styles.lock}>🔒{"\uFE0E"}</div>}
+				{imageUrl && (
+					<img
+						src={imageUrl}
+						alt="Profile"
+						className={styles.assignee}
+					/>
+				)}
 			</div>
 			{open && (
 				<div className={styles.overlay} onClick={() => setOpen(false)}>
@@ -209,26 +160,25 @@ const Task = ({
 							className={styles.modalContent}
 							onClick={(e) => e.stopPropagation()}
 						>
+							<button
+								className={styles.closeButton}
+								onClick={() => setOpen(false)}
+								aria-label="Close"
+							>
+								✕
+							</button>
 							<div className={styles.modalHeader}>
-								{task.task.name}
+								{task.name}
 								{nbsp}
-								<Link
-									href={`/task/${task.task._id}`}
-									className={styles.editButton}
-								>
-									✏️
-								</Link>
 							</div>
+							<div>{task.description}</div>
 							Intervalle:{" "}
-							{durationUnitToString(
-								task.task.period,
-								task.task.unit,
-							)}
-							{task.task.tolerance > 0 &&
+							{durationUnitToString(task.period, task.unit)}
+							{task.tolerance > 0 &&
 								" ± " +
 									durationUnitToString(
-										task.task.tolerance,
-										task.task.unit,
+										task.tolerance,
+										task.unit,
 									)}
 							<label className={styles.label}>
 								Effectuée le :
@@ -248,6 +198,12 @@ const Task = ({
 								>
 									Marquer comme effectuée
 								</button>
+								<Link
+									href={`/task/${task.id}`}
+									className={styles.addTaskButton}
+								>
+									Éditer
+								</Link>
 							</div>
 							<TaskHistory task={task} />
 						</div>
@@ -258,33 +214,46 @@ const Task = ({
 	);
 };
 
-const TaskHistory = ({ task }: { task: TaskWithLastCompletionTime }) => {
-	const history = useQuery(api.accomplishments.getTaskHistory, {
-		taskId: task.task._id,
-	});
+const TaskHistory = ({ task }: { task: Task }) => {
+	const history = task.accomplishments;
 	return (
 		<div className={styles.section}>
 			<h3 className={styles.sectionTitle}>Historique</h3>
-			{history ?
-				history.length > 0 ?
-					<ul className={styles.completionList}>
-						{history.map((accomplishment) => (
-							<li
-								key={accomplishment._id}
-								className={styles.completionItem}
-							>
-								{new Date(
-									accomplishment.completionTime,
-								).toLocaleString("fr-FR", {
-									dateStyle: "full",
-									timeStyle: "short",
-								})}
-							</li>
-						))}
-					</ul>
-				:	"Pas d'historique pour cette tâche."
-			:	"Chargement de l'historique..."}
+			{history.length > 0 ?
+				<ul className={styles.completionList}>
+					{history.map((accomplishment) => (
+						<TaskHistoryItem
+							key={accomplishment.id}
+							accomplishment={accomplishment}
+						/>
+					))}
+				</ul>
+			:	"Pas d'historique pour cette tâche."}
 		</div>
+	);
+};
+
+const dateTimeFormat = new Intl.DateTimeFormat("fr-FR", {
+	dateStyle: "full",
+	timeStyle: "short",
+});
+
+const TaskHistoryItem = ({
+	accomplishment,
+}: {
+	accomplishment: Accomplishment;
+}) => {
+	return (
+		<li className={styles.completionItem}>
+			{dateTimeFormat.format(new Date(accomplishment.completionTime))}
+			{accomplishment.completedBy?.image && (
+				<img
+					src={accomplishment.completedBy.image}
+					alt="Profile"
+					className={styles.accomplishedBy}
+				/>
+			)}
+		</li>
 	);
 };
 

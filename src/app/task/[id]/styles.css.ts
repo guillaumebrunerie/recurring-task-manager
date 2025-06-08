@@ -18,7 +18,7 @@ export const heading = style({
 
 export const label = style({
 	fontSize: "0.95rem",
-	fontWeight: 500,
+	fontWeight: "bold",
 	color: "#333",
 });
 
@@ -35,13 +35,16 @@ export const input = style({
 export const textarea = style([
 	input,
 	{
+		fontFamily: "inherit",
 		minHeight: "100px",
-		resize: "vertical",
+		fieldSizing: "content",
+		resize: "none",
 	},
 ]);
 
 export const periodRow = style({
 	display: "flex",
+	alignItems: "center",
 	gap: "0.5rem",
 });
 
@@ -53,25 +56,11 @@ export const button = style({
 	border: "none",
 	borderRadius: "8px",
 	cursor: "pointer",
-	alignSelf: "center",
+	alignSelf: "end",
 });
 
 export const field = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: "0.3rem",
-});
-
-export const backButton = style({
-	position: "fixed",
-	background: "none",
-	border: "none",
-	color: "#333",
-	fontSize: "1rem",
-	padding: "0.5rem 0",
-	cursor: "pointer",
-	fontWeight: "bold",
-	":hover": {
-		color: "#000",
-	},
 });

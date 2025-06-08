@@ -8,27 +8,23 @@ import { Id } from "@/../convex/_generated/dataModel";
 import { TimeUnit } from "@/units";
 import * as styles from "./styles.css";
 import * as common from "@/app/common.css";
+import UserSelector from "@/components/UserSelector";
+import { App } from "@/app/app";
 
 const units: TimeUnit[] = ["minutes", "hours", "days", "weeks"];
 
-const BackButton = () => {
-	const router = useRouter();
-	return (
-		<button onClick={() => router.back()} className={styles.backButton}>
-			← Retour
-		</button>
-	);
-};
 export default function TaskFormPage() {
 	const { id } = useParams();
 	const router = useRouter();
 
 	const isNew = id === "new";
+	const apiId = isNew ? undefined : (id as Id<"tasks">);
 	const existingTask = useQuery(api.tasks.get, {
-		id: isNew ? undefined : (id as Id<"tasks">),
+		id: apiId,
 	});
-
 	const saveTask = useMutation(api.tasks.saveTask);
+
+	const allUsers = useQuery(api.users.getAll);
 
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState<string | undefined>();
@@ -37,6 +33,27 @@ export default function TaskFormPage() {
 	const [tolerance, setTolerance] = useState("0");
 	const [isLoading, setIsLoading] = useState(!isNew);
 
+	const user = useQuery(api.users.getCurrentUser);
+	const [visibleTo, setVisibleTo_] = useState<Set<Id<"users">>>(new Set());
+	const [responsibleFor, setResponsibleFor_] = useState<Set<Id<"users">>>(
+		new Set(),
+	);
+
+	const setVisibleTo = (users: Set<Id<"users">>) => {
+		if (!user) {
+			return;
+		}
+		setVisibleTo_(users);
+		setResponsibleFor_(responsibleFor.intersection(users));
+	};
+
+	const setResponsibleFor = (users: Set<Id<"users">>) => {
+		if (!user) {
+			return;
+		}
+		setResponsibleFor_(users);
+	};
+
 	useEffect(() => {
 		if (existingTask) {
 			setName(existingTask.name);
@@ -44,18 +61,25 @@ export default function TaskFormPage() {
 			setPeriod(existingTask.period.toString());
 			setUnit(existingTask.unit);
 			setTolerance(existingTask.tolerance.toString());
+			setVisibleTo_(new Set(existingTask.visibleTo || []));
+			setResponsibleFor_(new Set(existingTask.responsibleFor || []));
 			setIsLoading(false);
 		}
 	}, [existingTask]);
 
 	const handleSave = async () => {
+		if (!user) {
+			return;
+		}
 		await saveTask({
-			id: isNew ? undefined : (id as Id<"tasks">),
+			id: apiId,
 			name,
 			description,
 			period: Number(period),
 			unit,
 			tolerance: Number(tolerance),
+			visibleTo: [...visibleTo, user.id],
+			responsibleFor: [...responsibleFor],
 		});
 		router.push("/");
 	};
@@ -65,72 +89,110 @@ export default function TaskFormPage() {
 	}
 
 	return (
-		<div className={styles.formWrapper}>
-			<BackButton />
-			<h1 className={styles.heading}>
-				{isNew ? "Nouvelle tâche" : "Modifier la tâche"}
-			</h1>
-
-			<div className={styles.field}>
-				<label className={styles.label}>Nom</label>
-				<input
-					className={styles.input}
-					value={name}
-					placeholder="Nom de la tâche"
-					onChange={(e) => setName(e.target.value)}
-				/>
-			</div>
-
-			<div className={styles.field}>
-				<label className={styles.label}>Description</label>
-				<textarea
-					className={styles.textarea}
-					value={description}
-					placeholder="Description"
-					onChange={(e) =>
-						setDescription(e.target.value || undefined)
-					}
-				/>
-			</div>
-			<div className={styles.field}>
-				<label className={styles.label}>Périodicité</label>
-				<div className={styles.periodRow}>
+		<App
+			title={isNew ? "Nouvelle tâche" : "Modifier la tâche"}
+			withBackButton
+		>
+			<div className={styles.formWrapper}>
+				<Field title="Nom">
 					<input
 						className={styles.input}
-						type="number"
-						min="1"
-						value={period}
-						onChange={(e) => setPeriod(e.target.value)}
-						style={{ maxWidth: "6rem" }}
+						value={name}
+						placeholder="Nom de la tâche"
+						onChange={(e) => setName(e.target.value)}
 					/>
-					<select
-						className={styles.input}
-						value={unit}
-						onChange={(e) => setUnit(e.target.value as TimeUnit)}
-					>
-						{units.map((unit) => (
-							<option key={unit} value={unit}>
-								{unit}
-							</option>
-						))}
-					</select>
-				</div>
-			</div>
+				</Field>
 
-			<div className={styles.field}>
-				<label className={styles.label}>Tolérance</label>
-				<input
-					className={styles.input}
-					type="number"
-					min="0"
-					value={tolerance}
-					onChange={(e) => setTolerance(e.target.value)}
-				/>
-			</div>
+				<Field title="Description">
+					<textarea
+						className={styles.textarea}
+						value={description}
+						placeholder="Description"
+						onChange={(e) =>
+							setDescription(e.target.value || undefined)
+						}
+					/>
+				</Field>
 
-			<button className={styles.button} onClick={handleSave}>
-				{isNew ? "Créer la tâche" : "Enregistrer"}
-			</button>
-		</div>
+				<Field title="Périodicité">
+					<div className={styles.periodRow}>
+						<input
+							className={styles.input}
+							type="number"
+							min="1"
+							value={period}
+							onChange={(e) => {
+								setPeriod(e.target.value);
+								if (!isNaN(Number(e.target.value))) {
+									setTolerance(
+										`${Math.floor(Number(e.target.value) / 3)}`,
+									);
+								}
+							}}
+						/>
+						±
+						<input
+							className={styles.input}
+							type="number"
+							min="0"
+							value={tolerance}
+							onChange={(e) => setTolerance(e.target.value)}
+						/>
+						<select
+							className={styles.input}
+							value={unit}
+							onChange={(e) =>
+								setUnit(e.target.value as TimeUnit)
+							}
+						>
+							{units.map((unit) => (
+								<option key={unit} value={unit}>
+									{unit}
+								</option>
+							))}
+						</select>
+					</div>
+				</Field>
+
+				<Field title="Visible pour">
+					<UserSelector
+						users={allUsers || []}
+						selected={
+							user ? new Set([...visibleTo, user.id]) : visibleTo
+						}
+						onChange={setVisibleTo}
+					/>
+				</Field>
+
+				<Field title="Responsable(s)">
+					<UserSelector
+						users={(allUsers || []).filter(
+							(u) => visibleTo.has(u.id) || u.id === user?.id,
+						)}
+						selected={responsibleFor}
+						onChange={setResponsibleFor}
+					/>
+				</Field>
+
+				<button className={styles.button} onClick={handleSave}>
+					{isNew ? "Créer la tâche" : "Enregistrer"}
+				</button>
+			</div>
+		</App>
 	);
 }
+
+const Field = ({
+	title,
+	children,
+}: {
+	title: string;
+	children: React.ReactNode;
+}) => {
+	return (
+		<div className={styles.field}>
+			<label className={styles.label}>{title}</label>
+			{children}
+		</div>
+	);
+};
