@@ -161,28 +161,14 @@ export const modalButtons = style({
 
 export const primaryButton = style({
 	padding: "0.5rem 1rem",
-	backgroundColor: "#0077cc",
+	backgroundColor: "#4CAF50",
 	color: "white",
 	border: "none",
 	borderRadius: "8px",
 	cursor: "pointer",
-	fontWeight: 500,
 	fontSize: "1rem",
 	":hover": {
 		backgroundColor: "#005fa3",
-	},
-});
-
-export const secondaryButton = style({
-	padding: "0.5rem 1rem",
-	backgroundColor: "#eeeeee",
-	color: "#333",
-	border: "none",
-	borderRadius: "8px",
-	cursor: "pointer",
-	fontWeight: 500,
-	":hover": {
-		backgroundColor: "#dddddd",
 	},
 });
 
@@ -282,7 +268,7 @@ export const toggleOther = style({
 export const addTaskButton = style({
 	alignSelf: "flex-end",
 	padding: "0.6rem 1rem",
-	backgroundColor: "#4CAF50",
+	backgroundColor: "#0077cc",
 	color: "#fff",
 	border: "none",
 	borderRadius: "8px",

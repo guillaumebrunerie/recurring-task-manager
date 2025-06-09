@@ -49,14 +49,14 @@ export const periodRow = style({
 });
 
 export const button = style({
-	backgroundColor: "#4CAF50",
-	color: "white",
-	padding: "0.75rem 1.25rem",
-	fontSize: "1rem",
+	alignSelf: "flex-end",
+	padding: "0.6rem 1rem",
+	backgroundColor: "#0077cc",
+	color: "#fff",
 	border: "none",
 	borderRadius: "8px",
-	cursor: "pointer",
-	alignSelf: "end",
+	fontSize: "1rem",
+	textDecoration: "none",
 });
 
 export const field = style({
