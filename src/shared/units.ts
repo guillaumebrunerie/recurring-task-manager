@@ -1,4 +1,4 @@
-import { Task } from "../convex/tasks";
+import { Task } from "./tasks";
 
 export const units = ["seconds", "minutes", "hours", "days", "weeks"] as const;
 export type TimeUnit = (typeof units)[number];

@@ -1,10 +1,26 @@
-import { Task } from "../convex/tasks";
+import { Id } from "@/convex/_generated/dataModel";
 import {
 	convertDurationFromUnit,
 	getMaxTimeLeft,
 	getMinTimeLeft,
 	getTimeLeft,
+	TimeUnit,
 } from "./units";
+import { Accomplishment } from "./accomplishments";
+
+export type Task = {
+	id: Id<"tasks">;
+	name: string;
+	description?: string;
+	unit: TimeUnit;
+	period: number;
+	tolerance: number;
+	visibleTo?: Id<"users">[];
+	responsibleFor?: Id<"users">[];
+	lastCompletionTime?: number;
+	toBeCompletedBy?: Id<"users">;
+	accomplishments: Accomplishment[];
+};
 
 export type TaskStatus =
 	| "new" // New task, never completed

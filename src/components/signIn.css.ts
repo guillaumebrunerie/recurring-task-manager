@@ -1,10 +1,5 @@
 import { style } from "@vanilla-extract/css";
 
-export const container = style({
-	backgroundColor: "#f9fafb",
-	height: "100%",
-});
-
 export const signInWrapper = style({
 	display: "flex",
 	flexDirection: "column",
@@ -39,18 +34,4 @@ export const googleLogo = style({
 	height: "20px",
 	width: "20px",
 	marginRight: "0.5rem",
-});
-
-export const backButton = style({
-	position: "fixed",
-	background: "none",
-	border: "none",
-	color: "#333",
-	fontSize: "1rem",
-	padding: "2rem 0.5rem",
-	cursor: "pointer",
-	fontWeight: "bold",
-	":hover": {
-		color: "#000",
-	},
 });

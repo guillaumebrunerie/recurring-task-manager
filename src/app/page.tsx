@@ -1,17 +1,16 @@
 "use client";
 
 import { useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import * as styles from "./tasks.css";
 import * as common from "./common.css";
-import { useTimestamp } from "./useTimestamp";
-import { durationToString, durationUnitToString } from "@/units";
+import { useTimestamp } from "../hooks/useTimestamp";
+import { durationToString, durationUnitToString } from "@/shared/units";
 import { useState } from "react";
 import Link from "next/link";
-import { Task } from "../../convex/tasks";
-import { compareTasks, taskStatus } from "@/tasks";
-import { Accomplishment } from "../../convex/accomplishments";
-import { App } from "./app";
+import { Task, compareTasks, taskStatus } from "@/shared/tasks";
+import { Accomplishment } from "@/shared/accomplishments";
+import { AppWrapper } from "./AppWrapper";
 
 const Home = () => {
 	const now = useTimestamp();
@@ -34,7 +33,7 @@ const Home = () => {
 	);
 
 	return (
-		<App title="Project Happy Home">
+		<AppWrapper title="Project Happy Home">
 			<div className={styles.taskPage}>
 				<Section title="En retard" tasks={overdueTasks} now={now} />
 				<Section title="À faire" tasks={dueTasks} now={now} />
@@ -43,7 +42,7 @@ const Home = () => {
 					➕{"\uFE0E"} Nouvelle tâche
 				</Link>
 			</div>
-		</App>
+		</AppWrapper>
 	);
 };
 

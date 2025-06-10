@@ -1,14 +1,12 @@
-"use client";
-
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as styles from "./profileMenu.css";
 
-interface ProfileMenuProps {
+type ProfileMenuProps = {
 	imageUrl?: string;
 	onSignOut: () => void;
-}
+};
 
-export default function ProfileMenu({ imageUrl, onSignOut }: ProfileMenuProps) {
+export const ProfileMenu = ({ imageUrl, onSignOut }: ProfileMenuProps) => {
 	const [open, setOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -44,10 +42,10 @@ export default function ProfileMenu({ imageUrl, onSignOut }: ProfileMenuProps) {
 			{open && (
 				<div className={styles.dropdown}>
 					<div className={styles.dropdownItem} onClick={onSignOut}>
-						Sign out
+						Se déconnecter
 					</div>
 				</div>
 			)}
 		</div>
 	);
-}
+};

@@ -25,7 +25,7 @@ export const avatarImage = style({
 
 export const dropdown = style({
 	position: "absolute",
-	top: "50px",
+	top: "40px",
 	right: 0,
 	backgroundColor: "white",
 	border: "1px solid #ddd",

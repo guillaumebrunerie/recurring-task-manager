@@ -2,59 +2,17 @@ import { query, mutation, QueryCtx } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { ConvexError, v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
+
 import { vUnit } from "./schema";
-import { TimeUnit } from "../src/units";
-import { Accomplishment, parseAccomplishment } from "./accomplishments";
+import { parseAccomplishment } from "./accomplishments";
+
+import {
+	getLastCompletionTime,
+	getToBeCompletedBy,
+} from "@/shared/accomplishments";
+import { Task } from "@/shared/tasks";
 
 /** Helper functions */
-
-// A task, format used by the frontend
-export type Task = {
-	id: Id<"tasks">;
-	name: string;
-	description?: string;
-	unit: TimeUnit;
-	period: number;
-	tolerance: number;
-	visibleTo?: Id<"users">[];
-	responsibleFor?: Id<"users">[];
-	lastCompletionTime?: number;
-	toBeCompletedBy?: Id<"users">;
-	accomplishments: Accomplishment[];
-};
-
-// Returns the last completion time of a task
-const getLastCompletionTime = (
-	accomplishments: Accomplishment[],
-): number | undefined => {
-	if (accomplishments.length === 0) {
-		return;
-	}
-	return accomplishments
-		.map((a) => a.completionTime)
-		.reduce((a, b) => Math.max(a, b));
-};
-
-// Returns the user that should complete the task next
-const getToBeCompletedBy = (
-	responsibleFor: Id<"users">[] | undefined,
-	accomplishments: Accomplishment[],
-): Id<"users"> | undefined => {
-	if (!responsibleFor || responsibleFor.length === 0) {
-		return;
-	}
-	let responsibles = responsibleFor;
-	const completedBy = accomplishments
-		.toSorted((a, b) => b.completionTime - a.completionTime)
-		.map((a) => a.completedBy);
-	for (const user of completedBy) {
-		if (responsibles.length == 1) {
-			break;
-		}
-		responsibles = responsibles.filter((id) => id !== user?.id);
-	}
-	return responsibles[0];
-};
 
 // Parses a task document into a Task object
 export const parseTask = async (

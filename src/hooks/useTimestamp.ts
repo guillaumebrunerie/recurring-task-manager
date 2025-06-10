@@ -1,4 +1,3 @@
-// useTimestamp.ts
 import { useState, useEffect } from "react";
 
 export const useTimestamp = (delay: number | null = null) => {

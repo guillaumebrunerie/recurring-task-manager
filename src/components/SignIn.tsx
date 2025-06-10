@@ -1,5 +1,5 @@
 import { useAuthActions } from "@convex-dev/auth/react";
-import * as styles from "./styles.css";
+import * as styles from "./signIn.css";
 import Image from "next/image";
 
 export function SignIn() {

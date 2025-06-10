@@ -1,18 +1,13 @@
 import { query } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
+import { Doc } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
-
-export type User = {
-	id: Id<"users">;
-	name: string;
-	image: string | null;
-};
+import { User } from "@/shared/users";
 
 export const parseUser = (user: Doc<"users">): User => ({
 	id: user._id,
-	name: user.name || "(unknown)",
-	image: user.image || null,
+	name: user.name,
+	image: user.image,
 });
 
 export const getUser = query({

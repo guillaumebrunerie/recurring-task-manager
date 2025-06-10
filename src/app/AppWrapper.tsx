@@ -1,12 +1,14 @@
 "use client";
 
-import { SignIn } from "@/components/SignIn";
-import { SignOut } from "@/components/SignOut";
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import { ReactNode } from "react";
-import * as styles from "@/components/styles.css";
-import * as common from "@/app/common.css";
 import { useRouter } from "next/navigation";
+
+import { SignIn } from "@/components/SignIn";
+import { SignOut } from "@/components/SignOut";
+
+import * as styles from "./appWrapper.css";
+import * as common from "./common.css";
 
 const BackButton = () => {
 	const router = useRouter();
@@ -17,7 +19,7 @@ const BackButton = () => {
 	);
 };
 
-export const App = ({
+export const AppWrapper = ({
 	title,
 	withBackButton,
 	children,

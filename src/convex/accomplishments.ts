@@ -1,22 +1,17 @@
-import { TimeUnit } from "../src/units";
-import { Doc, Id } from "./_generated/dataModel";
+import { Doc } from "./_generated/dataModel";
 import { mutation, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
-import { parseUser, User } from "./users";
 import { getAuthUserId } from "@convex-dev/auth/server";
+
+import { parseUser } from "./users";
 import { parseTask } from "./tasks";
-import { getTimeLeftForAccomplishment } from "../src/tasks";
+
+import {
+	Accomplishment,
+	getTimeLeftForAccomplishment,
+} from "@/shared/accomplishments";
 
 /** Helper functions */
-
-// An accomplishment, format used by the frontend
-export type Accomplishment = {
-	id: Id<"accomplishments">;
-	completionTime: number;
-	completedBy: User | null;
-	timeLeft: number | null;
-	unit: TimeUnit | null;
-};
 
 // Parses an accomplishment document into an Accomplishment object
 export const parseAccomplishment = async (
@@ -30,9 +25,9 @@ export const parseAccomplishment = async (
 	return {
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
-		completedBy: userDoc ? parseUser(userDoc) : null,
-		timeLeft: accomplishment.timeLeft || null,
-		unit: accomplishment.unit || null,
+		completedBy: userDoc ? parseUser(userDoc) : undefined,
+		timeLeft: accomplishment.timeLeft,
+		unit: accomplishment.unit,
 	};
 };
 
@@ -55,9 +50,6 @@ export const addAccomplishment = mutation({
 		}
 		const task = await parseTask(ctx, userId, taskDoc);
 		if (!task) {
-			throw new Error(`Task with id ${taskId} is not accessible`);
-		}
-		if (task.visibleTo && !task.visibleTo.includes(userId)) {
 			throw new Error(
 				`Task with id ${taskId} is not visible to user ${userId}`,
 			);

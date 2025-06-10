@@ -3,15 +3,15 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
-import { TimeUnit } from "@/units";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { TimeUnit } from "@/shared/units";
 import * as styles from "./styles.css";
 import * as common from "@/app/common.css";
-import UserSelector from "@/components/UserSelector";
-import { App } from "@/app/app";
+import { UserSelector } from "@/components/UserSelector";
+import { AppWrapper } from "@/app/AppWrapper";
 
-const units: TimeUnit[] = ["minutes", "hours", "days", "weeks"];
+const visibleUnits: TimeUnit[] = ["minutes", "hours", "days", "weeks"];
 
 export default function TaskFormPage() {
 	const { id } = useParams();
@@ -67,6 +67,13 @@ export default function TaskFormPage() {
 		}
 	}, [existingTask]);
 
+	useEffect(() => {
+		if (allUsers && isNew) {
+			setVisibleTo_(new Set(allUsers.map((u) => u.id)));
+			setResponsibleFor_(new Set(allUsers.map((u) => u.id)));
+		}
+	}, [allUsers, isNew]);
+
 	const handleSave = async () => {
 		if (!user) {
 			return;
@@ -89,7 +96,7 @@ export default function TaskFormPage() {
 	}
 
 	return (
-		<App
+		<AppWrapper
 			title={isNew ? "Nouvelle tâche" : "Modifier la tâche"}
 			withBackButton
 		>
@@ -145,7 +152,7 @@ export default function TaskFormPage() {
 								setUnit(e.target.value as TimeUnit)
 							}
 						>
-							{units.map((unit) => (
+							{visibleUnits.map((unit) => (
 								<option key={unit} value={unit}>
 									{unit}
 								</option>
@@ -178,7 +185,7 @@ export default function TaskFormPage() {
 					{isNew ? "Créer la tâche" : "Enregistrer"}
 				</button>
 			</div>
-		</App>
+		</AppWrapper>
 	);
 }
 

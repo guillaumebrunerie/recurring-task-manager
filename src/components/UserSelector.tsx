@@ -1,19 +1,47 @@
 import React from "react";
 import * as styles from "./userSelector.css";
-import { Id } from "../../convex/_generated/dataModel";
-import { User } from "../../convex/users";
+import { Id } from "@/convex/_generated/dataModel";
+import { User } from "@/shared/users";
 
-interface UserSelectorProps {
+type UserSelectorButtonProps = {
+	user: User;
+	isSelected: boolean;
+	onToggle: () => void;
+};
+
+const UserSelectorButton = ({
+	user,
+	isSelected,
+	onToggle,
+}: UserSelectorButtonProps) => {
+	const displayName = user.name ? user.name.split(" ")[0] : "Unknown";
+	return (
+		<button
+			className={`${styles.user} ${isSelected ? styles.selected : ""}`}
+			onClick={onToggle}
+			type="button"
+		>
+			<img
+				src={user.image || undefined}
+				alt={user.name}
+				className={styles.avatar}
+			/>
+			<span>{displayName}</span>
+		</button>
+	);
+};
+
+type UserSelectorProps = {
 	users: User[];
 	selected: Set<Id<"users">>;
 	onChange: (selected: Set<Id<"users">>) => void;
-}
+};
 
-export default function UserSelector({
+export const UserSelector = ({
 	users,
 	selected,
 	onChange,
-}: UserSelectorProps) {
+}: UserSelectorProps) => {
 	const toggle = (id: Id<"users">) => {
 		if (selected.has(id)) {
 			onChange(new Set([...selected].filter((userId) => userId !== id)));
@@ -25,20 +53,13 @@ export default function UserSelector({
 	return (
 		<div className={styles.grid}>
 			{users.map((user) => (
-				<button
+				<UserSelectorButton
 					key={user.id}
-					className={`${styles.user} ${selected.has(user.id) ? styles.selected : ""}`}
-					onClick={() => toggle(user.id)}
-					type="button"
-				>
-					<img
-						src={user.image || undefined}
-						alt={user.name}
-						className={styles.avatar}
-					/>
-					<span>{user.name.split(" ")[0]}</span>
-				</button>
+					user={user}
+					isSelected={selected.has(user.id)}
+					onToggle={() => toggle(user.id)}
+				/>
 			))}
 		</div>
 	);
-}
+};
