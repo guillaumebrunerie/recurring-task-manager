@@ -21,7 +21,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export const PushNotificationManager = () => {
-	const [isSupported, setIsSupported] = useState(false);
+	const [, setIsSupported] = useState(false);
 	const [subscription, setSubscription] = useState<PushSubscription | null>(
 		null,
 	);
