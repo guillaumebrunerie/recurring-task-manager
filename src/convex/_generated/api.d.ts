@@ -16,6 +16,7 @@ import type {
 import type * as accomplishments from "../accomplishments.js";
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as notifications from "../notifications.js";
 import type * as tasks from "../tasks.js";
 import type * as users from "../users.js";
 
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   accomplishments: typeof accomplishments;
   auth: typeof auth;
   http: typeof http;
+  notifications: typeof notifications;
   tasks: typeof tasks;
   users: typeof users;
 }>;

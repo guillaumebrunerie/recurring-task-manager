@@ -23,4 +23,8 @@ export default defineSchema({
 		timeLeft: v.optional(v.number()),
 		unit: v.optional(vUnit),
 	}),
+	subscriptions: defineTable({
+		userId: v.id("users"),
+		subscription: v.string(),
+	}),
 });

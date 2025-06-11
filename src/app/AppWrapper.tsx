@@ -9,6 +9,7 @@ import { SignOut } from "@/components/SignOut";
 
 import * as styles from "./appWrapper.css";
 import * as common from "./common.css";
+import { PushNotificationManager } from "./PushNotificationManager";
 
 const BackButton = () => {
 	const router = useRouter();
@@ -39,6 +40,7 @@ export const AppWrapper = ({
 			<Authenticated>
 				<SignOut />
 				{children}
+				<PushNotificationManager />
 			</Authenticated>
 		</div>
 	);
