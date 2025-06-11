@@ -22,6 +22,7 @@ const sendNotification = async (
 	subscription: string,
 ) => {
 	try {
+		console.log("Sending notification", title, body);
 		await webpush.sendNotification(
 			JSON.parse(subscription),
 			JSON.stringify({
@@ -67,7 +68,7 @@ export const notifyAllUsers = internalAction({
 			internal.subscriptions.getAllSubscriptions,
 		);
 		for (const subscription of subscriptions) {
-			notifyUser(ctx, subscription);
+			await notifyUser(ctx, subscription);
 		}
 	},
 });
