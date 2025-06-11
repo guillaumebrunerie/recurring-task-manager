@@ -2,8 +2,11 @@
 
 import webpush from "web-push";
 
-import { v } from "convex/values";
-import { action } from "./_generated/server";
+import { ActionCtx, internalAction } from "./_generated/server";
+import { internal } from "./_generated/api";
+import { Doc } from "./_generated/dataModel";
+
+/** Configuration */
 
 webpush.setVapidDetails(
 	"mailto:guillaume.brunerie@gmail.com",
@@ -11,27 +14,60 @@ webpush.setVapidDetails(
 	process.env.VAPID_PRIVATE_KEY!,
 );
 
+/** Helper functions */
+
+const sendNotification = async (
+	title: string,
+	body: string,
+	subscription: string,
+) => {
+	try {
+		await webpush.sendNotification(
+			JSON.parse(subscription),
+			JSON.stringify({
+				title,
+				body,
+				icon: "/icon.png",
+			}),
+		);
+		return { success: true };
+	} catch (error) {
+		console.error("Error sending push notification:", error);
+		return { success: false, error: "Failed to send notification" };
+	}
+};
+
+const notifyUser = async (
+	ctx: ActionCtx,
+	{ userId, subscription }: Doc<"subscriptions">,
+) => {
+	const { overdueTasks, dueTasks } = await ctx.runQuery(
+		internal.tasks.getTasksToDoForUser,
+		{ userId },
+	);
+	const count = overdueTasks.length + dueTasks.length;
+	if (count === 0) {
+		return;
+	}
+	const title =
+		`${count} tâche${count > 1 ? "s" : ""} à faire` +
+		(overdueTasks.length > 0 ? ` (${overdueTasks.length} en retard)` : "");
+	const body = [
+		...overdueTasks.map((task) => `⚠️ ${task.name}`),
+		...dueTasks.map((task) => `⏳ ${task.name}`),
+	].join("\n");
+	await sendNotification(title, body, subscription);
+};
+
 /** Actions */
 
-export const sendNotification = action({
-	args: {
-		message: v.string(),
-		subscription: v.string(),
-	},
-	handler: async (_, { message, subscription }) => {
-		try {
-			await webpush.sendNotification(
-				JSON.parse(subscription),
-				JSON.stringify({
-					title: "Test Notification",
-					body: message,
-					icon: "/icon.png",
-				}),
-			);
-			return { success: true };
-		} catch (error) {
-			console.error("Error sending push notification:", error);
-			return { success: false, error: "Failed to send notification" };
+export const notifyAllUsers = internalAction({
+	handler: async (ctx) => {
+		const subscriptions = await ctx.runQuery(
+			internal.subscriptions.getAllSubscriptions,
+		);
+		for (const subscription of subscriptions) {
+			notifyUser(ctx, subscription);
 		}
 	},
 });

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import * as styles from "./profileMenu.css";
+import { PushNotificationManager } from "./PushNotificationManager";
 
 type ProfileMenuProps = {
 	imageUrl?: string;
@@ -41,6 +42,7 @@ export const ProfileMenu = ({ imageUrl, onSignOut }: ProfileMenuProps) => {
 			</button>
 			{open && (
 				<div className={styles.dropdown}>
+					<PushNotificationManager />
 					<div className={styles.dropdownItem} onClick={onSignOut}>
 						Se déconnecter
 					</div>

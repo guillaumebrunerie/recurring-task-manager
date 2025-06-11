@@ -1,4 +1,4 @@
-import { query, mutation, QueryCtx } from "./_generated/server";
+import { query, mutation, QueryCtx, internalQuery } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { ConvexError, v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
@@ -10,7 +10,7 @@ import {
 	getLastCompletionTime,
 	getToBeCompletedBy,
 } from "@/shared/accomplishments";
-import { Task } from "@/shared/tasks";
+import { compareTasks, Task, taskStatus } from "@/shared/tasks";
 
 /** Helper functions */
 
@@ -89,6 +89,33 @@ export const getAll = query({
 			),
 		);
 		return tasks.filter((task) => !!task);
+	},
+});
+
+export const getTasksToDoForUser = internalQuery({
+	args: {
+		userId: v.id("users"),
+	},
+	handler: async (ctx, { userId }) => {
+		const taskDocs = await ctx.db.query("tasks").collect();
+		const tasks: Task[] = (
+			await Promise.all(
+				taskDocs.map((taskDoc) => parseTask(ctx, userId, taskDoc)),
+			)
+		).filter((task) => !!task);
+		const now = Date.now();
+
+		tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
+		const overdueTasks = tasks.filter(
+			(task) => taskStatus(task, now).status === "overdue",
+		);
+		const dueTasks = tasks.filter(
+			(task) =>
+				taskStatus(task, now).status === "due" ||
+				taskStatus(task, now).status === "new",
+		);
+
+		return { overdueTasks, dueTasks };
 	},
 });
 

@@ -16,9 +16,10 @@ const Home = () => {
 	const now = useTimestamp();
 	const tasks = useQuery(api.tasks.getAll);
 
-	if (tasks === undefined) {
+	if (!tasks) {
 		return <div className={common.loading}>Chargement...</div>;
 	}
+
 	tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
 	const overdueTasks = tasks.filter(
 		(task) => taskStatus(task, now).status === "overdue",
