@@ -46,18 +46,20 @@ const notifyUser = async (
 		internal.tasks.getTasksToDoForUser,
 		{ userId },
 	);
-	const count = overdueTasks.length + dueTasks.length;
-	if (count === 0) {
-		return;
+	if (overdueTasks.length > 0) {
+		await sendNotification(
+			`⚠️ ${overdueTasks.length} tâche${overdueTasks.length > 1 ? "s" : ""} en retard!`,
+			overdueTasks.map((task) => `${task.name}`).join("\n"),
+			subscription,
+		);
 	}
-	const title =
-		`${count} tâche${count > 1 ? "s" : ""} à faire` +
-		(overdueTasks.length > 0 ? ` (${overdueTasks.length} en retard)` : "");
-	const body = [
-		...overdueTasks.map((task) => `⚠️ ${task.name}`),
-		...dueTasks.map((task) => `⏳ ${task.name}`),
-	].join("\n");
-	await sendNotification(title, body, subscription);
+	if (dueTasks.length > 0) {
+		await sendNotification(
+			`${dueTasks.length} tâche${dueTasks.length > 1 ? "s" : ""} à faire`,
+			dueTasks.map((task) => `${task.name}`).join("\n"),
+			subscription,
+		);
+	}
 };
 
 /** Actions */

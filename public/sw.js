@@ -4,6 +4,7 @@ self.addEventListener("push", function (event) {
 		const options = {
 			body: data.body,
 			badge: "/badge.png",
+			icon: "/icon.png",
 		};
 		event.waitUntil(
 			self.registration.showNotification(data.title, options),

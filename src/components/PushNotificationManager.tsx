@@ -21,7 +21,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export const PushNotificationManager = () => {
-	const [, setIsSupported] = useState(false);
+	const [isSupported, setIsSupported] = useState(false);
 	const [subscription, setSubscription] = useState<PushSubscription | null>(
 		null,
 	);
@@ -33,18 +33,19 @@ export const PushNotificationManager = () => {
 		}
 	}, []);
 
-	const subscribeUser = useMutation(api.users.subscribe);
+	const subscribeUser = useMutation(api.subscriptions.subscribe);
+	const unsubscribeUser = useMutation(api.subscriptions.unsubscribe);
 
-	async function registerServiceWorker() {
+	const registerServiceWorker = async () => {
 		const registration = await navigator.serviceWorker.register("/sw.js", {
 			scope: "/",
 			updateViaCache: "none",
 		});
 		const sub = await registration.pushManager.getSubscription();
 		setSubscription(sub);
-	}
+	};
 
-	async function subscribeToPush() {
+	const subscribe = async () => {
 		const registration = await navigator.serviceWorker.ready;
 		const sub = await registration.pushManager.subscribe({
 			userVisibleOnly: true,
@@ -55,19 +56,27 @@ export const PushNotificationManager = () => {
 		setSubscription(sub);
 		const subscription = JSON.stringify(sub);
 		await subscribeUser({ subscription });
+	};
+
+	const unsubscribe = async () => {
+		if (!subscription) {
+			return;
+		}
+		await subscription?.unsubscribe();
+		setSubscription(null);
+		await unsubscribeUser({ subscription: JSON.stringify(subscription) });
+	};
+
+	if (!isSupported) {
+		return null;
 	}
 
-	// async function unsubscribeFromPush() {
-	// 	await subscription?.unsubscribe();
-	// 	setSubscription(null);
-	// 	await unsubscribeUser();
-	// }
-
 	return (
-		<div onClick={subscribeToPush} className={styles.dropdownItem}>
-			{subscription ?
-				"Notifications activées"
-			:	"Notifications désactivées"}
+		<div
+			onClick={subscription ? unsubscribe : subscribe}
+			className={styles.dropdownItem}
+		>
+			{subscription ? "Notifications ON" : "Notifications OFF"}
 		</div>
 	);
 };

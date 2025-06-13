@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as accomplishments from "../accomplishments.js";
 import type * as auth from "../auth.js";
+import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as notifications from "../notifications.js";
 import type * as subscriptions from "../subscriptions.js";
@@ -32,6 +33,7 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   accomplishments: typeof accomplishments;
   auth: typeof auth;
+  crons: typeof crons;
   http: typeof http;
   notifications: typeof notifications;
   subscriptions: typeof subscriptions;

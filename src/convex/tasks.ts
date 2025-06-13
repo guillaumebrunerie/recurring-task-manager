@@ -102,7 +102,12 @@ export const getTasksToDoForUser = internalQuery({
 			await Promise.all(
 				taskDocs.map((taskDoc) => parseTask(ctx, userId, taskDoc)),
 			)
-		).filter((task) => !!task);
+		).filter(
+			(task: Task | undefined): task is Task =>
+				!!task &&
+				task.responsibleFor !== undefined &&
+				task.responsibleFor.includes(userId),
+		);
 		const now = Date.now();
 
 		tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));

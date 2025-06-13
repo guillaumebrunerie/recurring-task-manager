@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { query } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
@@ -52,23 +52,5 @@ export const getAll = query({
 		}
 		const users = await ctx.db.query("users").collect();
 		return users.map((user) => parseUser(user));
-	},
-});
-
-/** Mutations */
-
-export const subscribe = mutation({
-	args: {
-		subscription: v.string(),
-	},
-	handler: async (ctx, { subscription }) => {
-		const userId = await getAuthUserId(ctx);
-		if (userId === null) {
-			return [];
-		}
-		await ctx.db.insert("subscriptions", {
-			userId,
-			subscription,
-		});
 	},
 });
