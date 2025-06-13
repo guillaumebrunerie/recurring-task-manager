@@ -38,6 +38,17 @@ const sendNotification = async (
 	}
 };
 
+const listify = (tasks: { name: string }[]) => {
+	if (tasks.length === 1) {
+		return `${tasks[0].name}`;
+	}
+	return tasks.map((task) => `- ${task.name}`).join("\n");
+};
+
+const countStr = (count: number, str: string) => {
+	return `${count} ${str}${count > 1 ? "s" : ""}`;
+};
+
 const notifyUser = async (
 	ctx: ActionCtx,
 	{ userId, subscription }: Doc<"subscriptions">,
@@ -48,15 +59,15 @@ const notifyUser = async (
 	);
 	if (overdueTasks.length > 0) {
 		await sendNotification(
-			`⚠️ ${overdueTasks.length} tâche${overdueTasks.length > 1 ? "s" : ""} en retard!`,
-			overdueTasks.map((task) => `${task.name}`).join("\n"),
+			`⚠️ ${countStr(overdueTasks.length, "tâche")} en retard!`,
+			listify(overdueTasks),
 			subscription,
 		);
 	}
 	if (dueTasks.length > 0) {
 		await sendNotification(
-			`${dueTasks.length} tâche${dueTasks.length > 1 ? "s" : ""} à faire`,
-			dueTasks.map((task) => `${task.name}`).join("\n"),
+			`${countStr(dueTasks.length, "tâche")} à faire`,
+			listify(dueTasks),
 			subscription,
 		);
 	}
