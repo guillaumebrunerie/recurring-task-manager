@@ -61,8 +61,8 @@ export default function TaskFormPage() {
 			setPeriod(existingTask.period.toString());
 			setUnit(existingTask.unit);
 			setTolerance(existingTask.tolerance.toString());
-			setVisibleTo_(new Set(existingTask.visibleTo || []));
-			setResponsibleFor_(new Set(existingTask.responsibleFor || []));
+			setVisibleTo_(new Set(existingTask.visibleTo));
+			setResponsibleFor_(new Set(existingTask.responsibleFor));
 			setIsLoading(false);
 		}
 	}, [existingTask]);

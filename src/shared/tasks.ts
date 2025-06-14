@@ -1,6 +1,7 @@
 import { Id } from "@/convex/_generated/dataModel";
 import {
 	convertDurationFromUnit,
+	convertToUnit,
 	getMaxTimeLeft,
 	getMinTimeLeft,
 	getTimeLeft,
@@ -15,11 +16,12 @@ export type Task = {
 	unit: TimeUnit;
 	period: number;
 	tolerance: number;
-	visibleTo?: Id<"users">[];
-	responsibleFor?: Id<"users">[];
+	visibleTo: Id<"users">[];
+	responsibleFor: Id<"users">[];
 	lastCompletionTime?: number;
-	toBeCompletedBy?: Id<"users">;
+	toBeCompletedBy: Id<"users">;
 	accomplishments: Accomplishment[];
+	lastNotified?: number;
 };
 
 export type TaskStatus =
@@ -88,4 +90,24 @@ export const getTimeLeftForAccomplishment = (
 		case "waiting":
 			return time;
 	}
+};
+
+export const shouldNotifyForTask = (task: Task, now: number) => {
+	if (!task.lastCompletionTime) {
+		return false;
+	}
+	const desiredTime =
+		convertToUnit(task.lastCompletionTime, task.unit) + task.period;
+	const nowUnit = convertToUnit(now, task.unit);
+	const notifiedAt =
+		task.lastNotified ?
+			convertToUnit(task.lastNotified, task.unit)
+		:	-Infinity;
+	if (nowUnit < desiredTime) {
+		return false; // No notification yet
+	}
+	if (nowUnit - notifiedAt <= task.tolerance) {
+		return false; // Already notified within tolerance
+	}
+	return true;
 };

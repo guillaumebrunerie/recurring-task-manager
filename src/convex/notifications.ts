@@ -54,8 +54,11 @@ const notifyUser = async (
 	{ userId, subscription }: Doc<"subscriptions">,
 ) => {
 	const { overdueTasks, dueTasks } = await ctx.runQuery(
-		internal.tasks.getTasksToDoForUser,
+		internal.tasks.getTasksToNotifyForUser,
 		{ userId },
+	);
+	console.log(
+		`Notifying user ${userId}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
 	if (overdueTasks.length > 0) {
 		await sendNotification(
@@ -71,17 +74,34 @@ const notifyUser = async (
 			subscription,
 		);
 	}
+	await ctx.runMutation(internal.tasks.markTasksAsNotified, {
+		ids: [
+			...overdueTasks.map((task) => task.id),
+			...dueTasks.map((task) => task.id),
+		],
+		now: Date.now(),
+	});
 };
 
 /** Actions */
 
+const doNotDisturb = () => {
+	const now = new Date();
+	const hours = now.getHours();
+	return hours < 7 || hours > 20;
+};
+
 export const notifyAllUsers = internalAction({
 	handler: async (ctx) => {
+		if (doNotDisturb()) {
+			console.log("Do not disturb.");
+			return;
+		}
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getAllSubscriptions,
 		);
-		for (const subscription of subscriptions) {
-			await notifyUser(ctx, subscription);
-		}
+		await Promise.all(
+			subscriptions.map((subscription) => notifyUser(ctx, subscription)),
+		);
 	},
 });

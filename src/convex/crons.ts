@@ -3,9 +3,9 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-crons.daily(
-	"daily notification for tasks",
-	{ hourUTC: 7, minuteUTC: 0 },
+crons.hourly(
+	"notification for tasks",
+	{ minuteUTC: 30 },
 	internal.notifications.notifyAllUsers,
 );
 

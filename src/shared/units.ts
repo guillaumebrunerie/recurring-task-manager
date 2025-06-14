@@ -19,7 +19,7 @@ const timeOffsets: Record<TimeUnit, number> = {
 	weeks: 4 * timePeriods.days + 2 * timePeriods.hours, // Cutoff on Monday at 2 AM UTC
 };
 
-const convertToUnit = (timeMs: number, unit: TimeUnit) => {
+export const convertToUnit = (timeMs: number, unit: TimeUnit) => {
 	return Math.floor((timeMs - timeOffsets[unit]) / timePeriods[unit]);
 };
 

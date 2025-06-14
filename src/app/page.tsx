@@ -126,7 +126,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		setDoneTime(getLocalDateTimeString(new Date()));
 	};
 
-	const isPrivate = task.visibleTo?.length == 1;
+	const isPrivate = task.visibleTo.length == 1;
 	const user = useQuery(api.users.getUser, {
 		userId: task.toBeCompletedBy || undefined,
 	});

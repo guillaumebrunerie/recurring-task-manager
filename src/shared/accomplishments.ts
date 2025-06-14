@@ -43,12 +43,9 @@ export const getLastCompletionTime = (
 
 // Returns the user that should complete the task next
 export const getToBeCompletedBy = (
-	responsibleFor: Id<"users">[] | undefined,
+	responsibleFor: Id<"users">[],
 	accomplishments: Accomplishment[],
-): Id<"users"> | undefined => {
-	if (!responsibleFor || responsibleFor.length === 0) {
-		return;
-	}
+): Id<"users"> => {
 	let responsibles = responsibleFor;
 	const completedBy = accomplishments
 		.toSorted((a, b) => b.completionTime - a.completionTime)

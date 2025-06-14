@@ -1,4 +1,10 @@
-import { query, mutation, QueryCtx, internalQuery } from "./_generated/server";
+import {
+	query,
+	mutation,
+	QueryCtx,
+	internalQuery,
+	internalMutation,
+} from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { ConvexError, v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
@@ -10,7 +16,12 @@ import {
 	getLastCompletionTime,
 	getToBeCompletedBy,
 } from "@/shared/accomplishments";
-import { compareTasks, Task, taskStatus } from "@/shared/tasks";
+import {
+	compareTasks,
+	shouldNotifyForTask,
+	Task,
+	taskStatus,
+} from "@/shared/tasks";
 
 /** Helper functions */
 
@@ -48,6 +59,7 @@ export const parseTask = async (
 			accomplishments,
 		),
 		accomplishments,
+		lastNotified: task.lastNotified,
 	};
 };
 
@@ -92,11 +104,13 @@ export const getAll = query({
 	},
 });
 
-export const getTasksToDoForUser = internalQuery({
+export const getTasksToNotifyForUser = internalQuery({
 	args: {
 		userId: v.id("users"),
 	},
 	handler: async (ctx, { userId }) => {
+		const now = Date.now();
+
 		const taskDocs = await ctx.db.query("tasks").collect();
 		const tasks: Task[] = (
 			await Promise.all(
@@ -105,10 +119,9 @@ export const getTasksToDoForUser = internalQuery({
 		).filter(
 			(task: Task | undefined): task is Task =>
 				!!task &&
-				task.responsibleFor !== undefined &&
-				task.responsibleFor.includes(userId),
+				task.toBeCompletedBy == userId &&
+				shouldNotifyForTask(task, now),
 		);
-		const now = Date.now();
 
 		tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
 		const overdueTasks = tasks.filter(
@@ -154,5 +167,23 @@ export const saveTask = mutation({
 		} else {
 			await ctx.db.insert("tasks", data);
 		}
+	},
+});
+
+export const markTasksAsNotified = internalMutation({
+	args: {
+		ids: v.array(v.id("tasks")),
+		now: v.number(),
+	},
+	handler: async (ctx, { ids, now }) => {
+		await Promise.all(
+			ids.map(async (id) => {
+				const task = await ctx.db.get(id);
+				if (!task) {
+					throw new ConvexError(`Task with id ${id} not found`);
+				}
+				await ctx.db.patch(id, { lastNotified: now });
+			}),
+		);
 	},
 });
