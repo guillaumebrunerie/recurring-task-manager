@@ -46,11 +46,6 @@ export const statusVariants = recipe({
 	},
 	variants: {
 		status: {
-			new: {
-				backgroundColor: "#f0faff",
-				borderColor: "#0077cc",
-				color: "#004a99",
-			},
 			overdue: {
 				backgroundColor: "#fff0f0",
 				borderColor: "#cc0000",
@@ -60,6 +55,11 @@ export const statusVariants = recipe({
 				backgroundColor: "#fffce0",
 				borderColor: "#e0b000",
 				color: "#665500",
+			},
+			new: {
+				backgroundColor: "#f0faff",
+				borderColor: "#0077cc",
+				color: "#004a99",
 			},
 			waiting: {
 				backgroundColor: "#f4f4f4",
@@ -102,7 +102,7 @@ export const modalHeader = style({
 });
 
 export const description = style({
-	whiteSpace: "pre-line",
+	whiteSpace: "pre-wrap",
 });
 
 export const interval = style({
