@@ -5,8 +5,6 @@ import webpush from "web-push";
 import { ActionCtx, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
-import { parseUser } from "./users";
-
 /** Configuration */
 
 webpush.setVapidDetails(
