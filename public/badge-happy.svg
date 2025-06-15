@@ -5,7 +5,8 @@
     <rect width="48" height="48" fill="white"/>
     <circle cx="20" cy="22" r="2" fill="black"/>
     <circle cx="28" cy="22" r="2" fill="black"/>
-    <path d="M 16,30 C 20,38 28,38 32,30" stroke="black" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M 16,30 C 20,38 28,38 32,30" stroke="black" stroke-width="3"
+		  stroke-linejoin="round" stroke-linecap="round" fill="none"/>
     <!-- <path d="M 16,30 Q 24,40 32,30" stroke="#000" stroke-width="3" -->
     <!-- 		stroke-linejoin="round" stroke-linecap="round"/> -->
   </mask>
