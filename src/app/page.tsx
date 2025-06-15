@@ -36,9 +36,21 @@ const Home = () => {
 	return (
 		<AppWrapper title="Project Happy Home">
 			<div className={styles.taskPage}>
-				<Section title="En retard" tasks={overdueTasks} now={now} />
-				<Section title="À faire" tasks={dueTasks} now={now} />
-				<Section title="En attente" tasks={waitingTasks} now={now} />
+				{overdueTasks.length > 0 && (
+					<Section title="En retard" tasks={overdueTasks} now={now} />
+				)}
+				{dueTasks.length > 0 && (
+					<Section title="À faire" tasks={dueTasks} now={now} />
+				)}
+				{overdueTasks.length == 0 && dueTasks.length == 0 && (
+					<EmptySection />
+				)}
+				<Section
+					title="En attente"
+					tasks={waitingTasks}
+					now={now}
+					startCollapsed
+				/>
 				<Link href="/task/new" className={styles.addTaskButton}>
 					➕{"\uFE0E"} Nouvelle tâche
 				</Link>
@@ -51,22 +63,38 @@ const Section = ({
 	title,
 	tasks,
 	now,
+	startCollapsed = false,
 }: {
 	title: string;
 	tasks: Task[];
 	now: number;
-}) => (
-	<div className={styles.section2}>
-		<h2 className={styles.sectionTitle2}>{title}</h2>
-		<div className={styles.taskList}>
-			{tasks.length > 0 ?
-				tasks.map((task) => (
-					<TaskCard key={task.id} task={task} now={now} />
-				))
-			:	"Aucune tâche à afficher."}
+	startCollapsed?: boolean;
+}) => {
+	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
+	return (
+		<div className={styles.section2}>
+			<h2
+				className={styles.sectionTitle2}
+				onClick={() => setIsCollapsed(!isCollapsed)}
+			>
+				{isCollapsed ? `▶ ${title} (${tasks.length})` : `▼ ${title}`}
+			</h2>
+			{!isCollapsed && (
+				<div className={styles.taskList}>
+					{tasks.length > 0 ?
+						tasks.map((task) => (
+							<TaskCard key={task.id} task={task} now={now} />
+						))
+					:	"Aucune tâche à afficher."}
+				</div>
+			)}
 		</div>
-	</div>
-);
+	);
+};
+
+const EmptySection = () => {
+	return <div className={styles.taskList}>Aucune tâche à effectuer!</div>;
+};
 
 const getLocalDateTimeString = (date: Date) => {
 	const pad = (n: number) => String(n).padStart(2, "0");
