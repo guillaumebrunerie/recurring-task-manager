@@ -3,7 +3,7 @@ self.addEventListener("push", function (event) {
 		const data = event.data.json();
 		const options = {
 			body: data.body,
-			badge: "/badge.svg",
+			badge: data.badge,
 			icon: "/icon.png",
 		};
 		event.waitUntil(

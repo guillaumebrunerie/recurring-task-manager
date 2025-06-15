@@ -5,6 +5,7 @@ import webpush from "web-push";
 import { ActionCtx, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
+import { parseUser } from "./users";
 
 /** Configuration */
 
@@ -16,11 +17,17 @@ webpush.setVapidDetails(
 
 /** Helper functions */
 
-const sendNotification = async (
-	title: string,
-	body: string,
-	subscription: string,
-) => {
+const sendNotification = async ({
+	title,
+	body,
+	subscription,
+	isSad,
+}: {
+	title: string;
+	body: string;
+	subscription: string;
+	isSad: boolean;
+}) => {
 	try {
 		console.log("Sending notification", title, body);
 		await webpush.sendNotification(
@@ -28,7 +35,7 @@ const sendNotification = async (
 			JSON.stringify({
 				title,
 				body,
-				icon: "/icon.png",
+				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
 			}),
 		);
 		return { success: true };
@@ -52,35 +59,40 @@ const countStr = (count: number, str: string) => {
 const notifyUser = async (
 	ctx: ActionCtx,
 	{ userId, subscription }: Doc<"subscriptions">,
+	ignoreLastNotified = false,
 ) => {
 	const { overdueTasks, dueTasks } = await ctx.runQuery(
 		internal.tasks.getTasksToNotifyForUser,
-		{ userId },
+		{ userId, ignoreLastNotified },
 	);
 	console.log(
 		`Notifying user ${userId}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
 	if (overdueTasks.length > 0) {
-		await sendNotification(
-			`⚠️ ${countStr(overdueTasks.length, "tâche")} en retard!`,
-			listify(overdueTasks),
+		await sendNotification({
+			title: `⚠️ ${countStr(overdueTasks.length, "tâche")} en retard!`,
+			body: listify(overdueTasks),
 			subscription,
-		);
+			isSad: true,
+		});
 	}
 	if (dueTasks.length > 0) {
-		await sendNotification(
-			`${countStr(dueTasks.length, "tâche")} à faire`,
-			listify(dueTasks),
+		await sendNotification({
+			title: `${countStr(dueTasks.length, "tâche")} à faire`,
+			body: listify(dueTasks),
 			subscription,
-		);
+			isSad: false,
+		});
 	}
-	await ctx.runMutation(internal.tasks.markTasksAsNotified, {
-		ids: [
-			...overdueTasks.map((task) => task.id),
-			...dueTasks.map((task) => task.id),
-		],
-		now: Date.now(),
-	});
+	if (!ignoreLastNotified) {
+		await ctx.runMutation(internal.tasks.markTasksAsNotified, {
+			ids: [
+				...overdueTasks.map((task) => task.id),
+				...dueTasks.map((task) => task.id),
+			],
+			now: Date.now(),
+		});
+	}
 };
 
 /** Actions */
@@ -102,6 +114,20 @@ export const notifyAllUsers = internalAction({
 		);
 		await Promise.all(
 			subscriptions.map((subscription) => notifyUser(ctx, subscription)),
+		);
+	},
+});
+
+export const notifyTest = internalAction({
+	handler: async (ctx) => {
+		const subscriptions = await ctx.runQuery(
+			internal.subscriptions.getByUserName,
+			{ userName: "Guillaume Brunerie" },
+		);
+		await Promise.all(
+			subscriptions.map((subscription) =>
+				notifyUser(ctx, subscription, true),
+			),
 		);
 	},
 });

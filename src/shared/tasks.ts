@@ -92,7 +92,15 @@ export const getTimeLeftForAccomplishment = (
 	}
 };
 
-export const shouldNotifyForTask = (task: Task, now: number) => {
+export const shouldNotifyForTask = ({
+	task,
+	now,
+	ignoreLastNotified,
+}: {
+	task: Task;
+	now: number;
+	ignoreLastNotified: boolean;
+}) => {
 	if (!task.lastCompletionTime) {
 		return false;
 	}
@@ -106,7 +114,7 @@ export const shouldNotifyForTask = (task: Task, now: number) => {
 	if (nowUnit < desiredTime) {
 		return false; // No notification yet
 	}
-	if (nowUnit - notifiedAt <= task.tolerance) {
+	if (nowUnit - notifiedAt <= task.tolerance && !ignoreLastNotified) {
 		return false; // Already notified within tolerance
 	}
 	return true;

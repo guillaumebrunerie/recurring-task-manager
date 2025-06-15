@@ -107,8 +107,9 @@ export const getAll = query({
 export const getTasksToNotifyForUser = internalQuery({
 	args: {
 		userId: v.id("users"),
+		ignoreLastNotified: v.boolean(),
 	},
-	handler: async (ctx, { userId }) => {
+	handler: async (ctx, { userId, ignoreLastNotified }) => {
 		const now = Date.now();
 
 		const taskDocs = await ctx.db.query("tasks").collect();
@@ -120,7 +121,7 @@ export const getTasksToNotifyForUser = internalQuery({
 			(task: Task | undefined): task is Task =>
 				!!task &&
 				task.toBeCompletedBy == userId &&
-				shouldNotifyForTask(task, now),
+				shouldNotifyForTask({ task, now, ignoreLastNotified }),
 		);
 
 		tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
