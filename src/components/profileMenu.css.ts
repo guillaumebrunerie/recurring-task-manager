@@ -2,8 +2,8 @@ import { style } from "@vanilla-extract/css";
 
 export const container = style({
 	position: "fixed",
-	top: "1rem",
-	right: "1rem",
+	top: "calc((4rem - 40px) / 2)",
+	right: "calc((4rem - 40px) / 2)",
 	zIndex: 1000,
 });
 

@@ -101,6 +101,14 @@ export const modalHeader = style({
 	fontWeight: 600,
 });
 
+export const description = style({
+	whiteSpace: "pre-line",
+});
+
+export const interval = style({
+	fontStyle: "italic",
+});
+
 export const closeButton = style({
 	position: "absolute",
 	top: "1rem",
@@ -202,6 +210,8 @@ export const completionList = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: "0.25rem",
+	overflow: "auto",
+	maxHeight: "40vh",
 });
 
 export const completionItem = style({
@@ -225,27 +235,56 @@ export const accomplishedBy = style({
 export const taskPage = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: "2rem",
+	gap: "1rem",
 	padding: "1rem",
 });
 
 export const section2 = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: "1rem",
 });
 
 export const sectionTitle2 = style({
 	fontSize: "1.2rem",
 	fontWeight: 600,
 	color: "#222",
-	marginBottom: "0.5rem",
+	marginBottom: "0.7rem",
 });
 
-export const taskList = style({
-	display: "flex",
-	flexDirection: "column",
-	gap: "0.75rem",
+export const arrow = recipe({
+	base: {
+		display: "inline-block",
+		transition: "rotate 0.3s ease",
+	},
+	variants: {
+		isCollapsed: {
+			true: {
+				rotate: "-90deg",
+			},
+			false: {},
+		},
+	},
+	defaultVariants: {
+		isCollapsed: false,
+	},
+});
+
+export const taskList = recipe({
+	base: {
+		display: "flex",
+		flexDirection: "column",
+		gap: "0.75rem",
+		overflow: "hidden",
+		interpolateSize: "allow-keywords",
+		transition: "all 0.3s ease",
+	},
+	variants: {
+		isCollapsed: {
+			true: {
+				height: "0",
+			},
+		},
+	},
 });
 
 export const otherSection = style({
@@ -266,7 +305,6 @@ export const toggleOther = style({
 });
 
 export const addTaskButton = style({
-	alignSelf: "flex-end",
 	padding: "0.6rem 1rem",
 	backgroundColor: "#0077cc",
 	color: "#fff",

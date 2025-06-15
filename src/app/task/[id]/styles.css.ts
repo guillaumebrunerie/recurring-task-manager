@@ -64,3 +64,13 @@ export const field = style({
 	flexDirection: "column",
 	gap: "0.3rem",
 });
+
+export const addTaskButton = style({
+	padding: "0.6rem 1rem",
+	backgroundColor: "#0077cc",
+	color: "#fff",
+	border: "none",
+	borderRadius: "8px",
+	fontSize: "1rem",
+	textDecoration: "none",
+});

@@ -34,7 +34,14 @@ const Home = () => {
 	);
 
 	return (
-		<AppWrapper title="Project Happy Home">
+		<AppWrapper
+			title="Project Happy Home"
+			footer={
+				<Link href="/task/new" className={styles.addTaskButton}>
+					➕{"\uFE0E"} Nouvelle tâche
+				</Link>
+			}
+		>
 			<div className={styles.taskPage}>
 				{overdueTasks.length > 0 && (
 					<Section title="En retard" tasks={overdueTasks} now={now} />
@@ -51,9 +58,6 @@ const Home = () => {
 					now={now}
 					startCollapsed
 				/>
-				<Link href="/task/new" className={styles.addTaskButton}>
-					➕{"\uFE0E"} Nouvelle tâche
-				</Link>
 			</div>
 		</AppWrapper>
 	);
@@ -77,23 +81,26 @@ const Section = ({
 				className={styles.sectionTitle2}
 				onClick={() => setIsCollapsed(!isCollapsed)}
 			>
-				{isCollapsed ? `▶ ${title} (${tasks.length})` : `▼ ${title}`}
+				<span className={styles.arrow({ isCollapsed })}>▼</span>
+				{isCollapsed ? ` ${title} (${tasks.length})` : ` ${title}`}
 			</h2>
-			{!isCollapsed && (
-				<div className={styles.taskList}>
-					{tasks.length > 0 ?
-						tasks.map((task) => (
-							<TaskCard key={task.id} task={task} now={now} />
-						))
-					:	"Aucune tâche à afficher."}
-				</div>
-			)}
+			<div className={styles.taskList({ isCollapsed })}>
+				{tasks.length > 0 ?
+					tasks.map((task) => (
+						<TaskCard key={task.id} task={task} now={now} />
+					))
+				:	"Aucune tâche à afficher."}
+			</div>
 		</div>
 	);
 };
 
 const EmptySection = () => {
-	return <div className={styles.taskList}>Aucune tâche à effectuer!</div>;
+	return (
+		<div className={styles.taskList({ isCollapsed: false })}>
+			Aucune tâche à effectuer!
+		</div>
+	);
 };
 
 const getLocalDateTimeString = (date: Date) => {
@@ -199,15 +206,19 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 								{task.name}
 								{nbsp}
 							</div>
-							<div>{task.description}</div>
-							Intervalle:{" "}
-							{durationUnitToString(task.period, task.unit)}
-							{task.tolerance > 0 &&
-								" ± " +
-									durationUnitToString(
-										task.tolerance,
-										task.unit,
-									)}
+							<div className={styles.description}>
+								{task.description}
+							</div>
+							<div className={styles.interval}>
+								Intervalle:{" "}
+								{durationUnitToString(task.period, task.unit)}
+								{task.tolerance > 0 &&
+									" ± " +
+										durationUnitToString(
+											task.tolerance,
+											task.unit,
+										)}
+							</div>
 							<label className={styles.label}>
 								Effectuée le :
 								<input
@@ -286,3 +297,5 @@ const TaskHistoryItem = ({
 };
 
 export default Home;
+
+export const dynamic = "force-dynamic";

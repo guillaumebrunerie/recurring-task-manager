@@ -23,22 +23,31 @@ export const AppWrapper = ({
 	title,
 	withBackButton,
 	children,
+	footer,
 }: {
 	title: ReactNode;
 	withBackButton?: boolean;
 	children: ReactNode;
+	footer: ReactNode;
 }) => {
 	return (
 		<div className={styles.container}>
-			{withBackButton && <BackButton />}
-			<h1 className={common.title}>{title}</h1>
-			<AuthLoading>Chargement...</AuthLoading>
-			<Unauthenticated>
-				<SignIn />
-			</Unauthenticated>
+			<header className={styles.header}>
+				{withBackButton && <BackButton />}
+				<h1 className={common.title}>{title}</h1>
+				<Authenticated>
+					<SignOut />
+				</Authenticated>
+			</header>
+			<main className={styles.contents}>
+				<AuthLoading>Chargement...</AuthLoading>
+				<Unauthenticated>
+					<SignIn />
+				</Unauthenticated>
+				<Authenticated>{children}</Authenticated>
+			</main>
 			<Authenticated>
-				<SignOut />
-				{children}
+				<footer className={styles.footer}>{footer}</footer>
 			</Authenticated>
 		</div>
 	);

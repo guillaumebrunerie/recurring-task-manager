@@ -10,8 +10,6 @@ export const loading = style({
 export const title = style({
 	fontSize: "1.5rem",
 	fontWeight: 600,
-	padding: "1.5rem",
-	textAlign: "center",
 });
 
 export const container = style({

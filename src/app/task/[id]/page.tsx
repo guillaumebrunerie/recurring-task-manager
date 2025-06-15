@@ -99,6 +99,11 @@ export default function TaskFormPage() {
 		<AppWrapper
 			title={isNew ? "Nouvelle tâche" : "Modifier la tâche"}
 			withBackButton
+			footer={
+				<button className={styles.addTaskButton} onClick={handleSave}>
+					{isNew ? "Créer la tâche" : "Enregistrer"}
+				</button>
+			}
 		>
 			<div className={styles.formWrapper}>
 				<Field title="Nom">
@@ -180,10 +185,6 @@ export default function TaskFormPage() {
 						onChange={setResponsibleFor}
 					/>
 				</Field>
-
-				<button className={styles.button} onClick={handleSave}>
-					{isNew ? "Créer la tâche" : "Enregistrer"}
-				</button>
 			</div>
 		</AppWrapper>
 	);
