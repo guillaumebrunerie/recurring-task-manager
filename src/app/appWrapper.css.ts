@@ -37,11 +37,12 @@ export const footer = style({
 	placeItems: "end",
 	alignItems: "center",
 	padding: "1rem",
-	paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
+	paddingBottom: "calc(env(safe-area-inset-bottom) / 2 + 1rem)",
 	boxShadow: "0 -3px 3px rgba(0, 0, 0, 0.1)",
 	zIndex: 1,
 });
 
 export const contents = style({
 	overflow: "auto",
+	overscrollBehavior: "none",
 });
