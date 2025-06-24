@@ -38,7 +38,7 @@ const Home = () => {
 			title="Project Happy Home"
 			footer={
 				<Link href="/task/new" className={styles.addTaskButton}>
-					➕{"\uFE0E"} Nouvelle tâche
+					Nouvelle tâche
 				</Link>
 			}
 		>
@@ -126,16 +126,16 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	let timeString: string;
 	switch (status) {
 		case "new":
-			timeString = "nouvelle tâche";
+			timeString = "";
 			break;
 		case "overdue":
-			timeString = `en retard de ${durationToString(time, task.unit)}`;
+			timeString = `(en retard de ${durationToString(time, task.unit)})`;
 			break;
 		case "due":
-			timeString = `temps restant: ${durationToString(time, task.unit)}`;
+			timeString = `(temps restant: ${durationToString(time, task.unit)})`;
 			break;
 		case "waiting":
-			timeString = `à faire dans ${durationToString(time, task.unit)}`;
+			timeString = `(à faire dans ${durationToString(time, task.unit)})`;
 			break;
 	}
 
@@ -177,16 +177,22 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				role="button"
 				tabIndex={0}
 			>
-				<div className={styles.name}>{task.name}</div>
-				<div className={styles.time}>({timeString})</div>
-				{isPrivate && <div className={styles.lock}>🔒{"\uFE0E"}</div>}
-				{imageUrl && (
-					<img
-						src={imageUrl}
-						alt="Profile"
-						className={styles.assignee}
-					/>
-				)}
+				<div className={styles.topRow}>
+					<div className={styles.name}>{task.name}</div>
+					{isPrivate && (
+						<div className={styles.lock}>🔒{"\uFE0E"}</div>
+					)}
+				</div>
+				<div className={styles.bottomRow}>
+					{imageUrl && (
+						<img
+							src={imageUrl}
+							alt="Profile"
+							className={styles.assignee}
+						/>
+					)}
+					<div className={styles.time}>{timeString}</div>
+				</div>
 			</div>
 			{open && (
 				<div className={styles.overlay} onClick={() => setOpen(false)}>

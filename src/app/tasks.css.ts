@@ -3,13 +3,14 @@ import { recipe } from "@vanilla-extract/recipes";
 
 export const card = style({
 	position: "relative",
-	padding: "1rem",
+	padding: "0.8rem 1rem",
 	borderRadius: "12px",
 	boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
 	display: "flex",
 	flexDirection: "column",
 	gap: "0.5rem",
 	fontSize: "1rem",
+	cursor: "pointer",
 });
 
 export const name = style({
@@ -22,21 +23,25 @@ export const time = style({
 	textAlign: "right",
 });
 
-export const lock = style({
-	position: "absolute",
-	top: "0.5rem",
-	right: "0.5rem",
-});
+export const lock = style({});
 
 export const assignee = style({
 	width: "24px",
 	height: "24px",
 	borderRadius: "50%",
 	objectFit: "cover",
-	marginLeft: "0.5rem",
-	position: "absolute",
-	bottom: "0.7rem",
-	left: "0.5rem",
+});
+
+export const topRow = style({
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "center",
+});
+
+export const bottomRow = style({
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "center",
 });
 
 export const statusVariants = recipe({
@@ -52,11 +57,17 @@ export const statusVariants = recipe({
 				color: "#990000",
 			},
 			due: {
-				backgroundColor: "#fffce0",
-				borderColor: "#e0b000",
-				color: "#665500",
+				// backgroundColor: "#f0fff5", // a very light green background
+				// borderColor: "#2e8b57", // medium-sea green border
+				// color: "#1e4d2b", // dark green text
+				backgroundColor: "#f0faff",
+				borderColor: "#0077cc",
+				color: "#004a99",
 			},
 			new: {
+				// backgroundColor: "#f0fff5", // a very light green background
+				// borderColor: "#2e8b57", // medium-sea green border
+				// color: "#1e4d2b", // dark green text
 				backgroundColor: "#f0faff",
 				borderColor: "#0077cc",
 				color: "#004a99",
@@ -163,7 +174,7 @@ export const input = style({
 export const modalButtons = style({
 	display: "flex",
 	justifyContent: "space-between",
-	gap: "0.75rem",
+	gap: "0.8rem",
 	marginTop: "0.5rem",
 });
 
@@ -235,7 +246,7 @@ export const accomplishedBy = style({
 export const taskPage = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: "1rem",
+	gap: "0.8rem",
 	padding: "1rem",
 });
 
@@ -249,6 +260,7 @@ export const sectionTitle2 = style({
 	fontWeight: 600,
 	color: "#222",
 	marginBottom: "0.7rem",
+	cursor: "pointer",
 });
 
 export const arrow = recipe({

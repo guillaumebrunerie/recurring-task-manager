@@ -1,6 +1,6 @@
 {
 	"name": "Project Happy Home",
-	"short_name": "Project Happy Home",
+	"short_name": "Happy Home",
 	"icons": [
 		{
 			"src": "/icon-maskable.png",
@@ -9,24 +9,14 @@
 			"purpose": "maskable"
 		},
 		{
-			"src": "/icon-192x192.png",
-			"sizes": "192x192",
+			"src": "/icon-base.png",
+			"sizes": "768x768",
 			"type": "image/png",
 			"purpose": "any"
-		},
-		{
-			"src": "/icon-384x384.png",
-			"sizes": "384x384",
-			"type": "image/png"
-		},
-		{
-			"src": "/icon-512x512.png",
-			"sizes": "512x512",
-			"type": "image/png"
 		}
 	],
-	"theme_color": "#FFFFFF",
-	"background_color": "#FFFFFF",
+	"theme_color": "#f9fafb",
+	"background_color": "#f9fafb",
 	"start_url": "/",
 	"display": "standalone",
 	"orientation": "portrait"

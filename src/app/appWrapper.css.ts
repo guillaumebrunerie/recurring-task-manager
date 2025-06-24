@@ -3,7 +3,7 @@ import { style } from "@vanilla-extract/css";
 export const container = style({
 	height: "100%",
 	display: "grid",
-	gridTemplateRows: "4rem 1fr 4rem",
+	gridTemplateRows: "4rem 1fr auto",
 });
 
 export const backButton = style({
@@ -36,7 +36,8 @@ export const footer = style({
 	borderTop: "1px solid #e5e7eb",
 	placeItems: "end",
 	alignItems: "center",
-	padding: "0 1rem",
+	padding: "1rem",
+	paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
 	boxShadow: "0 -3px 3px rgba(0, 0, 0, 0.1)",
 	zIndex: 1,
 });
