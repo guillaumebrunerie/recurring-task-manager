@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -13,7 +13,16 @@ import { AppWrapper } from "@/app/AppWrapper";
 
 const visibleUnits: TimeUnit[] = ["minutes", "hours", "days", "weeks"];
 
-export default function TaskFormPage() {
+const Field = ({ title, children }: { title: string; children: ReactNode }) => {
+	return (
+		<div className={styles.field}>
+			<label className={styles.label}>{title}</label>
+			{children}
+		</div>
+	);
+};
+
+const TaskFormPage = () => {
 	const { id } = useParams();
 	const router = useRouter();
 
@@ -188,19 +197,6 @@ export default function TaskFormPage() {
 			</div>
 		</AppWrapper>
 	);
-}
-
-const Field = ({
-	title,
-	children,
-}: {
-	title: string;
-	children: React.ReactNode;
-}) => {
-	return (
-		<div className={styles.field}>
-			<label className={styles.label}>{title}</label>
-			{children}
-		</div>
-	);
 };
+
+export default TaskFormPage;
