@@ -16,6 +16,7 @@ export default defineSchema({
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),
 		lastNotified: v.optional(v.number()),
+		archivedAt: v.optional(v.number()),
 	}),
 	accomplishments: defineTable({
 		taskId: v.id("tasks"),

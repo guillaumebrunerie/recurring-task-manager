@@ -26,6 +26,8 @@ export const getTimeLeftForAccomplishment = (
 			return 0;
 		case "waiting":
 			return time;
+		case "archived":
+			return Infinity;
 	}
 };
 

@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { keyframes, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
 export const card = style({
@@ -57,22 +57,21 @@ export const statusVariants = recipe({
 				color: "#990000",
 			},
 			due: {
-				// backgroundColor: "#f0fff5", // a very light green background
-				// borderColor: "#2e8b57", // medium-sea green border
-				// color: "#1e4d2b", // dark green text
 				backgroundColor: "#f0faff",
 				borderColor: "#0077cc",
 				color: "#004a99",
 			},
 			new: {
-				// backgroundColor: "#f0fff5", // a very light green background
-				// borderColor: "#2e8b57", // medium-sea green border
-				// color: "#1e4d2b", // dark green text
 				backgroundColor: "#f0faff",
 				borderColor: "#0077cc",
 				color: "#004a99",
 			},
 			waiting: {
+				backgroundColor: "#f0fff5",
+				borderColor: "#2e8b57",
+				color: "#1e4d2b",
+			},
+			archived: {
 				backgroundColor: "#f4f4f4",
 				borderColor: "#cccccc",
 				color: "#666666",
@@ -338,4 +337,72 @@ export const editButton = style({
 	":hover": {
 		color: "#000",
 	},
+});
+
+export const threeDots = style({
+	display: "flex",
+	flexDirection: "column",
+	justifyContent: "center",
+	alignItems: "center",
+	gap: "3px",
+	width: "12px",
+	height: "24px",
+	cursor: "pointer",
+});
+
+export const dot = style({
+	width: "3px",
+	height: "3px",
+	backgroundColor: "currentColor",
+	borderRadius: "50%",
+});
+
+export const contextMenu = style({
+	zIndex: 10000,
+	position: "absolute",
+	top: "anchor(bottom)",
+	right: "calc(anchor(right) - 10px)",
+	backgroundColor: "white",
+	border: "1px solid #ddd",
+	borderRadius: "0.5rem",
+	boxShadow: "3px 4px 6px rgba(0, 0, 0, 0.2)",
+	minWidth: "150px",
+	overflow: "hidden",
+	positionTryFallbacks: "flip-block",
+});
+
+export const contextMenuItem = style({
+	display: "block",
+	padding: "0.5rem 1rem",
+	fontSize: "0.95rem",
+	cursor: "pointer",
+	selectors: {
+		"&:hover": {
+			backgroundColor: "#f1f1f1",
+		},
+	},
+});
+
+export const warningText = style({
+	color: "#cc0000",
+});
+
+export const separator = style({
+	marginBlock: "0.25rem",
+});
+
+const spin = keyframes({
+	to: { transform: "rotate(360deg)" },
+});
+
+export const spinner = style({
+	width: "1em",
+	height: "1em",
+	border: "2px solid currentColor",
+	borderTopColor: "transparent",
+	borderRadius: "50%",
+	animation: `${spin} 1.2s linear infinite`,
+	display: "inline-block",
+	verticalAlign: "middle",
+	marginRight: "0.5rem",
 });

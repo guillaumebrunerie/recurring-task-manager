@@ -22,18 +22,24 @@ export type Task = {
 	toBeCompletedBy: Id<"users">;
 	accomplishments: Accomplishment[];
 	lastNotified?: number;
+	isArchived: boolean;
+	archivedAt?: number;
 };
 
 export type TaskStatus =
 	| "new" // New task, never completed
 	| "overdue" // Task is overdue
 	| "due" // Task is due now or soon
-	| "waiting"; // Task does not need to be completed again for now
+	| "waiting" // Task does not need to be completed again for now
+	| "archived"; // Task is archived
 
 export const taskStatus = (
 	task: Task,
 	now: number,
 ): { status: TaskStatus; time: number } => {
+	if (task.isArchived && task.archivedAt) {
+		return { status: "archived", time: task.archivedAt };
+	}
 	if (task.lastCompletionTime == null) {
 		return {
 			status: "new",
@@ -55,7 +61,13 @@ export const taskStatus = (
 export const compareTasks = (taskA: Task, taskB: Task, now: number) => {
 	const statusA = taskStatus(taskA, now);
 	const statusB = taskStatus(taskB, now);
-	const statusOrder: TaskStatus[] = ["overdue", "due", "new", "waiting"];
+	const statusOrder: TaskStatus[] = [
+		"overdue",
+		"due",
+		"new",
+		"waiting",
+		"archived",
+	];
 	if (statusA.status !== statusB.status) {
 		return (
 			statusOrder.indexOf(statusA.status) -
@@ -70,6 +82,8 @@ export const compareTasks = (taskA: Task, taskB: Task, now: number) => {
 			case "due":
 				return statusA.time - statusB.time;
 			case "waiting":
+				return statusA.time - statusB.time;
+			case "archived":
 				return statusA.time - statusB.time;
 		}
 	}
@@ -89,6 +103,8 @@ export const getTimeLeftForAccomplishment = (
 			return 0;
 		case "waiting":
 			return time;
+		case "archived":
+			return 0;
 	}
 };
 
@@ -102,6 +118,9 @@ export const shouldNotifyForTask = ({
 	ignoreLastNotified: boolean;
 }) => {
 	if (!task.lastCompletionTime) {
+		return false;
+	}
+	if (task.isArchived) {
 		return false;
 	}
 	const desiredTime =

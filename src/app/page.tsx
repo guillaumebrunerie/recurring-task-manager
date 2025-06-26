@@ -6,15 +6,20 @@ import * as styles from "./tasks.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
 import { durationToString, durationUnitToString } from "@/shared/units";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { Accomplishment } from "@/shared/accomplishments";
 import { AppWrapper } from "./AppWrapper";
+import polyfill from "@oddbird/css-anchor-positioning/fn";
 
 const Home = () => {
 	const now = useTimestamp();
 	const tasks = useQuery(api.tasks.getAll);
+
+	useEffect(() => {
+		polyfill();
+	}, []);
 
 	if (!tasks) {
 		return <div className={common.loading}>Chargement...</div>;
@@ -32,6 +37,9 @@ const Home = () => {
 	const waitingTasks = tasks.filter(
 		(task) => taskStatus(task, now).status === "waiting",
 	);
+	const archivedTasks = tasks.filter(
+		(task) => taskStatus(task, now).status === "archived",
+	);
 
 	return (
 		<AppWrapper
@@ -43,18 +51,20 @@ const Home = () => {
 			}
 		>
 			<div className={styles.taskPage}>
-				{overdueTasks.length > 0 && (
-					<Section title="En retard" tasks={overdueTasks} now={now} />
-				)}
-				{dueTasks.length > 0 && (
-					<Section title="À faire" tasks={dueTasks} now={now} />
-				)}
+				<Section title="En retard" tasks={overdueTasks} now={now} />
+				<Section title="À faire" tasks={dueTasks} now={now} />
 				{overdueTasks.length == 0 && dueTasks.length == 0 && (
 					<EmptySection />
 				)}
 				<Section
 					title="En attente"
 					tasks={waitingTasks}
+					now={now}
+					startCollapsed
+				/>
+				<Section
+					title="Archivées"
+					tasks={archivedTasks}
 					now={now}
 					startCollapsed
 				/>
@@ -75,6 +85,9 @@ const Section = ({
 	startCollapsed?: boolean;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
+	if (tasks.length == 0) {
+		return null;
+	}
 	return (
 		<div className={styles.section2}>
 			<h2
@@ -137,9 +150,13 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		case "waiting":
 			timeString = `(à faire dans ${durationToString(time, task.unit)})`;
 			break;
+		case "archived":
+			timeString = "(archivée)";
+			break;
 	}
 
-	const [open, setOpen] = useState(false);
+	const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+	const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 	const [doneTime, setDoneTime] = useState(() => {
 		const now = new Date();
 		return now.toISOString().slice(0, 16); // for datetime-local input
@@ -148,16 +165,18 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const handleSubmit = async () => {
 		const timestamp = new Date(doneTime).getTime();
 
-		await addAccomplishment({
-			taskId: task.id,
-			completionTime: timestamp,
-		});
-
-		setOpen(false);
+		try {
+			await addAccomplishment({
+				taskId: task.id,
+				completionTime: timestamp,
+			});
+		} finally {
+			setIsContextMenuOpen(false);
+		}
 	};
 
-	const openModal = () => {
-		setOpen(true);
+	const openContextMenu = () => {
+		setIsContextMenuOpen(true);
 		setDoneTime(getLocalDateTimeString(new Date()));
 	};
 
@@ -167,35 +186,90 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	});
 	const imageUrl = user?.image;
 
+	const containerRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (
+				containerRef.current &&
+				!containerRef.current.contains(e.target as Node)
+			) {
+				setIsContextMenuOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	const anchorName = `--context-menu-anchor-${task.id}`;
+
 	return (
 		<>
 			<div
 				className={
 					styles.statusVariants({ status }) + " " + styles.card
 				}
-				onClick={openModal}
+				onClick={openContextMenu}
 				role="button"
 				tabIndex={0}
 			>
 				<div className={styles.topRow}>
-					<div className={styles.name}>{task.name}</div>
-					{isPrivate && (
-						<div className={styles.lock}>🔒{"\uFE0E"}</div>
-					)}
+					<div className={styles.name}>
+						{isPrivate && <span className={styles.lock}>🔒 </span>}
+						{task.name}
+					</div>
+					<div className={styles.threeDots} style={{ anchorName }}>
+						<div className={styles.dot} />
+						<div className={styles.dot} />
+						<div className={styles.dot} />
+					</div>
 				</div>
 				<div className={styles.bottomRow}>
-					{imageUrl && (
+					{imageUrl ?
 						<img
 							src={imageUrl}
 							alt="Profile"
 							className={styles.assignee}
 						/>
-					)}
+					:	<div />}
 					<div className={styles.time}>{timeString}</div>
 				</div>
 			</div>
-			{open && (
-				<div className={styles.overlay} onClick={() => setOpen(false)}>
+			{isContextMenuOpen && (
+				<div
+					className={styles.contextMenu}
+					ref={containerRef}
+					style={{ positionAnchor: anchorName }}
+				>
+					{!task.isArchived && (
+						<CompleteMenuItem
+							onComplete={async () => {
+								setDoneTime(getLocalDateTimeString(new Date()));
+								await handleSubmit();
+							}}
+						/>
+					)}
+					{!task.isArchived && (
+						<DetailsMenuItem
+							onClick={() => {
+								setIsContextMenuOpen(false);
+								setIsDetailsOpen(true);
+							}}
+						/>
+					)}
+					{!task.isArchived && <EditMenuItem task={task} />}
+					{!task.isArchived && <ArchiveMenuItem task={task} />}
+					{task.isArchived && <UnarchiveMenuItem task={task} />}
+					{task.isArchived && <hr className={styles.separator} />}
+					{task.isArchived && <DeleteMenuItem task={task} />}
+				</div>
+			)}
+			{isDetailsOpen && (
+				<div
+					className={styles.overlay}
+					onClick={() => setIsDetailsOpen(false)}
+				>
 					<div className={styles.modalOverlay}>
 						<div
 							className={styles.modalContent}
@@ -203,7 +277,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 						>
 							<button
 								className={styles.closeButton}
-								onClick={() => setOpen(false)}
+								onClick={() => setIsDetailsOpen(false)}
 								aria-label="Close"
 							>
 								✕
@@ -256,6 +330,123 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				</div>
 			)}
 		</>
+	);
+};
+
+const InlineSpinner = () => {
+	return <span className={styles.spinner} />;
+};
+
+const CompleteMenuItem = ({
+	onComplete,
+}: {
+	onComplete: () => Promise<void>;
+}) => {
+	const [isCompleting, setIsCompleting] = useState(false);
+	return (
+		<div
+			className={styles.contextMenuItem}
+			onClick={async () => {
+				if (!isCompleting) {
+					setIsCompleting(true);
+					try {
+						await onComplete();
+					} finally {
+						setIsCompleting(false);
+					}
+				}
+			}}
+		>
+			{isCompleting && <InlineSpinner />}
+			Effectué! ✅
+		</div>
+	);
+};
+
+const DetailsMenuItem = ({ onClick }: { onClick: () => void }) => {
+	return (
+		<div
+			className={styles.contextMenuItem}
+			onClick={() => {
+				onClick();
+			}}
+		>
+			Détails
+		</div>
+	);
+};
+
+const EditMenuItem = ({ task }: { task: Task }) => {
+	return (
+		<Link href={`/task/${task.id}`} className={styles.contextMenuItem}>
+			Éditer
+		</Link>
+	);
+};
+
+const ArchiveMenuItem = ({ task }: { task: Task }) => {
+	const [isCompleting, setIsCompleting] = useState(false);
+	const archiveTask = useMutation(api.tasks.archiveTask);
+
+	return (
+		<div
+			className={styles.contextMenuItem}
+			onClick={async () => {
+				setIsCompleting(true);
+				try {
+					await archiveTask({ id: task.id });
+				} finally {
+					setIsCompleting(false);
+				}
+			}}
+		>
+			{isCompleting && <InlineSpinner />}
+			Archiver
+		</div>
+	);
+};
+
+const UnarchiveMenuItem = ({ task }: { task: Task }) => {
+	const [isCompleting, setIsCompleting] = useState(false);
+	const unarchiveTask = useMutation(api.tasks.unarchiveTask);
+
+	return (
+		<div
+			className={styles.contextMenuItem}
+			onClick={async () => {
+				setIsCompleting(true);
+				try {
+					await unarchiveTask({ id: task.id });
+				} finally {
+					setIsCompleting(false);
+				}
+			}}
+		>
+			{isCompleting && <InlineSpinner />}
+			Désarchiver
+		</div>
+	);
+};
+
+const DeleteMenuItem = ({ task }: { task: Task }) => {
+	const [isCompleting, setIsCompleting] = useState(false);
+	const deleteTask = useMutation(api.tasks.deleteTask);
+
+	return (
+		<div
+			className={styles.contextMenuItem + " " + styles.warningText}
+			onClick={async () => {
+				setIsCompleting(true);
+				try {
+					await deleteTask({ id: task.id });
+				} finally {
+					setIsCompleting(false);
+				}
+			}}
+		>
+			{isCompleting && <InlineSpinner />}
+			Supprimer définitivement
+		</div>
 	);
 };
 

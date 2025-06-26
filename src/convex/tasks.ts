@@ -60,6 +60,8 @@ export const parseTask = async (
 		),
 		accomplishments,
 		lastNotified: task.lastNotified,
+		isArchived: task.archivedAt !== undefined,
+		archivedAt: task.archivedAt,
 	};
 };
 
@@ -186,5 +188,26 @@ export const markTasksAsNotified = internalMutation({
 				await ctx.db.patch(id, { lastNotified: now });
 			}),
 		);
+	},
+});
+
+export const archiveTask = mutation({
+	args: { id: v.id("tasks") },
+	handler: async (ctx, args) => {
+		await ctx.db.patch(args.id, { archivedAt: Date.now() });
+	},
+});
+
+export const unarchiveTask = mutation({
+	args: { id: v.id("tasks") },
+	handler: async (ctx, args) => {
+		await ctx.db.patch(args.id, { archivedAt: undefined });
+	},
+});
+
+export const deleteTask = mutation({
+	args: { id: v.id("tasks") },
+	handler: async (ctx, args) => {
+		await ctx.db.delete(args.id);
 	},
 });
