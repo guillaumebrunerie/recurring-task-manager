@@ -384,6 +384,7 @@ export const contextMenuItem = style({
 });
 
 export const warningText = style({
+	fontWeight: "bold",
 	color: "#cc0000",
 });
 
@@ -405,4 +406,25 @@ export const spinner = style({
 	display: "inline-block",
 	verticalAlign: "middle",
 	marginRight: "0.5rem",
+});
+
+export const deleteHistoryItem = recipe({
+	base: {
+		display: "inline-block",
+		verticalAlign: "middle",
+		width: 0,
+		interpolateSize: "allow-keywords",
+		transition: "all 0.2s ease",
+		overflow: "hidden",
+		marginRight: 0,
+		whiteSpace: "nowrap",
+	},
+	variants: {
+		showDeleteButton: {
+			true: {
+				width: "auto",
+				marginRight: "1ch",
+			},
+		},
+	},
 });

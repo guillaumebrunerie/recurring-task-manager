@@ -479,9 +479,35 @@ const TaskHistoryItem = ({
 }: {
 	accomplishment: Accomplishment;
 }) => {
+	const [isCompleting, setIsCompleting] = useState(false);
+	const deleteAccomplishment = useMutation(
+		api.accomplishments.deleteAccomplishment,
+	);
+	const [showDeleteButton, setShowDeleteButton] = useState(false);
+	const doDelete = async () => {
+		setIsCompleting(true);
+		try {
+			await deleteAccomplishment({ accomplishmentId: accomplishment.id });
+		} finally {
+			setIsCompleting(false);
+		}
+	};
 	return (
-		<li className={styles.completionItem}>
-			{dateTimeFormat.format(new Date(accomplishment.completionTime))}
+		<li
+			className={styles.completionItem}
+			onClick={() => {
+				setShowDeleteButton(!showDeleteButton);
+			}}
+		>
+			<div>
+				<div className={styles.deleteHistoryItem({ showDeleteButton })}>
+					<span className={styles.warningText} onClick={doDelete}>
+						{isCompleting && <InlineSpinner />}
+						Supprimer?
+					</span>
+				</div>
+				{dateTimeFormat.format(new Date(accomplishment.completionTime))}
+			</div>
 			{accomplishment.completedBy?.image && (
 				<img
 					src={accomplishment.completedBy.image}

@@ -63,3 +63,16 @@ export const addAccomplishment = mutation({
 		});
 	},
 });
+
+export const deleteAccomplishment = mutation({
+	args: {
+		accomplishmentId: v.id("accomplishments"),
+	},
+	handler: async (ctx, { accomplishmentId }) => {
+		const userId = await getAuthUserId(ctx);
+		if (!userId) {
+			throw new Error("User not authenticated");
+		}
+		await ctx.db.delete(accomplishmentId);
+	},
+});
