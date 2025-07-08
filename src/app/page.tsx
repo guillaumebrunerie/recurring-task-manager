@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import * as styles from "./tasks.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
-import { durationToString, durationUnitToString } from "@/shared/units";
+import { relativeDurationToString, durationUnitToString } from "@/shared/units";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Task, compareTasks, taskStatus } from "@/shared/tasks";
@@ -135,7 +135,7 @@ const getLocalDateTimeString = (date: Date) => {
 const nbsp = "\u00A0";
 
 const TaskCard = ({ task, now }: { task: Task; now: number }) => {
-	const { status, time } = taskStatus(task, now);
+	const { status, actualTimeInUnit } = taskStatus(task, now);
 	const addAccomplishment = useMutation(
 		api.accomplishments.addAccomplishment,
 	);
@@ -146,13 +146,9 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 			timeString = "";
 			break;
 		case "overdue":
-			timeString = `(en retard de ${durationToString(time, task.unit)})`;
-			break;
 		case "due":
-			timeString = `(temps restant: ${durationToString(time, task.unit)})`;
-			break;
 		case "waiting":
-			timeString = `(à faire dans ${durationToString(time, task.unit)})`;
+			timeString = `(prévu ${relativeDurationToString(actualTimeInUnit, task.unit)})`;
 			break;
 		case "archived":
 			timeString = "";

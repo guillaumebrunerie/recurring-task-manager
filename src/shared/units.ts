@@ -43,15 +43,62 @@ export const unitToString: Record<TimeUnit, string> = {
 	weeks: "semaine",
 };
 
-export const durationToString = (durationMs: number, unit: TimeUnit) => {
-	if (durationMs < 0) {
-		console.error(
-			"Negative timeMs passed to durationToString:",
-			durationMs,
-		);
+export const relativeDurationToString = (
+	durationUnit: number,
+	unit: TimeUnit,
+) => {
+	switch (unit) {
+		// case "months":
+		// 	if (durationUnit <= -2) {
+		// 		return `il y a ${-durationUnit} mois`;
+		// 	} else if (durationUnit === -1) {
+		// 		return "le mois dernier";
+		// 	} else if (durationUnit === 0) {
+		// 		return "cette mois-ci";
+		// 	} else if (durationUnit === 1) {
+		// 		return "le mois prochain";
+		// 	} else {
+		// 		return `dans ${durationUnit} mois`;
+		// 	}
+		case "weeks":
+			if (durationUnit <= -2) {
+				return `il y a ${-durationUnit} semaines`;
+			} else if (durationUnit === -1) {
+				return "la semaine dernière";
+			} else if (durationUnit === 0) {
+				return "cette semaine";
+			} else if (durationUnit === 1) {
+				return "la semaine prochaine";
+			} else {
+				return `dans ${durationUnit} semaines`;
+			}
+		case "days":
+			if (durationUnit <= -2) {
+				return `il y a ${-durationUnit} jours`;
+			} else if (durationUnit === -1) {
+				return "hier";
+			} else if (durationUnit === 0) {
+				return "aujourd'hui";
+			} else if (durationUnit === 1) {
+				return "demain";
+			} else {
+				return `dans ${durationUnit} jours`;
+			}
+		case "hours":
+		case "minutes":
+		case "seconds":
+			if (durationUnit <= -2) {
+				return `il y a ${-durationUnit} ${unitToString[unit]}s`;
+			} else if (durationUnit === -1) {
+				return `il y a une ${unitToString[unit]}`;
+			} else if (durationUnit === 0) {
+				return "maintenant";
+			} else if (durationUnit === 1) {
+				return `dans une ${unitToString[unit]}`;
+			} else {
+				return `dans ${durationUnit} ${unitToString[unit]}s`;
+			}
 	}
-	const durationUnit = Math.ceil(durationMs / timePeriods[unit]);
-	return durationUnitToString(durationUnit, unit);
 };
 
 export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {

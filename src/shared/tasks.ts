@@ -36,26 +36,37 @@ export type TaskStatus =
 export const taskStatus = (
 	task: Task,
 	now: number,
-): { status: TaskStatus; time: number } => {
+): { status: TaskStatus; time: number; actualTimeInUnit: number } => {
 	if (task.isArchived && task.archivedAt) {
-		return { status: "archived", time: task.archivedAt };
+		return {
+			status: "archived",
+			time: task.archivedAt,
+			actualTimeInUnit: 0,
+		};
 	}
 	if (task.lastCompletionTime == null) {
 		return {
 			status: "new",
 			time: convertDurationFromUnit(task.period, task.unit),
+			actualTimeInUnit: 0,
 		};
 	}
 	const minTimeLeft = getMinTimeLeft(task, task.lastCompletionTime);
 	const timeLeft = getTimeLeft(task, task.lastCompletionTime);
 	const maxTimeLeft = getMaxTimeLeft(task, task.lastCompletionTime);
+
+	const actualTimeInUnit =
+		convertToUnit(task.lastCompletionTime, task.unit) +
+		task.period -
+		convertToUnit(now, task.unit);
+
 	if (maxTimeLeft < now) {
-		return { status: "overdue", time: now - maxTimeLeft };
+		return { status: "overdue", time: now - maxTimeLeft, actualTimeInUnit };
 	}
 	if (minTimeLeft > now) {
-		return { status: "waiting", time: timeLeft - now };
+		return { status: "waiting", time: timeLeft - now, actualTimeInUnit };
 	}
-	return { status: "due", time: maxTimeLeft - now };
+	return { status: "due", time: maxTimeLeft - now, actualTimeInUnit };
 };
 
 export const compareTasks = (taskA: Task, taskB: Task, now: number) => {
