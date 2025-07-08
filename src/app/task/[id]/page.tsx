@@ -5,7 +5,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { TimeUnit } from "@/shared/units";
+import { TimeUnit, unitToString } from "@/shared/units";
 import * as styles from "./styles.css";
 import * as common from "@/app/common.css";
 import { UserSelector } from "@/components/UserSelector";
@@ -168,7 +168,7 @@ const TaskFormPage = () => {
 						>
 							{visibleUnits.map((unit) => (
 								<option key={unit} value={unit}>
-									{unit}
+									{unitToString[unit]}
 								</option>
 							))}
 						</select>

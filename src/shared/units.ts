@@ -35,7 +35,7 @@ export const convertDurationFromUnit = (
 	return durationUnit * timePeriods[unit];
 };
 
-const unitToString: Record<TimeUnit, string> = {
+export const unitToString: Record<TimeUnit, string> = {
 	seconds: "seconde",
 	minutes: "minute",
 	hours: "heure",
