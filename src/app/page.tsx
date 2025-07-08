@@ -11,15 +11,12 @@ import Link from "next/link";
 import { Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { Accomplishment } from "@/shared/accomplishments";
 import { AppWrapper } from "./AppWrapper";
-import polyfill from "@oddbird/css-anchor-positioning/fn";
+import useDelayedTruth from "@/hooks/useDelayedTruth";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const Home = () => {
 	const now = useTimestamp();
 	const tasks = useQuery(api.tasks.getAll);
-
-	useEffect(() => {
-		polyfill();
-	}, []);
 
 	if (!tasks) {
 		return <div className={common.loading}>Chargement...</div>;
@@ -85,6 +82,8 @@ const Section = ({
 	startCollapsed?: boolean;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
+	const collapseDelay = 300;
+	const fullyOpen = useDelayedTruth(!isCollapsed, collapseDelay);
 	if (tasks.length == 0) {
 		return null;
 	}
@@ -97,7 +96,12 @@ const Section = ({
 				<span className={styles.arrow({ isCollapsed })}>▼</span>
 				{isCollapsed ? ` ${title} (${tasks.length})` : ` ${title}`}
 			</h2>
-			<div className={styles.taskList({ isCollapsed })}>
+			<div
+				className={styles.taskList({ isCollapsed, fullyOpen })}
+				style={assignInlineVars({
+					[styles.collapseDelayVar]: `${collapseDelay}ms`,
+				})}
+			>
 				{tasks.length > 0 ?
 					tasks.map((task) => (
 						<TaskCard key={task.id} task={task} now={now} />
@@ -151,7 +155,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 			timeString = `(à faire dans ${durationToString(time, task.unit)})`;
 			break;
 		case "archived":
-			timeString = "(archivée)";
+			timeString = "";
 			break;
 	}
 
@@ -175,9 +179,13 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		}
 	};
 
-	const openContextMenu = () => {
-		setIsContextMenuOpen(true);
-		setDoneTime(getLocalDateTimeString(new Date()));
+	const toggleContextMenu = () => {
+		if (isContextMenuOpen) {
+			setIsContextMenuOpen(false);
+		} else {
+			setIsContextMenuOpen(true);
+			setDoneTime(getLocalDateTimeString(new Date()));
+		}
 	};
 
 	const isPrivate = task.visibleTo.length == 1;
@@ -202,24 +210,23 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		};
 	}, []);
 
-	const anchorName = `--context-menu-anchor-${task.id}`;
-
 	return (
 		<>
 			<div
 				className={
 					styles.statusVariants({ status }) + " " + styles.card
 				}
-				onClick={openContextMenu}
+				onClick={toggleContextMenu}
 				role="button"
 				tabIndex={0}
+				ref={containerRef}
 			>
 				<div className={styles.topRow}>
 					<div className={styles.name}>
 						{isPrivate && <span className={styles.lock}>🔒 </span>}
 						{task.name}
 					</div>
-					<div className={styles.threeDots} style={{ anchorName }}>
+					<div className={styles.threeDots}>
 						<div className={styles.dot} />
 						<div className={styles.dot} />
 						<div className={styles.dot} />
@@ -235,36 +242,34 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 					:	<div />}
 					<div className={styles.time}>{timeString}</div>
 				</div>
+				{isContextMenuOpen && (
+					<div className={styles.contextMenu}>
+						{!task.isArchived && (
+							<CompleteMenuItem
+								onComplete={async () => {
+									setDoneTime(
+										getLocalDateTimeString(new Date()),
+									);
+									await handleSubmit();
+								}}
+							/>
+						)}
+						{!task.isArchived && (
+							<DetailsMenuItem
+								onClick={() => {
+									setIsContextMenuOpen(false);
+									setIsDetailsOpen(true);
+								}}
+							/>
+						)}
+						{!task.isArchived && <EditMenuItem task={task} />}
+						{!task.isArchived && <ArchiveMenuItem task={task} />}
+						{task.isArchived && <UnarchiveMenuItem task={task} />}
+						{task.isArchived && <hr className={styles.separator} />}
+						{task.isArchived && <DeleteMenuItem task={task} />}
+					</div>
+				)}
 			</div>
-			{isContextMenuOpen && (
-				<div
-					className={styles.contextMenu}
-					ref={containerRef}
-					style={{ positionAnchor: anchorName }}
-				>
-					{!task.isArchived && (
-						<CompleteMenuItem
-							onComplete={async () => {
-								setDoneTime(getLocalDateTimeString(new Date()));
-								await handleSubmit();
-							}}
-						/>
-					)}
-					{!task.isArchived && (
-						<DetailsMenuItem
-							onClick={() => {
-								setIsContextMenuOpen(false);
-								setIsDetailsOpen(true);
-							}}
-						/>
-					)}
-					{!task.isArchived && <EditMenuItem task={task} />}
-					{!task.isArchived && <ArchiveMenuItem task={task} />}
-					{task.isArchived && <UnarchiveMenuItem task={task} />}
-					{task.isArchived && <hr className={styles.separator} />}
-					{task.isArchived && <DeleteMenuItem task={task} />}
-				</div>
-			)}
 			{isDetailsOpen && (
 				<div
 					className={styles.overlay}

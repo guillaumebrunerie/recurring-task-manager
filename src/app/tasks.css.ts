@@ -1,4 +1,4 @@
-import { keyframes, style } from "@vanilla-extract/css";
+import { createVar, keyframes, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
 export const card = style({
@@ -11,6 +11,7 @@ export const card = style({
 	gap: "0.5rem",
 	fontSize: "1rem",
 	cursor: "pointer",
+	"-webkit-tap-highlight-color": "transparent",
 });
 
 export const name = style({
@@ -247,6 +248,7 @@ export const taskPage = style({
 	flexDirection: "column",
 	gap: "0.8rem",
 	padding: "1rem",
+	paddingBottom: "3rem",
 });
 
 export const section2 = style({
@@ -280,19 +282,25 @@ export const arrow = recipe({
 	},
 });
 
+export const collapseDelayVar = createVar();
 export const taskList = recipe({
 	base: {
 		display: "flex",
 		flexDirection: "column",
 		gap: "0.75rem",
-		overflow: "hidden",
 		interpolateSize: "allow-keywords",
-		transition: "all 0.3s ease",
+		transition: `all ${collapseDelayVar} ease`,
+		overflow: "hidden",
 	},
 	variants: {
 		isCollapsed: {
 			true: {
 				height: "0",
+			},
+		},
+		fullyOpen: {
+			true: {
+				overflow: "visible",
 			},
 		},
 	},
@@ -359,16 +367,16 @@ export const dot = style({
 
 export const contextMenu = style({
 	zIndex: 10000,
+	color: "var(--foreground)",
 	position: "absolute",
-	top: "anchor(bottom)",
-	right: "calc(anchor(right) - 10px)",
+	top: "40px",
+	right: "10px",
 	backgroundColor: "white",
 	border: "1px solid #ddd",
 	borderRadius: "0.5rem",
 	boxShadow: "3px 4px 6px rgba(0, 0, 0, 0.2)",
 	minWidth: "150px",
 	overflow: "hidden",
-	positionTryFallbacks: "flip-block",
 });
 
 export const contextMenuItem = style({
