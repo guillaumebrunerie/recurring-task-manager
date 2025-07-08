@@ -94,7 +94,7 @@ const TaskFormPage = () => {
 			period: Number(period),
 			unit,
 			tolerance: Number(tolerance),
-			visibleTo: [...visibleTo, user.id],
+			visibleTo: [...new Set([...visibleTo, user.id])],
 			responsibleFor: [...responsibleFor],
 		});
 		router.push("/");
