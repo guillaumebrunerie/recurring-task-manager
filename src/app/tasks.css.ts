@@ -234,6 +234,8 @@ export const completionItem = style({
 	padding: "0.4rem 0.6rem",
 	backgroundColor: "#f6f6f6",
 	borderRadius: "8px",
+	cursor: "pointer",
+	"-webkit-tap-highlight-color": "transparent",
 });
 
 export const accomplishedBy = style({
@@ -416,16 +418,20 @@ export const spinner = style({
 	marginRight: "0.5rem",
 });
 
-export const deleteHistoryItem = recipe({
+export const deleteHistoryItem = style({
+	display: "flex",
+	whiteSpace: "nowrap",
+});
+
+export const deleteHistoryItemButton = recipe({
 	base: {
-		display: "inline-block",
-		verticalAlign: "middle",
 		width: 0,
 		interpolateSize: "allow-keywords",
 		transition: "all 0.2s ease",
 		overflow: "hidden",
 		marginRight: 0,
-		whiteSpace: "nowrap",
+		fontWeight: "bold",
+		color: "#cc0000",
 	},
 	variants: {
 		showDeleteButton: {

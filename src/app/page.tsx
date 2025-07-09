@@ -13,6 +13,7 @@ import { Accomplishment } from "@/shared/accomplishments";
 import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import confetti from "canvas-confetti";
 
 const Home = () => {
 	const now = useTimestamp();
@@ -247,6 +248,11 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 										getLocalDateTimeString(new Date()),
 									);
 									await handleSubmit();
+									confetti({
+										particleCount: 100,
+										spread: 70,
+										origin: { y: 1 },
+									});
 								}}
 							/>
 						)}
@@ -347,7 +353,8 @@ const CompleteMenuItem = ({
 	return (
 		<div
 			className={styles.contextMenuItem}
-			onClick={async () => {
+			onClick={async (event) => {
+				event.stopPropagation();
 				if (!isCompleting) {
 					setIsCompleting(true);
 					try {
@@ -392,7 +399,8 @@ const ArchiveMenuItem = ({ task }: { task: Task }) => {
 	return (
 		<div
 			className={styles.contextMenuItem}
-			onClick={async () => {
+			onClick={async (event) => {
+				event.stopPropagation();
 				setIsCompleting(true);
 				try {
 					await archiveTask({ id: task.id });
@@ -414,7 +422,8 @@ const UnarchiveMenuItem = ({ task }: { task: Task }) => {
 	return (
 		<div
 			className={styles.contextMenuItem}
-			onClick={async () => {
+			onClick={async (event) => {
+				event.stopPropagation();
 				setIsCompleting(true);
 				try {
 					await unarchiveTask({ id: task.id });
@@ -436,7 +445,8 @@ const DeleteMenuItem = ({ task }: { task: Task }) => {
 	return (
 		<div
 			className={styles.contextMenuItem + " " + styles.warningText}
-			onClick={async () => {
+			onClick={async (event) => {
+				event.stopPropagation();
 				setIsCompleting(true);
 				try {
 					await deleteTask({ id: task.id });
@@ -500,13 +510,16 @@ const TaskHistoryItem = ({
 				setShowDeleteButton(!showDeleteButton);
 			}}
 		>
-			<div>
-				<div className={styles.deleteHistoryItem({ showDeleteButton })}>
-					<span className={styles.warningText} onClick={doDelete}>
-						{isCompleting && <InlineSpinner />}
-						Supprimer?
-					</span>
-				</div>
+			<div className={styles.deleteHistoryItem}>
+				<span
+					className={styles.deleteHistoryItemButton({
+						showDeleteButton,
+					})}
+					onClick={doDelete}
+				>
+					{isCompleting && <InlineSpinner />}
+					Supprimer?
+				</span>
 				{dateTimeFormat.format(new Date(accomplishment.completionTime))}
 			</div>
 			{accomplishment.completedBy?.image && (
