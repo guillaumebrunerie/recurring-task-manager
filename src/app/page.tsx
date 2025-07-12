@@ -158,7 +158,8 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		}
 	};
 
-	const toggleContextMenu = () => {
+	const toggleContextMenu = (event: React.MouseEvent) => {
+		event.stopPropagation();
 		if (isContextMenuOpen) {
 			setIsContextMenuOpen(false);
 		} else {
@@ -189,13 +190,18 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		};
 	}, []);
 
+	const openDetails = () => {
+		setIsContextMenuOpen(false);
+		setIsDetailsOpen(true);
+	};
+
 	return (
 		<>
 			<div
 				className={
 					styles.statusVariants({ status }) + " " + styles.card
 				}
-				onClick={toggleContextMenu}
+				onClick={openDetails}
 				role="button"
 				tabIndex={0}
 				ref={containerRef}
@@ -205,7 +211,10 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 						{isPrivate && <span className={styles.lock}>🔒 </span>}
 						{task.name}
 					</div>
-					<div className={styles.threeDots}>
+					<div
+						className={styles.threeDots}
+						onClick={toggleContextMenu}
+					>
 						<div className={styles.dot} />
 						<div className={styles.dot} />
 						<div className={styles.dot} />
@@ -238,14 +247,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 								}}
 							/>
 						)}
-						{!task.isArchived && (
-							<DetailsMenuItem
-								onClick={() => {
-									setIsContextMenuOpen(false);
-									setIsDetailsOpen(true);
-								}}
-							/>
-						)}
+						<DetailsMenuItem onClick={openDetails} />
 						{!task.isArchived && <EditMenuItem task={task} />}
 						{!task.isArchived && <ArchiveMenuItem task={task} />}
 						{task.isArchived && <UnarchiveMenuItem task={task} />}

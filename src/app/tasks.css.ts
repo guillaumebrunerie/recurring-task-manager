@@ -365,6 +365,7 @@ export const dot = style({
 	height: "3px",
 	backgroundColor: "currentColor",
 	borderRadius: "50%",
+	flex: "none",
 });
 
 export const contextMenu = style({

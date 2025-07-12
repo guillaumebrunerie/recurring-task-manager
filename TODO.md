@@ -1,11 +1,14 @@
 === Windows, modals, and interaction ===
+- Click on task to open details
 - Change details window to move down "mark as done", and add custom person who
   completed the task
-- URL state for details and in notifications
-- Notifications per task + with actions
 - Edit: in a modal window
 - Details for archived tasks
 - Delete for current tasks + trash can
+
+=== Better notifications ===
+- URL state for details and in notifications
+- Notifications per task + with actions
 
 === Non recurring tasks ===
 - Non recurring tasks
