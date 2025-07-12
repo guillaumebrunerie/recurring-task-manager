@@ -5,7 +5,11 @@ import { api } from "@/convex/_generated/api";
 import * as styles from "./tasks.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
-import { relativeDurationToString, durationUnitToString } from "@/shared/units";
+import {
+	relativeDurationToString,
+	durationUnitToString,
+	timeToString,
+} from "@/shared/units";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
@@ -23,6 +27,14 @@ import {
 	fromLocalDateTimeString,
 	toLocalDateTimeString,
 } from "@/shared/localDateTime";
+
+const celebrateCompletionWithConfetti = () => {
+	confetti({
+		particleCount: 100,
+		spread: 70,
+		origin: { y: 1 },
+	});
+};
 
 const Home = () => {
 	const now = useTimestamp();
@@ -66,7 +78,7 @@ const Home = () => {
 					startCollapsed
 				/>
 				<Section
-					title="Archivées"
+					title="Corbeille"
 					tasks={archivedTasks}
 					now={now}
 					startCollapsed
@@ -126,8 +138,6 @@ const EmptySection = () => {
 	);
 };
 
-const nbsp = "\u00A0";
-
 const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const status = taskStatus(task, now);
 	const actualTimeInUnit = taskTimeDifferenceInUnit(task, now);
@@ -144,17 +154,21 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
 
+	const [isCompleting, setIsCompleting] = useState(false);
 	const handleSubmit = async () => {
 		const timestamp = fromLocalDateTimeString(doneTime);
-
+		setIsCompleting(true);
 		try {
 			await addAccomplishment({
 				taskId: task.id,
 				completionTime: timestamp,
 				updateToBeDoneTime: true,
 			});
+			celebrateCompletionWithConfetti();
 		} finally {
+			setIsDetailsOpen(false);
 			setIsContextMenuOpen(false);
+			setIsCompleting(false);
 		}
 	};
 
@@ -239,11 +253,6 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 										toLocalDateTimeString(Date.now()),
 									);
 									await handleSubmit();
-									confetti({
-										particleCount: 100,
-										spread: 70,
-										origin: { y: 1 },
-									});
 								}}
 							/>
 						)}
@@ -266,29 +275,65 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 							className={styles.modalContent}
 							onClick={(e) => e.stopPropagation()}
 						>
-							<button
-								className={styles.closeButton}
-								onClick={() => setIsDetailsOpen(false)}
-								aria-label="Close"
-							>
-								✕
-							</button>
 							<div className={styles.modalHeader}>
 								{task.name}
-								{nbsp}
+								<button
+									className={styles.closeButton}
+									onClick={() => setIsDetailsOpen(false)}
+									aria-label="Close"
+								>
+									✕
+								</button>
 							</div>
-							<div className={styles.description}>
-								{task.description}
-							</div>
-							<div className={styles.interval}>
-								Intervalle:{" "}
-								{durationUnitToString(task.period, task.unit)}
-								{task.tolerance > 0 &&
-									" ± " +
-										durationUnitToString(
-											task.tolerance,
-											task.unit,
+							<div className={styles.stuff}>
+								{task.description && (
+									<p className={styles.description}>
+										{task.description}
+									</p>
+								)}
+								<div className={styles.infoRow}>
+									<div className={styles.stuff}>
+										<em>
+											Intervalle:{" "}
+											{durationUnitToString(
+												task.period,
+												task.unit,
+											)}
+											{task.tolerance > 0 &&
+												" ± " +
+													durationUnitToString(
+														task.tolerance,
+														task.unit,
+													)}
+										</em>
+										{task.toBeDoneTime !== undefined && (
+											<span>
+												À effectuer{" "}
+												{timeToString(
+													task.toBeDoneTime,
+													task.unit,
+												)}
+												.
+											</span>
 										)}
+									</div>
+									<Link
+										href={`/task/${task.id}`}
+										className={styles.editButton}
+									>
+										Éditer
+									</Link>
+								</div>
+							</div>
+							<TaskHistory task={task} />
+							<div className={styles.modalButtons}>
+								<button
+									className={styles.primaryButton}
+									onClick={handleSubmit}
+								>
+									{isCompleting && <InlineSpinner />}
+									Marquer comme effectuée
+								</button>
 							</div>
 							<label className={styles.label}>
 								Effectuée le :
@@ -301,21 +346,6 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 									className={styles.input}
 								/>
 							</label>
-							<div className={styles.modalButtons}>
-								<button
-									className={styles.primaryButton}
-									onClick={handleSubmit}
-								>
-									Marquer comme effectuée
-								</button>
-								<Link
-									href={`/task/${task.id}`}
-									className={styles.addTaskButton}
-								>
-									Éditer
-								</Link>
-							</div>
-							<TaskHistory task={task} />
 						</div>
 					</div>
 				</div>
@@ -394,7 +424,7 @@ const ArchiveMenuItem = ({ task }: { task: Task }) => {
 			}}
 		>
 			{isCompleting && <InlineSpinner />}
-			Archiver
+			Supprimer
 		</div>
 	);
 };
@@ -417,7 +447,7 @@ const UnarchiveMenuItem = ({ task }: { task: Task }) => {
 			}}
 		>
 			{isCompleting && <InlineSpinner />}
-			Désarchiver
+			Restorer
 		</div>
 	);
 };

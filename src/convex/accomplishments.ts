@@ -73,6 +73,25 @@ export const deleteAccomplishment = mutation({
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
+		const accomplishmentDoc = await ctx.db.get(accomplishmentId);
+		if (!accomplishmentDoc) {
+			throw new Error(
+				`Accomplishment with id ${accomplishmentId} not found`,
+			);
+		}
+
+		// Delete the accomplishment
 		await ctx.db.delete(accomplishmentId);
+
+		const taskId = accomplishmentDoc.taskId;
+		const taskDoc = await ctx.db.get(taskId);
+		if (!taskDoc) {
+			throw new Error(`Task with id ${taskId} not found`);
+		}
+
+		// Recalculate the toBeDoneTime for the task
+		await ctx.db.patch(taskId, {
+			toBeDoneTime: await calculateToBeDoneTime(ctx, taskDoc),
+		});
 	},
 });

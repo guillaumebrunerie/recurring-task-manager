@@ -131,6 +131,50 @@ export const relativeDurationToString = (
 	}
 };
 
+const dateTimeFormat = new Intl.DateTimeFormat("fr-FR", {
+	dateStyle: "full",
+	timeStyle: "short",
+});
+
+const dateFormat = new Intl.DateTimeFormat("fr-FR", {
+	dateStyle: "full",
+});
+
+export const timeToString = (time: number, unit: TimeUnit) => {
+	const timeUnit = convertToUnit(time, unit);
+	const date = new Date(convertFromUnit(timeUnit, unit));
+	switch (unit) {
+		case "months":
+			const year = Math.floor(timeUnit / 12);
+			const month = timeUnit % 12;
+			const monthNames = [
+				"janvier",
+				"février",
+				"mars",
+				"avril",
+				"mai",
+				"juin",
+				"juillet",
+				"août",
+				"septembre",
+				"octobre",
+				"novembre",
+				"décembre",
+			];
+			return `en ${monthNames[month]} ${year}`;
+		case "weeks":
+			return `la semaine du ${dateFormat.format(date)}`;
+		case "days":
+			return `le ${dateFormat.format(date)}`;
+		case "hours":
+			return `le ${dateTimeFormat.format(date)}`;
+		case "minutes":
+			return `le ${dateTimeFormat.format(date)}`;
+		default:
+			assertUnreachable(unit);
+	}
+};
+
 export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {
 	return `${durationUnit} ${unitToString[unit]}${durationUnit !== 1 && unit !== "months" ? "s" : ""}`;
 };

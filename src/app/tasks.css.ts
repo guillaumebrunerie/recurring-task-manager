@@ -108,6 +108,10 @@ export const modalContent = style({
 });
 
 export const modalHeader = style({
+	display: "flex",
+	gap: "0.5rem",
+	alignItems: "start",
+	justifyContent: "space-between",
 	fontSize: "1.2rem",
 	fontWeight: 600,
 });
@@ -121,9 +125,6 @@ export const interval = style({
 });
 
 export const closeButton = style({
-	position: "absolute",
-	top: "1rem",
-	right: "1rem",
 	background: "none",
 	border: "none",
 	fontSize: "1.25rem",
@@ -173,9 +174,8 @@ export const input = style({
 
 export const modalButtons = style({
 	display: "flex",
-	justifyContent: "space-between",
+	justifyContent: "end",
 	gap: "0.8rem",
-	marginTop: "0.5rem",
 });
 
 export const primaryButton = style({
@@ -187,7 +187,7 @@ export const primaryButton = style({
 	cursor: "pointer",
 	fontSize: "1rem",
 	":hover": {
-		backgroundColor: "#005fa3",
+		backgroundColor: "#158a1a",
 	},
 });
 
@@ -202,7 +202,6 @@ export const overlay = style({
 });
 
 export const section = style({
-	marginTop: "1rem",
 	borderTop: "1px solid #eee",
 	paddingTop: "1rem",
 });
@@ -336,17 +335,26 @@ export const addTaskButton = style({
 });
 
 export const editButton = style({
-	fontSize: "1rem",
-	background: "none",
+	padding: "0.6rem 1rem",
+	backgroundColor: "#0077cc",
+	color: "#fff",
 	border: "none",
-	cursor: "pointer",
-	color: "#555",
-	display: "inline-block",
-	transform: "scaleX(-1)",
+	borderRadius: "8px",
+	fontSize: "1rem",
 	textDecoration: "none",
-	":hover": {
-		color: "#000",
-	},
+});
+
+export const infoRow = style({
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "end",
+	gap: "0.5rem",
+});
+
+export const stuff = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: "0.5rem",
 });
 
 export const threeDots = style({

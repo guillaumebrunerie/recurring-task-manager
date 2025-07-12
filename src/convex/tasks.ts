@@ -195,7 +195,6 @@ export const archiveTask = mutation({
 	handler: async (ctx, args) => {
 		await ctx.db.patch(args.id, {
 			archivedAt: Date.now(),
-			toBeDoneTime: undefined,
 		});
 	},
 });
@@ -205,7 +204,6 @@ export const unarchiveTask = mutation({
 	handler: async (ctx, args) => {
 		await ctx.db.patch(args.id, {
 			archivedAt: undefined,
-			toBeDoneTime: Date.now(),
 		});
 	},
 });

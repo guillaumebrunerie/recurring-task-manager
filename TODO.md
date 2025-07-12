@@ -1,10 +1,9 @@
-=== Windows, modals, and interaction ===
-- Click on task to open details
-- Change details window to move down "mark as done", and add custom person who
-  completed the task
+=== Details ===
+- In details: Custom time to complete the task should be hidden by default
+- Possibility to add custom person who completed the task
+
+=== Edit ===
 - Edit: in a modal window
-- Details for archived tasks
-- Delete for current tasks + trash can
 
 === Better notifications ===
 - URL state for details and in notifications
@@ -18,7 +17,7 @@
 - Less weird way to choose responsibles
 
 === Performance ===
-- View transitions everywhere
+- View transitions everywhere?
 
 === Design ===
 - Dark mode
