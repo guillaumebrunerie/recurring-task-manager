@@ -23,7 +23,6 @@ export const parseAccomplishment = async (
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
 		completedBy: userDoc ? parseUser(userDoc) : undefined,
-		timeLeft: accomplishment.timeLeft,
 		unit: accomplishment.unit,
 	};
 };

@@ -22,7 +22,6 @@ export default defineSchema({
 		taskId: v.id("tasks"),
 		completionTime: v.number(),
 		completedBy: v.optional(v.id("users")),
-		timeLeft: v.optional(v.number()),
 		unit: v.optional(vUnit),
 	}),
 	subscriptions: defineTable({

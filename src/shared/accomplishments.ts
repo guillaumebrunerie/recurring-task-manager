@@ -7,7 +7,6 @@ export type Accomplishment = {
 	id: Id<"accomplishments">;
 	completionTime: number;
 	completedBy?: User;
-	timeLeft?: number;
 	unit?: TimeUnit;
 };
 
