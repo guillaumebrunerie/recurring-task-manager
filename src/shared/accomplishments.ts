@@ -1,7 +1,6 @@
 import { Id } from "@/convex/_generated/dataModel";
 import { User } from "./users";
 import { TimeUnit } from "./units";
-import { Task, taskStatus } from "./tasks";
 
 // An accomplishment, format used by the frontend
 export type Accomplishment = {
@@ -10,25 +9,6 @@ export type Accomplishment = {
 	completedBy?: User;
 	timeLeft?: number;
 	unit?: TimeUnit;
-};
-
-export const getTimeLeftForAccomplishment = (
-	task: Task,
-	completionTime: number,
-): number => {
-	const { status, time } = taskStatus(task, completionTime);
-	switch (status) {
-		case "new":
-			return 0;
-		case "overdue":
-			return -time;
-		case "due":
-			return 0;
-		case "waiting":
-			return time;
-		case "archived":
-			return Infinity;
-	}
 };
 
 // Returns the last completion time of a task

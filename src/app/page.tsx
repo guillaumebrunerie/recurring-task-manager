@@ -8,7 +8,12 @@ import { useTimestamp } from "../hooks/useTimestamp";
 import { relativeDurationToString, durationUnitToString } from "@/shared/units";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Task, compareTasks, taskStatus } from "@/shared/tasks";
+import {
+	Task,
+	compareTasks,
+	taskStatus,
+	taskTimeDifferenceInUnit,
+} from "@/shared/tasks";
 import { Accomplishment } from "@/shared/accomplishments";
 import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
@@ -25,18 +30,17 @@ const Home = () => {
 
 	tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
 	const overdueTasks = tasks.filter(
-		(task) => taskStatus(task, now).status === "overdue",
+		(task) => taskStatus(task, now) === "overdue",
 	);
 	const dueTasks = tasks.filter(
 		(task) =>
-			taskStatus(task, now).status === "due" ||
-			taskStatus(task, now).status === "new",
+			taskStatus(task, now) === "due" || taskStatus(task, now) === "new",
 	);
 	const waitingTasks = tasks.filter(
-		(task) => taskStatus(task, now).status === "waiting",
+		(task) => taskStatus(task, now) === "waiting",
 	);
 	const archivedTasks = tasks.filter(
-		(task) => taskStatus(task, now).status === "archived",
+		(task) => taskStatus(task, now) === "archived",
 	);
 
 	return (
@@ -136,7 +140,8 @@ const getLocalDateTimeString = (date: Date) => {
 const nbsp = "\u00A0";
 
 const TaskCard = ({ task, now }: { task: Task; now: number }) => {
-	const { status, actualTimeInUnit } = taskStatus(task, now);
+	const status = taskStatus(task, now);
+	const actualTimeInUnit = taskTimeDifferenceInUnit(task, now);
 	const addAccomplishment = useMutation(
 		api.accomplishments.addAccomplishment,
 	);

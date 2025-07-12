@@ -6,10 +6,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { parseUser } from "./users";
 import { parseTask } from "./tasks";
 
-import {
-	Accomplishment,
-	getTimeLeftForAccomplishment,
-} from "@/shared/accomplishments";
+import { Accomplishment } from "@/shared/accomplishments";
 
 /** Helper functions */
 
@@ -58,7 +55,6 @@ export const addAccomplishment = mutation({
 			taskId,
 			completionTime,
 			completedBy: userId,
-			timeLeft: getTimeLeftForAccomplishment(task, completionTime),
 			unit: task.unit,
 		});
 	},

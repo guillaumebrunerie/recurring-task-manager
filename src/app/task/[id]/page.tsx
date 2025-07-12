@@ -11,7 +11,13 @@ import * as common from "@/app/common.css";
 import { UserSelector } from "@/components/UserSelector";
 import { AppWrapper } from "@/app/AppWrapper";
 
-const visibleUnits: TimeUnit[] = ["minutes", "hours", "days", "weeks"];
+const visibleUnits: TimeUnit[] = [
+	"minutes",
+	"hours",
+	"days",
+	"weeks",
+	"months",
+];
 
 const Field = ({ title, children }: { title: string; children: ReactNode }) => {
 	return (
