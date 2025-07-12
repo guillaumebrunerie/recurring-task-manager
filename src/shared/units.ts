@@ -43,7 +43,7 @@ export const convertDurationFromUnit = (
 	unit: TimeUnit,
 ) => {
 	if (unit == "months") {
-		return durationUnit * 30.4 * timePeriods.days; // Approximation
+		return durationUnit * 30 * timePeriods.days; // Approximation
 	} else {
 		return durationUnit * timePeriods[unit];
 	}
@@ -137,31 +137,14 @@ export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {
 
 /** Returns the earliest time at which the task should be completed again. If
     this is after the current time, the task is not due yet. */
-export const getMinTimeLeft = (task: Task, lastCompletionTime: number) => {
-	const lastCompletionTimeInUnit = convertToUnit(
-		lastCompletionTime,
-		task.unit,
-	);
-	return convertFromUnit(
-		lastCompletionTimeInUnit + task.period - task.tolerance,
-		task.unit,
-	);
-};
-
-/** Returns the time at which the task should be completed again */
-export const getTimeLeft = (task: Task, lastCompletionTime: number) => {
-	return lastCompletionTime + convertDurationFromUnit(task.period, task.unit);
+export const getMinTimeLeft = (task: Task, toBeDoneTime: number) => {
+	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.unit);
+	return convertFromUnit(toBeDoneTimeInUnit - task.tolerance, task.unit);
 };
 
 /** Returns the latest time at which the task should be completed again. If this
     is before the current time, the task is overdue. */
-export const getMaxTimeLeft = (task: Task, lastCompletionTime: number) => {
-	const lastCompletionTimeInUnit = convertToUnit(
-		lastCompletionTime,
-		task.unit,
-	);
-	return convertFromUnit(
-		lastCompletionTimeInUnit + task.period + task.tolerance + 1,
-		task.unit,
-	);
+export const getMaxTimeLeft = (task: Task, toBeDoneTime: number) => {
+	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.unit);
+	return convertFromUnit(toBeDoneTimeInUnit + task.tolerance + 1, task.unit);
 };

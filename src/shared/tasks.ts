@@ -3,7 +3,6 @@ import {
 	convertToUnit,
 	getMaxTimeLeft,
 	getMinTimeLeft,
-	getTimeLeft,
 	TimeUnit,
 } from "./units";
 import { Accomplishment } from "./accomplishments";
@@ -17,7 +16,7 @@ export type Task = {
 	tolerance: number;
 	visibleTo: Id<"users">[];
 	responsibleFor: Id<"users">[];
-	lastCompletionTime?: number;
+	toBeDoneTime?: number;
 	toBeCompletedBy: Id<"users">;
 	accomplishments: Accomplishment[];
 	lastNotified?: number;
@@ -26,7 +25,6 @@ export type Task = {
 };
 
 export type TaskStatus =
-	| "new" // New task, never completed
 	| "overdue" // Task is overdue
 	| "due" // Task is due now or soon
 	| "waiting" // Task does not need to be completed again for now
@@ -36,11 +34,11 @@ export const taskStatus = (task: Task, now: number): TaskStatus => {
 	if (task.isArchived && task.archivedAt) {
 		return "archived";
 	}
-	if (task.lastCompletionTime == null) {
-		return "new";
+	if (task.toBeDoneTime === undefined) {
+		return "waiting";
 	}
-	const minTimeLeft = getMinTimeLeft(task, task.lastCompletionTime);
-	const maxTimeLeft = getMaxTimeLeft(task, task.lastCompletionTime);
+	const minTimeLeft = getMinTimeLeft(task, task.toBeDoneTime);
+	const maxTimeLeft = getMaxTimeLeft(task, task.toBeDoneTime);
 
 	if (maxTimeLeft < now) {
 		return "overdue";
@@ -51,40 +49,29 @@ export const taskStatus = (task: Task, now: number): TaskStatus => {
 	}
 };
 
-export const taskTimeDifferenceInUnit = (task: Task, now: number): number => {
+export const taskTimeDifferenceInUnit = (task: Task, now: number) => {
 	if (task.isArchived && task.archivedAt) {
-		return 0;
+		return null;
 	}
-	if (task.lastCompletionTime == null) {
-		return 0;
+	if (task.toBeDoneTime === undefined) {
+		return null;
 	}
 
 	return (
-		convertToUnit(task.lastCompletionTime, task.unit) +
-		task.period -
+		convertToUnit(task.toBeDoneTime, task.unit) -
 		convertToUnit(now, task.unit)
 	);
-};
-
-const taskPlannedTime = (task: Task) => {
-	return getTimeLeft(task, task.lastCompletionTime || 0);
 };
 
 export const compareTasks = (taskA: Task, taskB: Task, now: number) => {
 	const statusA = taskStatus(taskA, now);
 	const statusB = taskStatus(taskB, now);
-	const timeA = taskPlannedTime(taskA);
-	const timeB = taskPlannedTime(taskB);
-	const statusOrder: TaskStatus[] = [
-		"overdue",
-		"due",
-		"new",
-		"waiting",
-		"archived",
-	];
+	const statusOrder: TaskStatus[] = ["overdue", "due", "waiting", "archived"];
 	if (statusA !== statusB) {
 		return statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
 	} else {
+		const timeA = taskA.toBeDoneTime || Infinity;
+		const timeB = taskB.toBeDoneTime || Infinity;
 		return timeA - timeB;
 	}
 };
@@ -98,14 +85,13 @@ export const shouldNotifyForTask = ({
 	now: number;
 	ignoreLastNotified: boolean;
 }) => {
-	if (!task.lastCompletionTime) {
+	if (!task.toBeDoneTime) {
 		return false;
 	}
 	if (task.isArchived) {
 		return false;
 	}
-	const desiredTime =
-		convertToUnit(task.lastCompletionTime, task.unit) + task.period;
+	const desiredTime = convertToUnit(task.toBeDoneTime, task.unit);
 	const nowUnit = convertToUnit(now, task.unit);
 	const notifiedAt =
 		task.lastNotified ?

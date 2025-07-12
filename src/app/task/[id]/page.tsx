@@ -10,6 +10,10 @@ import * as styles from "./styles.css";
 import * as common from "@/app/common.css";
 import { UserSelector } from "@/components/UserSelector";
 import { AppWrapper } from "@/app/AppWrapper";
+import {
+	fromLocalDateTimeString,
+	toLocalDateTimeString,
+} from "@/shared/localDateTime";
 
 const visibleUnits: TimeUnit[] = [
 	"minutes",
@@ -53,6 +57,10 @@ const TaskFormPage = () => {
 	const [responsibleFor, setResponsibleFor_] = useState<Set<Id<"users">>>(
 		new Set(),
 	);
+	const [toBeDoneTime, setToBeDoneTime] = useState(
+		toLocalDateTimeString(Date.now()),
+	);
+	const [isTaskDisabled, setIsTaskDisabled] = useState(false);
 
 	const setVisibleTo = (users: Set<Id<"users">>) => {
 		if (!user) {
@@ -78,6 +86,10 @@ const TaskFormPage = () => {
 			setTolerance(existingTask.tolerance.toString());
 			setVisibleTo_(new Set(existingTask.visibleTo));
 			setResponsibleFor_(new Set(existingTask.responsibleFor));
+			setToBeDoneTime(
+				toLocalDateTimeString(existingTask.toBeDoneTime || Date.now()),
+			);
+			setIsTaskDisabled(existingTask.toBeDoneTime === undefined);
 			setIsLoading(false);
 		}
 	}, [existingTask]);
@@ -102,6 +114,10 @@ const TaskFormPage = () => {
 			tolerance: Number(tolerance),
 			visibleTo: [...new Set([...visibleTo, user.id])],
 			responsibleFor: [...responsibleFor],
+			toBeDoneTime:
+				isTaskDisabled ? undefined : (
+					fromLocalDateTimeString(toBeDoneTime)
+				),
 		});
 		router.push("/");
 	};
@@ -179,6 +195,26 @@ const TaskFormPage = () => {
 							))}
 						</select>
 					</div>
+				</Field>
+
+				<Field title="À faire le">
+					<input
+						type="datetime-local"
+						disabled={isTaskDisabled}
+						value={toBeDoneTime}
+						onChange={(e) => setToBeDoneTime(e.target.value)}
+						className={styles.input}
+					/>
+					<label className={styles.checkboxLabel}>
+						<input
+							type="checkbox"
+							checked={isTaskDisabled}
+							onChange={(e) => {
+								setIsTaskDisabled(e.target.checked);
+							}}
+						/>
+						Désactiver la tâche
+					</label>
 				</Field>
 
 				<Field title="Visible pour">

@@ -19,6 +19,10 @@ import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import confetti from "canvas-confetti";
+import {
+	fromLocalDateTimeString,
+	toLocalDateTimeString,
+} from "@/shared/localDateTime";
 
 const Home = () => {
 	const now = useTimestamp();
@@ -32,10 +36,7 @@ const Home = () => {
 	const overdueTasks = tasks.filter(
 		(task) => taskStatus(task, now) === "overdue",
 	);
-	const dueTasks = tasks.filter(
-		(task) =>
-			taskStatus(task, now) === "due" || taskStatus(task, now) === "new",
-	);
+	const dueTasks = tasks.filter((task) => taskStatus(task, now) === "due");
 	const waitingTasks = tasks.filter(
 		(task) => taskStatus(task, now) === "waiting",
 	);
@@ -125,18 +126,6 @@ const EmptySection = () => {
 	);
 };
 
-const getLocalDateTimeString = (date: Date) => {
-	const pad = (n: number) => String(n).padStart(2, "0");
-
-	const year = date.getFullYear();
-	const month = pad(date.getMonth() + 1); // getMonth is 0-based
-	const day = pad(date.getDate());
-	const hours = pad(date.getHours());
-	const minutes = pad(date.getMinutes());
-
-	return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
-
 const nbsp = "\u00A0";
 
 const TaskCard = ({ task, now }: { task: Task; now: number }) => {
@@ -146,35 +135,23 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		api.accomplishments.addAccomplishment,
 	);
 
-	let timeString: string;
-	switch (status) {
-		case "new":
-			timeString = "";
-			break;
-		case "overdue":
-		case "due":
-		case "waiting":
-			timeString = `(prévu ${relativeDurationToString(actualTimeInUnit, task.unit)})`;
-			break;
-		case "archived":
-			timeString = "";
-			break;
-	}
+	const timeString =
+		actualTimeInUnit === null ? "" : (
+			`(prévu ${relativeDurationToString(actualTimeInUnit, task.unit)})`
+		);
 
 	const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 	const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-	const [doneTime, setDoneTime] = useState(() => {
-		const now = new Date();
-		return now.toISOString().slice(0, 16); // for datetime-local input
-	});
+	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
 
 	const handleSubmit = async () => {
-		const timestamp = new Date(doneTime).getTime();
+		const timestamp = fromLocalDateTimeString(doneTime);
 
 		try {
 			await addAccomplishment({
 				taskId: task.id,
 				completionTime: timestamp,
+				updateToBeDoneTime: true,
 			});
 		} finally {
 			setIsContextMenuOpen(false);
@@ -186,7 +163,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 			setIsContextMenuOpen(false);
 		} else {
 			setIsContextMenuOpen(true);
-			setDoneTime(getLocalDateTimeString(new Date()));
+			setDoneTime(toLocalDateTimeString(Date.now()));
 		}
 	};
 
@@ -250,7 +227,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 							<CompleteMenuItem
 								onComplete={async () => {
 									setDoneTime(
-										getLocalDateTimeString(new Date()),
+										toLocalDateTimeString(Date.now()),
 									);
 									await handleSubmit();
 									confetti({

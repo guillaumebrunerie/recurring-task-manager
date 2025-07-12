@@ -4,6 +4,7 @@ import {
 	QueryCtx,
 	internalQuery,
 	internalMutation,
+	MutationCtx,
 } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { ConvexError, v } from "convex/values";
@@ -12,16 +13,14 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { vUnit } from "./schema";
 import { parseAccomplishment } from "./accomplishments";
 
-import {
-	getLastCompletionTime,
-	getToBeCompletedBy,
-} from "@/shared/accomplishments";
+import { getToBeCompletedBy } from "@/shared/accomplishments";
 import {
 	compareTasks,
 	shouldNotifyForTask,
 	Task,
 	taskStatus,
 } from "@/shared/tasks";
+import { convertDurationFromUnit } from "@/shared/units";
 
 /** Helper functions */
 
@@ -53,7 +52,7 @@ export const parseTask = async (
 		tolerance: task.tolerance,
 		visibleTo: task.visibleTo,
 		responsibleFor: task.responsibleFor,
-		lastCompletionTime: getLastCompletionTime(accomplishments),
+		toBeDoneTime: task.toBeDoneTime,
 		toBeCompletedBy: getToBeCompletedBy(
 			task.responsibleFor,
 			accomplishments,
@@ -131,9 +130,7 @@ export const getTasksToNotifyForUser = internalQuery({
 			(task) => taskStatus(task, now) === "overdue",
 		);
 		const dueTasks = tasks.filter(
-			(task) =>
-				taskStatus(task, now) === "due" ||
-				taskStatus(task, now) === "new",
+			(task) => taskStatus(task, now) === "due",
 		);
 
 		return { overdueTasks, dueTasks };
@@ -153,6 +150,7 @@ export const saveTask = mutation({
 		tolerance: v.number(),
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),
+		toBeDoneTime: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
 		const data = {
@@ -163,6 +161,7 @@ export const saveTask = mutation({
 			tolerance: args.tolerance,
 			visibleTo: args.visibleTo,
 			responsibleFor: args.responsibleFor,
+			toBeDoneTime: args.toBeDoneTime,
 		};
 
 		if (args.id) {
@@ -194,14 +193,20 @@ export const markTasksAsNotified = internalMutation({
 export const archiveTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.patch(args.id, { archivedAt: Date.now() });
+		await ctx.db.patch(args.id, {
+			archivedAt: Date.now(),
+			toBeDoneTime: undefined,
+		});
 	},
 });
 
 export const unarchiveTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.patch(args.id, { archivedAt: undefined });
+		await ctx.db.patch(args.id, {
+			archivedAt: undefined,
+			toBeDoneTime: Date.now(),
+		});
 	},
 });
 
@@ -209,5 +214,66 @@ export const deleteTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
 		await ctx.db.delete(args.id);
+	},
+});
+
+export const calculateToBeDoneTime = async (
+	ctx: MutationCtx,
+	taskDoc: Doc<"tasks">,
+) => {
+	const accomplishmentDocs = await ctx.db
+		.query("accomplishments")
+		.filter((q) => q.eq(q.field("taskId"), taskDoc._id))
+		.collect();
+	const accomplishments = await Promise.all(
+		accomplishmentDocs
+			.toSorted((a, b) => b.completionTime - a.completionTime)
+			.map((a) => parseAccomplishment(ctx, a)),
+	);
+
+	if (accomplishments.length == 0) {
+		return Date.now();
+	}
+
+	const lastAccomplishmentTime = accomplishments
+		.map((a) => a.completionTime)
+		.reduce((a, b) => Math.max(a, b));
+
+	return (
+		lastAccomplishmentTime +
+		convertDurationFromUnit(taskDoc.period, taskDoc.unit)
+	);
+};
+
+export const resetToBeDoneTime = mutation({
+	args: { id: v.id("tasks") },
+	handler: async (ctx, args) => {
+		const taskDoc = await ctx.db.get(args.id);
+		if (!taskDoc) {
+			throw new ConvexError(`Task with id ${args.id} not found`);
+		}
+		const toBeDoneTime = await calculateToBeDoneTime(ctx, taskDoc);
+		await ctx.db.patch(args.id, { toBeDoneTime });
+	},
+});
+
+/** Migrations */
+
+export const populateToBeDoneTime = internalMutation({
+	handler: async (ctx) => {
+		const taskDocs = await ctx.db.query("tasks").collect();
+		await Promise.all(
+			taskDocs.map(async (task) => {
+				if (
+					task.toBeDoneTime !== undefined ||
+					task.archivedAt !== undefined
+				) {
+					return;
+				}
+				const toBeDoneTime = await calculateToBeDoneTime(ctx, task);
+
+				await ctx.db.patch(task._id, { toBeDoneTime });
+			}),
+		);
 	},
 });

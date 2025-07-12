@@ -4,10 +4,9 @@ import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 import { parseUser } from "./users";
-import { parseTask } from "./tasks";
+import { calculateToBeDoneTime, parseTask } from "./tasks";
 
 import { Accomplishment } from "@/shared/accomplishments";
-
 /** Helper functions */
 
 // Parses an accomplishment document into an Accomplishment object
@@ -34,8 +33,9 @@ export const addAccomplishment = mutation({
 	args: {
 		taskId: v.id("tasks"),
 		completionTime: v.number(),
+		updateToBeDoneTime: v.boolean(),
 	},
-	handler: async (ctx, { taskId, completionTime }) => {
+	handler: async (ctx, { taskId, completionTime, updateToBeDoneTime }) => {
 		const userId = await getAuthUserId(ctx);
 		if (!userId) {
 			throw new Error("User not authenticated");
@@ -56,6 +56,11 @@ export const addAccomplishment = mutation({
 			completedBy: userId,
 			unit: task.unit,
 		});
+		if (updateToBeDoneTime) {
+			await ctx.db.patch(taskId, {
+				toBeDoneTime: await calculateToBeDoneTime(ctx, taskDoc),
+			});
+		}
 	},
 });
 

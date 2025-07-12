@@ -10,18 +10,6 @@ export type Accomplishment = {
 	unit?: TimeUnit;
 };
 
-// Returns the last completion time of a task
-export const getLastCompletionTime = (
-	accomplishments: Accomplishment[],
-): number | undefined => {
-	if (accomplishments.length === 0) {
-		return;
-	}
-	return accomplishments
-		.map((a) => a.completionTime)
-		.reduce((a, b) => Math.max(a, b));
-};
-
 // Returns the user that should complete the task next
 export const getToBeCompletedBy = (
 	responsibleFor: Id<"users">[],

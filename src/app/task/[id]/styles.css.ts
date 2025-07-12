@@ -30,6 +30,17 @@ export const input = style({
 	width: "100%",
 	background: "#fff",
 	color: "#111",
+	"&:disabled": {
+		opacity: 0.5,
+	},
+});
+
+export const checkboxLabel = style({
+	padding: "0.25rem 0",
+	display: "flex",
+	alignItems: "center",
+	gap: "0.5rem",
+	cursor: "pointer",
 });
 
 export const textarea = style([
@@ -73,4 +84,5 @@ export const addTaskButton = style({
 	borderRadius: "8px",
 	fontSize: "1rem",
 	textDecoration: "none",
+	cursor: "pointer",
 });
