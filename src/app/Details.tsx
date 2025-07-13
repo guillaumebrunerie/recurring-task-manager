@@ -3,18 +3,19 @@ import { Task } from "@/shared/tasks";
 import { useState } from "react";
 import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
-import Link from "next/link";
 import { Spinner } from "@/components/Spinner";
 import { Accomplishment } from "@/shared/accomplishments";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { BlueButton, GreenButton } from "@/components/Button";
 
 type DetailsProps = {
 	task: Task;
 	handleSubmit: (doneTime?: string) => Promise<void>;
+	onEdit: () => void;
 };
 
-export const Details = ({ task, handleSubmit }: DetailsProps) => {
+export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
 	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
 	const [isCompleting, setIsCompleting] = useState(false);
 	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
@@ -43,12 +44,7 @@ export const Details = ({ task, handleSubmit }: DetailsProps) => {
 							</span>
 						)}
 					</div>
-					<Link
-						href={`/task/${task.id}`}
-						className={styles.editButton}
-					>
-						Éditer
-					</Link>
+					<BlueButton onClick={onEdit}>Éditer</BlueButton>
 				</div>
 			</div>
 			<TaskHistory task={task} />
@@ -71,8 +67,7 @@ export const Details = ({ task, handleSubmit }: DetailsProps) => {
 						</span>
 						Options
 					</div>
-					<button
-						className={styles.primaryButton}
+					<GreenButton
 						onClick={async () => {
 							setIsCompleting(true);
 							try {
@@ -86,7 +81,7 @@ export const Details = ({ task, handleSubmit }: DetailsProps) => {
 					>
 						{isCompleting && <Spinner />}
 						Marquer comme effectuée
-					</button>
+					</GreenButton>
 				</div>
 				<div
 					className={styles.options({

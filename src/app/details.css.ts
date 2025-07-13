@@ -48,21 +48,6 @@ export const modalButtons2 = style({
 	gap: "0.5rem",
 });
 
-export const primaryButton = style({
-	padding: "0.5rem 0.75rem",
-	backgroundColor: "#4CAF50",
-	color: "white",
-	border: "none",
-	borderRadius: "8px",
-	cursor: "pointer",
-	fontSize: "1rem",
-	whiteSpace: "nowrap",
-	":hover": {
-		backgroundColor: "#158a1a",
-	},
-	"-webkit-tap-highlight-color": "transparent",
-});
-
 export const section = style({
 	borderTop: "1px solid #eee",
 	paddingTop: "1rem",
@@ -89,7 +74,7 @@ export const optionsButton = recipe({
 	variants: {
 		isCollapsed: {
 			true: {
-				color: "#888",
+				color: "#555",
 			},
 			false: {
 				color: "currentColor",
@@ -169,16 +154,6 @@ export const arrow = recipe({
 	defaultVariants: {
 		isCollapsed: false,
 	},
-});
-
-export const editButton = style({
-	padding: "0.6rem 1rem",
-	backgroundColor: "#0077cc",
-	color: "#fff",
-	border: "none",
-	borderRadius: "8px",
-	fontSize: "1rem",
-	textDecoration: "none",
 });
 
 export const infoRow = style({

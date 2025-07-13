@@ -9,6 +9,7 @@ export const overlay = style({
 	alignItems: "center",
 	zIndex: 1000,
 	cursor: "pointer",
+	WebkitTapHighlightColor: "transparent",
 });
 
 export const modalOverlay = style({

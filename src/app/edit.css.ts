@@ -3,7 +3,6 @@ import { style } from "@vanilla-extract/css";
 export const formWrapper = style({
 	display: "flex",
 	flexDirection: "column",
-	padding: "1rem",
 	gap: "1.2rem",
 	maxWidth: "500px",
 	margin: "0 auto",
@@ -35,6 +34,19 @@ export const input = style({
 	},
 });
 
+export const inputSmall = style({
+	padding: "0.5rem",
+	fontSize: "1rem",
+	border: "1px solid #ccc",
+	borderRadius: "6px",
+	width: "40%",
+	background: "#fff",
+	color: "#111",
+	"&:disabled": {
+		opacity: 0.5,
+	},
+});
+
 export const checkboxLabel = style({
 	padding: "0.25rem 0",
 	display: "flex",
@@ -59,30 +71,13 @@ export const periodRow = style({
 	gap: "0.5rem",
 });
 
-export const button = style({
-	alignSelf: "flex-end",
-	padding: "0.6rem 1rem",
-	backgroundColor: "#0077cc",
-	color: "#fff",
-	border: "none",
-	borderRadius: "8px",
-	fontSize: "1rem",
-	textDecoration: "none",
-});
-
 export const field = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: "0.3rem",
 });
 
-export const addTaskButton = style({
-	padding: "0.6rem 1rem",
-	backgroundColor: "#0077cc",
-	color: "#fff",
-	border: "none",
-	borderRadius: "8px",
-	fontSize: "1rem",
-	textDecoration: "none",
-	cursor: "pointer",
+export const bottomBar = style({
+	display: "flex",
+	justifyContent: "flex-end",
 });

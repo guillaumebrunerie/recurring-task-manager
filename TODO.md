@@ -1,5 +1,6 @@
-=== Edit ===
-- Edit: in a modal window
+=== Notification ===
+- Fix wrong notifications (?)
+- Notifications per task + with actions + with link to details open + add tag?
 
 === Non recurring tasks ===
 - Non recurring tasks
@@ -8,7 +9,6 @@
 - Possibility to add custom person who completed the task
 
 === Better notifications ===
-- Notifications per task + with actions + with link to details open
 - Make notification automatically disappear if the task is done (?)
 
 === Groups ===

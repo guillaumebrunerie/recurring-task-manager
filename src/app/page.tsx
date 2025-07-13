@@ -6,16 +6,37 @@ import * as styles from "./page.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
 import { useState } from "react";
-import Link from "next/link";
 import { Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { TaskCard } from "./TaskCard";
+import { BlueButton } from "@/components/Button";
+import { Modal } from "@/components/Modal";
+import Edit from "./Edit";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
 const Home = () => {
 	const now = useTimestamp();
 	const tasks = useQuery(api.tasks.getAll);
+
+	const [taskIdUrl, setTaskIdUrl] = useQueryState("task");
+	const [isEditing, setIsEditing] = useQueryState(
+		"edit",
+		parseAsBoolean.withDefault(false),
+	);
+	const isNewTaskOpen = !taskIdUrl && isEditing;
+	const closeModal = () => {
+		setTaskIdUrl(null, { history: "push" });
+		setIsEditing(false, { history: "push" });
+	};
+	const openNewTask = () => {
+		setTaskIdUrl(null, { history: "push" });
+		setIsEditing(true, { history: "push" });
+	};
+
+	const allUsers = useQuery(api.users.getAll);
+	const currentUser = useQuery(api.users.getCurrentUser);
 
 	if (!tasks) {
 		return <div className={common.loading}>Chargement...</div>;
@@ -37,9 +58,7 @@ const Home = () => {
 		<AppWrapper
 			title="Project Happy Home"
 			footer={
-				<Link href="/task/new" className={styles.addTaskButton}>
-					Nouvelle tâche
-				</Link>
+				<BlueButton onClick={openNewTask}>Nouvelle tâche</BlueButton>
 			}
 		>
 			<div className={styles.taskPage}>
@@ -60,6 +79,17 @@ const Home = () => {
 					now={now}
 					startCollapsed
 				/>
+
+				{isNewTaskOpen && (
+					<Modal title="Nouvelle tâche" onClose={closeModal}>
+						<Edit
+							task={undefined}
+							user={currentUser || undefined}
+							allUsers={allUsers}
+							closeModal={closeModal}
+						/>
+					</Modal>
+				)}
 			</div>
 		</AppWrapper>
 	);

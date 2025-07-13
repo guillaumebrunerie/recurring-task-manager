@@ -63,13 +63,3 @@ export const taskList = recipe({
 		},
 	},
 });
-
-export const addTaskButton = style({
-	padding: "0.6rem 1rem",
-	backgroundColor: "#0077cc",
-	color: "#fff",
-	border: "none",
-	borderRadius: "8px",
-	fontSize: "1rem",
-	textDecoration: "none",
-});
