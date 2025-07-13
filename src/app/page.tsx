@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import * as styles from "./page.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
@@ -16,7 +16,7 @@ import { Modal } from "@/components/Modal";
 import Edit from "./Edit";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
-const Home = () => {
+const HomeContents = () => {
 	const now = useTimestamp();
 	const tasks = useQuery(api.tasks.getAll);
 
@@ -145,6 +145,12 @@ const EmptySection = () => {
 	);
 };
 
-export default Home;
+const Home = () => {
+	return (
+		<Suspense>
+			<HomeContents />
+		</Suspense>
+	);
+};
 
-export const dynamic = "force-dynamic";
+export default Home;

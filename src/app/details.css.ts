@@ -65,7 +65,7 @@ export const optionsSection = style({});
 export const optionsButton = recipe({
 	base: {
 		display: "flex",
-		justifyContent: "end",
+		justifyContent: "flex-end",
 		alignItems: "center",
 		gap: "0.25rem",
 		cursor: "pointer",
@@ -159,7 +159,7 @@ export const arrow = recipe({
 export const infoRow = style({
 	display: "flex",
 	justifyContent: "space-between",
-	alignItems: "end",
+	alignItems: "flex-end",
 	gap: "0.5rem",
 });
 

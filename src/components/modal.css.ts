@@ -42,7 +42,7 @@ export const modalContent = style({
 export const modalHeader = style({
 	display: "flex",
 	gap: "0.5rem",
-	alignItems: "start",
+	alignItems: "flex-start",
 	justifyContent: "space-between",
 	fontSize: "1.2rem",
 	fontWeight: 600,
