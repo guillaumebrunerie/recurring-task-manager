@@ -6,6 +6,7 @@ self.addEventListener("push", function (event) {
 			badge: data.badge,
 			data: data.data,
 			icon: "/icon.png",
+			tag: data.tag,
 		};
 		event.waitUntil(
 			self.registration.showNotification(data.title, options),

@@ -38,6 +38,7 @@ const sendNotification = async ({
 					url: `https://project-happy-home.netlify.app/?task=${task.id}`,
 				},
 				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
+				tag: isSad ? "overdue" : "due",
 			}),
 		);
 		return { success: true };
