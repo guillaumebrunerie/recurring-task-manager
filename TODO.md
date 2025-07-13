@@ -1,6 +1,3 @@
-=== Details ===
-- In details: Custom time to complete the task should be hidden by default
-
 === Edit ===
 - Edit: in a modal window
 

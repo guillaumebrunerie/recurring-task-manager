@@ -32,10 +32,13 @@ export const parseAccomplishment = async (
 export const addAccomplishment = mutation({
 	args: {
 		taskId: v.id("tasks"),
-		completionTime: v.number(),
+		completionTime: v.optional(v.number()),
 		updateToBeDoneTime: v.boolean(),
 	},
-	handler: async (ctx, { taskId, completionTime, updateToBeDoneTime }) => {
+	handler: async (
+		ctx,
+		{ taskId, completionTime = Date.now(), updateToBeDoneTime },
+	) => {
 		const userId = await getAuthUserId(ctx);
 		if (!userId) {
 			throw new Error("User not authenticated");

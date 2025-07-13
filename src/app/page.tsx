@@ -164,7 +164,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		try {
 			await addAccomplishment({
 				taskId: task.id,
-				completionTime: timestamp,
+				completionTime: isOptionsCollapsed ? undefined : timestamp,
 				updateToBeDoneTime: true,
 			});
 			celebrateCompletionWithConfetti();
@@ -214,6 +214,8 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const closeDetails = () => {
 		setDetailsOpenFor(null, { history: "push" });
 	};
+
+	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
 
 	return (
 		<>
@@ -329,26 +331,53 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 								</div>
 							</div>
 							<TaskHistory task={task} />
-							<div className={styles.modalButtons}>
-								<button
-									className={styles.primaryButton}
-									onClick={handleSubmit}
+							<div className={styles.optionsSection}>
+								<div className={styles.modalButtons2}>
+									<div
+										className={styles.optionsButton({
+											isCollapsed: isOptionsCollapsed,
+										})}
+										onClick={() =>
+											setIsOptionsCollapsed(
+												!isOptionsCollapsed,
+											)
+										}
+									>
+										<span
+											className={styles.arrow({
+												isCollapsed: isOptionsCollapsed,
+											})}
+										>
+											▼
+										</span>
+										Options
+									</div>
+									<button
+										className={styles.primaryButton}
+										onClick={handleSubmit}
+									>
+										{isCompleting && <InlineSpinner />}
+										Marquer comme effectuée
+									</button>
+								</div>
+								<div
+									className={styles.options({
+										isCollapsed: isOptionsCollapsed,
+									})}
 								>
-									{isCompleting && <InlineSpinner />}
-									Marquer comme effectuée
-								</button>
+									<label className={styles.label}>
+										Effectuée le :
+										<input
+											type="datetime-local"
+											value={doneTime}
+											onChange={(e) =>
+												setDoneTime(e.target.value)
+											}
+											className={styles.input}
+										/>
+									</label>
+								</div>
 							</div>
-							<label className={styles.label}>
-								Effectuée le :
-								<input
-									type="datetime-local"
-									value={doneTime}
-									onChange={(e) =>
-										setDoneTime(e.target.value)
-									}
-									className={styles.input}
-								/>
-							</label>
 						</div>
 					</div>
 				</div>

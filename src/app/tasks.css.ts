@@ -178,17 +178,25 @@ export const modalButtons = style({
 	gap: "0.8rem",
 });
 
+export const modalButtons2 = style({
+	display: "flex",
+	justifyContent: "space-between",
+	gap: "0.5rem",
+});
+
 export const primaryButton = style({
-	padding: "0.5rem 1rem",
+	padding: "0.5rem 0.75rem",
 	backgroundColor: "#4CAF50",
 	color: "white",
 	border: "none",
 	borderRadius: "8px",
 	cursor: "pointer",
 	fontSize: "1rem",
+	whiteSpace: "nowrap",
 	":hover": {
 		backgroundColor: "#158a1a",
 	},
+	"-webkit-tap-highlight-color": "transparent",
 });
 
 export const overlay = style({
@@ -211,6 +219,53 @@ export const sectionTitle = style({
 	fontWeight: 600,
 	marginBottom: "0.5rem",
 	color: "#555",
+});
+
+export const optionsSection = style({});
+
+export const optionsButton = recipe({
+	base: {
+		display: "flex",
+		justifyContent: "end",
+		alignItems: "center",
+		gap: "0.25rem",
+		cursor: "pointer",
+		transition: "color 0.3s ease",
+	},
+	variants: {
+		isCollapsed: {
+			true: {
+				color: "#888",
+			},
+			false: {
+				color: "currentColor",
+			},
+		},
+	},
+});
+
+export const options = recipe({
+	base: {
+		overflow: "hidden",
+		interpolateSize: "allow-keywords",
+		transition: `height 0.3s ease`,
+		boxSizing: "border-box",
+		"::before": {
+			content: "",
+			display: "block",
+			height: "1rem",
+		},
+	},
+	variants: {
+		isCollapsed: {
+			true: {
+				height: "0",
+			},
+			false: {
+				height: "auto",
+			},
+		},
+	},
 });
 
 export const completionList = style({
