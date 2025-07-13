@@ -126,6 +126,7 @@ export const getTasksToNotifyForUser = internalQuery({
 		);
 
 		tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
+		tasks.reverse(); // Most urgent tasks last so that they appear first
 		const overdueTasks = tasks.filter(
 			(task) => taskStatus(task, now) === "overdue",
 		);

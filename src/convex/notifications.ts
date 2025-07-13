@@ -38,7 +38,6 @@ const sendNotification = async ({
 					url: `https://project-happy-home.netlify.app/?task=${task.id}`,
 				},
 				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
-				tag: isSad ? "overdue" : "due",
 			}),
 		);
 		return { success: true };
@@ -61,20 +60,20 @@ const notifyUser = async (
 	console.log(
 		`Notifying user ${user?.name}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
-	for (const task of overdueTasks) {
-		await sendNotification({
-			title: `⚠️ Tâche en retard!`,
-			task,
-			subscription,
-			isSad: true,
-		});
-	}
 	for (const task of dueTasks) {
 		await sendNotification({
-			title: `Tâche à faire`,
+			title: `À faire`,
 			task,
 			subscription,
 			isSad: false,
+		});
+	}
+	for (const task of overdueTasks) {
+		await sendNotification({
+			title: `⚠️ En retard!`,
+			task,
+			subscription,
+			isSad: true,
 		});
 	}
 	if (!ignoreLastNotified) {
