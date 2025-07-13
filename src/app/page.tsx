@@ -28,6 +28,8 @@ import {
 	toLocalDateTimeString,
 } from "@/shared/localDateTime";
 
+import { useQueryState } from "nuqs";
+
 const celebrateCompletionWithConfetti = () => {
 	confetti({
 		particleCount: 100,
@@ -151,7 +153,8 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		);
 
 	const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
-	const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+	const [detailsOpenFor, setDetailsOpenFor] = useQueryState("task");
+	const isDetailsOpen = detailsOpenFor === task.id;
 	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
 
 	const [isCompleting, setIsCompleting] = useState(false);
@@ -166,7 +169,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 			});
 			celebrateCompletionWithConfetti();
 		} finally {
-			setIsDetailsOpen(false);
+			closeDetails();
 			setIsContextMenuOpen(false);
 			setIsCompleting(false);
 		}
@@ -206,7 +209,10 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 
 	const openDetails = () => {
 		setIsContextMenuOpen(false);
-		setIsDetailsOpen(true);
+		setDetailsOpenFor(task.id, { history: "push" });
+	};
+	const closeDetails = () => {
+		setDetailsOpenFor(null, { history: "push" });
 	};
 
 	return (
@@ -266,10 +272,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				)}
 			</div>
 			{isDetailsOpen && (
-				<div
-					className={styles.overlay}
-					onClick={() => setIsDetailsOpen(false)}
-				>
+				<div className={styles.overlay} onClick={closeDetails}>
 					<div className={styles.modalOverlay}>
 						<div
 							className={styles.modalContent}
@@ -279,7 +282,7 @@ const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 								{task.name}
 								<button
 									className={styles.closeButton}
-									onClick={() => setIsDetailsOpen(false)}
+									onClick={closeDetails}
 									aria-label="Close"
 								>
 									✕

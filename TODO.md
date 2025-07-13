@@ -1,3 +1,6 @@
+=== Details ===
+- In details: Custom time to complete the task should be hidden by default
+
 === Edit ===
 - Edit: in a modal window
 
@@ -5,12 +8,11 @@
 - Non recurring tasks
 
 === Details ===
-- In details: Custom time to complete the task should be hidden by default
 - Possibility to add custom person who completed the task
 
 === Better notifications ===
-- URL state for details and in notifications
-- Notifications per task + with actions
+- Notifications per task + with actions + with link to details open
+- Make notification automatically disappear if the task is done (?)
 
 === Groups ===
 - Implement profile page + groups (households)
@@ -21,5 +23,5 @@
 - View transitions everywhere?
 
 === Design ===
-- Dark mode
+- Overhaul colors + dark mode
 - New logo

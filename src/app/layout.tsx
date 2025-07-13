@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -33,7 +34,9 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 	return (
 		<html lang="fr">
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
-				<ConvexClientProvider>{children}</ConvexClientProvider>
+				<NuqsAdapter>
+					<ConvexClientProvider>{children}</ConvexClientProvider>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);
