@@ -4,6 +4,7 @@ self.addEventListener("push", function (event) {
 		const options = {
 			body: data.body,
 			badge: data.badge,
+			data: data.data,
 			icon: "/icon.png",
 		};
 		event.waitUntil(
@@ -14,7 +15,5 @@ self.addEventListener("push", function (event) {
 
 self.addEventListener("notificationclick", function (event) {
 	event.notification.close();
-	event.waitUntil(
-		clients.openWindow("https://project-happy-home.netlify.app/"),
-	);
+	event.waitUntil(clients.openWindow(event.notification.data.url));
 });

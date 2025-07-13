@@ -3,8 +3,9 @@
 import webpush from "web-push";
 
 import { ActionCtx, internalAction } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
+import { Task } from "@/shared/tasks";
 /** Configuration */
 
 webpush.setVapidDetails(
@@ -17,22 +18,25 @@ webpush.setVapidDetails(
 
 const sendNotification = async ({
 	title,
-	body,
+	task,
 	subscription,
 	isSad,
 }: {
 	title: string;
-	body: string;
+	task: Task;
 	subscription: string;
 	isSad: boolean;
 }) => {
 	try {
-		console.log("Sending notification", title, body);
+		console.log("Sending notification", title, task.name);
 		await webpush.sendNotification(
 			JSON.parse(subscription),
 			JSON.stringify({
 				title,
-				body,
+				body: task.name,
+				data: {
+					url: `https://project-happy-home.netlify.app/?task=${task.id}`,
+				},
 				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
 			}),
 		);
@@ -41,17 +45,6 @@ const sendNotification = async ({
 		console.error("Error sending push notification:", error);
 		return { success: false, error: "Failed to send notification" };
 	}
-};
-
-const listify = (tasks: { name: string }[]) => {
-	if (tasks.length === 1) {
-		return `${tasks[0].name}`;
-	}
-	return tasks.map((task) => `- ${task.name}`).join("\n");
-};
-
-const countStr = (count: number, str: string) => {
-	return `${count} ${str}${count > 1 ? "s" : ""}`;
 };
 
 const notifyUser = async (
@@ -63,21 +56,22 @@ const notifyUser = async (
 		internal.tasks.getTasksToNotifyForUser,
 		{ userId, ignoreLastNotified },
 	);
+	const user = await ctx.runQuery(api.users.getUser, { userId });
 	console.log(
-		`Notifying user ${userId}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
+		`Notifying user ${user?.name}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
-	if (overdueTasks.length > 0) {
+	for (const task of overdueTasks) {
 		await sendNotification({
-			title: `⚠️ ${countStr(overdueTasks.length, "tâche")} en retard!`,
-			body: listify(overdueTasks),
+			title: `⚠️ Tâche en retard!`,
+			task,
 			subscription,
 			isSad: true,
 		});
 	}
-	if (dueTasks.length > 0) {
+	for (const task of dueTasks) {
 		await sendNotification({
-			title: `${countStr(dueTasks.length, "tâche")} à faire`,
-			body: listify(dueTasks),
+			title: `Tâche à faire`,
+			task,
 			subscription,
 			isSad: false,
 		});
