@@ -1,5 +1,17 @@
-=== Non recurring tasks ===
-- Non recurring tasks
+=== Validation ===
+- Validate edit/new task form
+
+=== Groups ===
+- Implement profile page + groups (households)
+- Less weird way to choose responsibles
+
+=== Design ===
+- Overhaul colors + dark mode
+- New logo
+
+=== Performance & loading states ===
+- Overhaul all loading states
+- View transitions everywhere?
 
 === Details ===
 - Possibility to add custom person who completed the task
@@ -7,15 +19,3 @@
 === Better notifications ===
 - Actions?
 - Make notification automatically disappear if the task is done (?)
-
-=== Groups ===
-- Implement profile page + groups (households)
-- Less weird way to choose responsibles
-
-=== Performance & loading states ===
-- Overhaul all loading states
-- View transitions everywhere?
-
-=== Design ===
-- Overhaul colors + dark mode
-- New logo

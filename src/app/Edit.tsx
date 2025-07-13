@@ -85,6 +85,10 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 		task && task?.toBeDoneTime === undefined,
 	);
 
+	const [isTaskOneTime, setIsTaskOneTime] = useState(
+		!!task && task.period == 0,
+	);
+
 	// Transient state when saving the task
 	const [isCompleting, setIsCompleting] = useState(false);
 
@@ -97,7 +101,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			id: task?.id,
 			name,
 			description,
-			period: Number(period),
+			period: isTaskOneTime ? 0 : Number(period),
 			unit,
 			tolerance: Number(tolerance),
 			visibleTo: [...new Set([...visibleTo, user.id])],
@@ -134,9 +138,10 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 				<div className={styles.periodRow}>
 					<input
 						className={styles.inputSmall}
-						type="number"
-						min="1"
-						value={period}
+						type={isTaskOneTime ? "string" : "number"}
+						min={1}
+						disabled={isTaskOneTime}
+						value={isTaskOneTime ? "—" : period}
 						onChange={(e) => {
 							setPeriod(e.target.value);
 							if (!isNaN(Number(e.target.value))) {
@@ -166,6 +171,16 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 						))}
 					</select>
 				</div>
+				<label className={styles.checkboxLabel}>
+					<input
+						type="checkbox"
+						checked={isTaskOneTime}
+						onChange={(e) => {
+							setIsTaskOneTime(e.target.checked);
+						}}
+					/>
+					Tâche non récurrente
+				</label>
 			</Field>
 			<Field title="À effectuer le">
 				<input
@@ -183,7 +198,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 							setIsTaskDisabled(e.target.checked);
 						}}
 					/>
-					Désactiver la tâche
+					Tâche effectuée
 				</label>
 			</Field>
 			<Field title="Visible pour">

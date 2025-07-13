@@ -27,16 +27,18 @@ export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
 				)}
 				<div className={styles.infoRow}>
 					<div className={styles.stuff}>
-						<em>
-							Intervalle:{" "}
-							{durationUnitToString(task.period, task.unit)}
-							{task.tolerance > 0 &&
-								" ± " +
-									durationUnitToString(
-										task.tolerance,
-										task.unit,
-									)}
-						</em>
+						{task.period !== 0 && (
+							<em>
+								Intervalle:{" "}
+								{durationUnitToString(task.period, task.unit)}
+								{task.tolerance > 0 &&
+									" ± " +
+										durationUnitToString(
+											task.tolerance,
+											task.unit,
+										)}
+							</em>
+						)}
 						{task.toBeDoneTime !== undefined && (
 							<span>
 								À effectuer{" "}

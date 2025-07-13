@@ -233,6 +233,9 @@ export const calculateToBeDoneTime = async (
 	if (accomplishments.length == 0) {
 		return Date.now();
 	}
+	if (taskDoc.period == 0) {
+		return undefined;
+	}
 
 	const lastAccomplishmentTime = accomplishments
 		.map((a) => a.completionTime)
