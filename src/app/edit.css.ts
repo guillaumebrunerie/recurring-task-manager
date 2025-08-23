@@ -6,6 +6,7 @@ export const formWrapper = style({
 	gap: "1.2rem",
 	maxWidth: "500px",
 	margin: "0 auto",
+	width: "100%",
 });
 
 export const heading = style({
@@ -26,7 +27,9 @@ export const input = style({
 	fontSize: "1rem",
 	border: "1px solid #ccc",
 	borderRadius: "6px",
-	width: "100%",
+	fieldSizing: "content",
+	flexGrow: 1,
+	// width: "100%",
 	background: "#fff",
 	color: "#111",
 	"&:disabled": {
@@ -39,7 +42,9 @@ export const inputSmall = style({
 	fontSize: "1rem",
 	border: "1px solid #ccc",
 	borderRadius: "6px",
-	width: "40%",
+	fieldSizing: "content",
+	flexGrow: 2,
+	// maxWidth: "40%",
 	background: "#fff",
 	color: "#111",
 	"&:disabled": {

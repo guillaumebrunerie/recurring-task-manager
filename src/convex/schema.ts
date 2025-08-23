@@ -12,6 +12,7 @@ export default defineSchema({
 		description: v.optional(v.string()),
 		unit: vUnit,
 		period: v.number(),
+		toleranceUnit: v.optional(vUnit),
 		tolerance: v.number(),
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),

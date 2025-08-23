@@ -13,6 +13,7 @@ export type Task = {
 	description?: string;
 	unit: TimeUnit;
 	period: number;
+	toleranceUnit: TimeUnit;
 	tolerance: number;
 	visibleTo: Id<"users">[];
 	responsibleFor: Id<"users">[];
@@ -58,8 +59,8 @@ export const taskTimeDifferenceInUnit = (task: Task, now: number) => {
 	}
 
 	return (
-		convertToUnit(task.toBeDoneTime, task.unit) -
-		convertToUnit(now, task.unit)
+		convertToUnit(task.toBeDoneTime, task.toleranceUnit) -
+		convertToUnit(now, task.toleranceUnit)
 	);
 };
 
@@ -91,11 +92,11 @@ export const shouldNotifyForTask = ({
 	if (task.isArchived) {
 		return false;
 	}
-	const desiredTime = convertToUnit(task.toBeDoneTime, task.unit);
-	const nowUnit = convertToUnit(now, task.unit);
+	const desiredTime = convertToUnit(task.toBeDoneTime, task.toleranceUnit);
+	const nowUnit = convertToUnit(now, task.toleranceUnit);
 	const notifiedAt =
 		task.lastNotified ?
-			convertToUnit(task.lastNotified, task.unit)
+			convertToUnit(task.lastNotified, task.toleranceUnit)
 		:	-Infinity;
 	if (nowUnit < desiredTime) {
 		return false; // No notification yet

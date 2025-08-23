@@ -1,6 +1,6 @@
 === Fixes ===
-- Divide by 5 for tolerance and review units, in particular one week should give
-  a tolerance of one day
+- Remove accomplishment units
+- Make it possible to reset next time to be done
 
 === Validation ===
 - Validate edit/new task form

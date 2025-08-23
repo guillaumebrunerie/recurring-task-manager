@@ -57,6 +57,14 @@ export const unitToString: Record<TimeUnit, string> = {
 	months: "mois",
 };
 
+export const unitToStringPlural: Record<TimeUnit, string> = {
+	minutes: "minutes",
+	hours: "heures",
+	days: "jours",
+	weeks: "semaines",
+	months: "mois",
+};
+
 const assertUnreachable: (x: never) => never = () => {
 	throw new Error("Didn't expect to get here");
 };
@@ -182,13 +190,19 @@ export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {
 /** Returns the earliest time at which the task should be completed again. If
     this is after the current time, the task is not due yet. */
 export const getMinTimeLeft = (task: Task, toBeDoneTime: number) => {
-	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.unit);
-	return convertFromUnit(toBeDoneTimeInUnit - task.tolerance, task.unit);
+	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.toleranceUnit);
+	return convertFromUnit(
+		toBeDoneTimeInUnit - task.tolerance,
+		task.toleranceUnit,
+	);
 };
 
 /** Returns the latest time at which the task should be completed again. If this
     is before the current time, the task is overdue. */
 export const getMaxTimeLeft = (task: Task, toBeDoneTime: number) => {
-	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.unit);
-	return convertFromUnit(toBeDoneTimeInUnit + task.tolerance + 1, task.unit);
+	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.toleranceUnit);
+	return convertFromUnit(
+		toBeDoneTimeInUnit + task.tolerance + 1,
+		task.toleranceUnit,
+	);
 };

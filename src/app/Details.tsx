@@ -35,14 +35,18 @@ export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
 									" ± " +
 										durationUnitToString(
 											task.tolerance,
-											task.unit,
+											task.toleranceUnit,
 										)}
 							</em>
 						)}
 						{task.toBeDoneTime !== undefined && (
 							<span>
 								À effectuer{" "}
-								{timeToString(task.toBeDoneTime, task.unit)}.
+								{timeToString(
+									task.toBeDoneTime,
+									task.toleranceUnit,
+								)}
+								.
 							</span>
 						)}
 					</div>

@@ -1,4 +1,4 @@
-import { createGlobalTheme, globalStyle } from "@vanilla-extract/css";
+import { globalStyle } from "@vanilla-extract/css";
 
 import { colors } from "./themes.css";
 

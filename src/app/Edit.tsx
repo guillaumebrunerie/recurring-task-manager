@@ -2,7 +2,7 @@ import { type ReactNode, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { TimeUnit, unitToString } from "@/shared/units";
+import { TimeUnit, unitToStringPlural } from "@/shared/units";
 import * as styles from "./edit.css";
 import { UserSelector } from "@/components/UserSelector";
 import {
@@ -50,6 +50,9 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 	// How often the task should be done, with the unit and the tolerance
 	const [period, setPeriod] = useState(task?.period.toString() || "1");
 	const [unit, setUnit] = useState<TimeUnit>(task?.unit || "days");
+	const [toleranceUnit, setToleranceUnit] = useState<TimeUnit>(
+		task?.toleranceUnit || "days",
+	);
 	const [tolerance, setTolerance] = useState(
 		task?.tolerance.toString() || "0",
 	);
@@ -82,7 +85,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 		toLocalDateTimeString(task?.toBeDoneTime || Date.now()),
 	);
 	const [isTaskDisabled, setIsTaskDisabled] = useState(
-		task && task?.toBeDoneTime === undefined,
+		!!task && task?.toBeDoneTime === undefined,
 	);
 
 	const [isTaskOneTime, setIsTaskOneTime] = useState(
@@ -101,8 +104,9 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			id: task?.id,
 			name,
 			description,
-			period: isTaskOneTime ? 0 : Number(period),
 			unit,
+			period: isTaskOneTime ? 0 : Number(period),
+			toleranceUnit,
 			tolerance: Number(tolerance),
 			visibleTo: [...new Set([...visibleTo, user.id])],
 			responsibleFor: [...responsibleFor],
@@ -112,6 +116,28 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 				),
 		});
 		closeModal();
+	};
+
+	const updateTolerance = (period: number, unit: TimeUnit) => {
+		if (isNaN(period)) {
+			return;
+		}
+		switch (unit) {
+			case "minutes":
+			case "hours":
+			case "days":
+				setToleranceUnit(unit);
+				setTolerance(`${Math.floor(period / 5)}`);
+				break;
+			case "weeks":
+				setToleranceUnit("days");
+				setTolerance(`${Math.floor((period * 7) / 5)}`);
+				break;
+			case "months":
+				setToleranceUnit("weeks");
+				setTolerance(`${Math.floor((period * 4) / 5)}`);
+				break;
+		}
 	};
 
 	return (
@@ -144,13 +170,34 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 						value={isTaskOneTime ? "—" : period}
 						onChange={(e) => {
 							setPeriod(e.target.value);
-							if (!isNaN(Number(e.target.value))) {
-								setTolerance(
-									`${Math.floor(Number(e.target.value) / 3)}`,
-								);
-							}
+							updateTolerance(Number(e.target.value), unit);
 						}}
 					/>
+					<select
+						className={styles.input}
+						disabled={isTaskOneTime}
+						value={isTaskOneTime ? "—" : unit}
+						onChange={(e) => {
+							setUnit(e.target.value as TimeUnit);
+							updateTolerance(
+								Number(period),
+								e.target.value as TimeUnit,
+							);
+						}}
+					>
+						{isTaskOneTime ?
+							[
+								<option key="—" value="—">
+									—
+								</option>,
+							]
+						:	visibleUnits.map((unit) => (
+								<option key={unit} value={unit}>
+									{unitToStringPlural[unit]}
+								</option>
+							))
+						}
+					</select>
 					±
 					<input
 						className={styles.inputSmall}
@@ -161,12 +208,14 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					/>
 					<select
 						className={styles.input}
-						value={unit}
-						onChange={(e) => setUnit(e.target.value as TimeUnit)}
+						value={toleranceUnit}
+						onChange={(e) =>
+							setToleranceUnit(e.target.value as TimeUnit)
+						}
 					>
 						{visibleUnits.map((unit) => (
 							<option key={unit} value={unit}>
-								{unitToString[unit]}
+								{unitToStringPlural[unit]}
 							</option>
 						))}
 					</select>
@@ -198,7 +247,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 							setIsTaskDisabled(e.target.checked);
 						}}
 					/>
-					Tâche effectuée
+					Désactiver la tâche
 				</label>
 			</Field>
 			<Field title="Visible pour">

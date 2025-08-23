@@ -32,7 +32,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 
 	const timeString =
 		actualTimeInUnit === null ? "" : (
-			`(prévu ${relativeDurationToString(actualTimeInUnit, task.unit)})`
+			`(prévu ${relativeDurationToString(actualTimeInUnit, task.toleranceUnit)})`
 		);
 
 	const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
