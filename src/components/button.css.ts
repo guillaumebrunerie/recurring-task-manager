@@ -1,8 +1,9 @@
+import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
 
 const button = style({
 	padding: "0.5rem 0.75rem",
-	color: "white",
+	color: colors.buttonText,
 	border: "none",
 	borderRadius: "8px",
 	cursor: "pointer",
@@ -17,7 +18,7 @@ export const greenButton = style([
 		":hover": {
 			backgroundColor: "#158a1a",
 		},
-		backgroundColor: "#4CAF50",
+		backgroundColor: colors.doneButton,
 	},
 ]);
 
@@ -27,6 +28,6 @@ export const blueButton = style([
 		":hover": {
 			backgroundColor: "#005fa3",
 		},
-		backgroundColor: "#0077cc",
+		backgroundColor: colors.editButton,
 	},
 ]);

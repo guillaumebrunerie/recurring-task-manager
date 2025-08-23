@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { colors } from "./themes.css";
 
 export const description = style({
 	whiteSpace: "pre-wrap",
@@ -18,9 +19,10 @@ export const input = style({
 	padding: "0.5rem",
 	fontSize: "1rem",
 	borderRadius: "6px",
-	border: "1px solid #ccc",
-	backgroundColor: "#fff",
-	color: "#111",
+	border: "1px solid",
+	borderColor: colors.hfborder,
+	backgroundColor: colors.background,
+	color: colors.foreground,
 	width: "100%",
 	marginTop: "0.5rem",
 
@@ -57,7 +59,7 @@ export const sectionTitle = style({
 	fontSize: "1rem",
 	fontWeight: 600,
 	marginBottom: "0.5rem",
-	color: "#555",
+	color: colors.detailsSection,
 });
 
 export const optionsSection = style({});
@@ -74,7 +76,7 @@ export const optionsButton = recipe({
 	variants: {
 		isCollapsed: {
 			true: {
-				color: "#555",
+				color: colors.detailsSection,
 			},
 			false: {
 				color: "currentColor",
@@ -123,11 +125,14 @@ export const completionItem = style({
 	justifyContent: "space-between",
 	alignItems: "center",
 	fontSize: "0.9rem",
-	color: "#333",
 	padding: "0.4rem 0.6rem",
-	backgroundColor: "#f6f6f6",
+	backgroundColor: colors.accomplishment.background,
 	borderRadius: "8px",
 	cursor: "pointer",
+	// whiteSpace: "nowrap",
+	// textOverflow: "ellipsis",
+	// overflow: "hidden",
+	// flex: "none",
 	"-webkit-tap-highlight-color": "transparent",
 });
 
@@ -182,7 +187,7 @@ export const deleteHistoryItemButton = recipe({
 		overflow: "hidden",
 		marginRight: 0,
 		fontWeight: "bold",
-		color: "#cc0000",
+		color: colors.deleteButton,
 	},
 	variants: {
 		showDeleteButton: {

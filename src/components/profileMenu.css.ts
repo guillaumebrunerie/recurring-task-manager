@@ -1,3 +1,4 @@
+import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
 
 export const container = style({
@@ -13,7 +14,8 @@ export const avatarButton = style({
 	borderRadius: "50%",
 	overflow: "hidden",
 	cursor: "pointer",
-	border: "2px solid white",
+	border: "2px solid",
+	borderColor: colors.avatarBorder,
 	boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
 });
 

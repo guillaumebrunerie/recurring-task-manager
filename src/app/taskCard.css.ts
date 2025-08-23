@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { colors } from "./themes.css";
 
 export const card = style({
 	position: "relative",
@@ -51,33 +52,7 @@ export const statusVariants = recipe({
 		marginBlock: "4px",
 	},
 	variants: {
-		status: {
-			overdue: {
-				backgroundColor: "#fff0f0",
-				borderColor: "#cc0000",
-				color: "#990000",
-			},
-			due: {
-				backgroundColor: "#f0faff",
-				borderColor: "#0077cc",
-				color: "#004a99",
-			},
-			new: {
-				backgroundColor: "#f0faff",
-				borderColor: "#0077cc",
-				color: "#004a99",
-			},
-			waiting: {
-				backgroundColor: "#f0fff5",
-				borderColor: "#2e8b57",
-				color: "#1e4d2b",
-			},
-			archived: {
-				backgroundColor: "#f4f4f4",
-				borderColor: "#cccccc",
-				color: "#666666",
-			},
-		},
+		status: colors.cardStatus,
 	},
 });
 
@@ -102,14 +77,15 @@ export const dot = style({
 
 export const contextMenu = style({
 	zIndex: 10000,
-	color: "var(--foreground)",
+	color: colors.foreground,
 	position: "absolute",
 	top: "40px",
 	right: "10px",
-	backgroundColor: "white",
-	border: "1px solid #ddd",
+	backgroundColor: colors.hfbackground,
+	border: "1px solid",
+	borderColor: colors.hfborder,
 	borderRadius: "0.5rem",
-	boxShadow: "3px 4px 6px rgba(0, 0, 0, 0.2)",
+	boxShadow: `3px 4px 6px ${colors.hfshadow}`,
 	minWidth: "150px",
 	overflow: "hidden",
 });
@@ -121,14 +97,14 @@ export const contextMenuItem = style({
 	cursor: "pointer",
 	selectors: {
 		"&:hover": {
-			backgroundColor: "#f1f1f1",
+			backgroundColor: colors.hfbackgroundhover,
 		},
 	},
 });
 
 export const warningText = style({
 	fontWeight: "bold",
-	color: "#cc0000",
+	color: colors.contextMenu.warning,
 });
 
 export const separator = style({

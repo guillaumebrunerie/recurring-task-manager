@@ -1,5 +1,6 @@
 import { createVar, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { colors } from "./themes.css";
 
 export const taskPage = style({
 	display: "flex",
@@ -9,15 +10,15 @@ export const taskPage = style({
 	paddingBottom: "3rem",
 });
 
-export const section2 = style({
+export const section = style({
 	display: "flex",
 	flexDirection: "column",
 });
 
-export const sectionTitle2 = style({
+export const sectionTitle = style({
 	fontSize: "1.2rem",
 	fontWeight: 600,
-	color: "#222",
+	color: colors.sectionTitle,
 	marginBottom: "0.7rem",
 	cursor: "pointer",
 });

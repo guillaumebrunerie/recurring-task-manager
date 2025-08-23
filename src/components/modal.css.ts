@@ -1,3 +1,4 @@
+import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
 
 export const overlay = style({
@@ -23,19 +24,19 @@ export const modalOverlay = style({
 });
 
 export const modalContent = style({
-	backgroundColor: "#ffffff",
+	backgroundColor: colors.hfbackground,
 	borderRadius: "16px",
 	padding: "1.5rem",
 	width: "90%",
 	maxWidth: "420px",
 	maxHeight: "90vh",
 	overflowY: "auto",
-	boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+	boxShadow: `0 10px 30px ${colors.hfshadow}`,
 	display: "flex",
 	flexDirection: "column",
 	gap: "1rem",
 	position: "relative",
-	color: "#1c1c1e",
+	color: colors.foreground,
 	cursor: "default",
 });
 
@@ -53,8 +54,8 @@ export const closeButton = style({
 	border: "none",
 	fontSize: "1.25rem",
 	cursor: "pointer",
-	color: "#888",
+	color: colors.modal.closeButton,
 	":hover": {
-		color: "#000",
+		color: colors.modal.closeButtonHover,
 	},
 });

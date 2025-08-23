@@ -22,7 +22,7 @@ export const googleButton = style({
 	justifyContent: "center",
 	cursor: "pointer",
 	transition: "box-shadow 0.2s",
-	// color: "#4285f4",
+	color: "#333",
 	selectors: {
 		"&:hover": {
 			boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",

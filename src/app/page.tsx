@@ -17,7 +17,7 @@ import Edit from "./Edit";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 const HomeContents = () => {
-	const now = useTimestamp();
+	const now = useTimestamp(15 * 60 * 1000); // Update every 15 minutes
 	const tasks = useQuery(api.tasks.getAll);
 
 	const [taskIdUrl, setTaskIdUrl] = useQueryState("task");
@@ -113,9 +113,9 @@ const Section = ({
 		return null;
 	}
 	return (
-		<div className={styles.section2}>
+		<div className={styles.section}>
 			<h2
-				className={styles.sectionTitle2}
+				className={styles.sectionTitle}
 				onClick={() => setIsCollapsed(!isCollapsed)}
 			>
 				<span className={styles.arrow({ isCollapsed })}>▼</span>

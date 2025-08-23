@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { colors } from "./themes.css";
 
 export const loading = style({
 	fontSize: "1.2rem",
@@ -10,6 +11,7 @@ export const loading = style({
 export const title = style({
 	fontSize: "1.5rem",
 	fontWeight: 600,
+	color: colors.hfforeground,
 });
 
 export const container = style({

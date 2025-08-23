@@ -1,3 +1,8 @@
+=== Fixes ===
+- Divide by 5 for tolerance and review units, in particular one week should give
+  a tolerance of one day
+- Show congratulations if all my tasks are done
+
 === Validation ===
 - Validate edit/new task form
 
