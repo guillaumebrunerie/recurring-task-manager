@@ -1,5 +1,4 @@
 === Fixes ===
-- Remove accomplishment units
 - Make it possible to reset next time to be done
 
 === Validation ===

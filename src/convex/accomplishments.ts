@@ -22,7 +22,6 @@ export const parseAccomplishment = async (
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
 		completedBy: userDoc ? parseUser(userDoc) : undefined,
-		unit: accomplishment.unit,
 	};
 };
 
@@ -57,7 +56,6 @@ export const addAccomplishment = mutation({
 			taskId,
 			completionTime,
 			completedBy: userId,
-			unit: task.unit,
 		});
 		if (updateToBeDoneTime) {
 			await ctx.db.patch(taskId, {

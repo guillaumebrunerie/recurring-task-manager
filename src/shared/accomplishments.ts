@@ -1,13 +1,11 @@
 import { Id } from "@/convex/_generated/dataModel";
 import { User } from "./users";
-import { TimeUnit } from "./units";
 
 // An accomplishment, format used by the frontend
 export type Accomplishment = {
 	id: Id<"accomplishments">;
 	completionTime: number;
 	completedBy?: User;
-	unit?: TimeUnit;
 };
 
 // Returns the user that should complete the task next
