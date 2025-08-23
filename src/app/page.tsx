@@ -62,11 +62,12 @@ const HomeContents = () => {
 			}
 		>
 			<div className={styles.taskPage}>
+				{currentUser &&
+					[...overdueTasks, ...dueTasks].every(
+						(task) => task.toBeCompletedBy != currentUser.id,
+					) && <Congratulations />}
 				<Section title="En retard" tasks={overdueTasks} now={now} />
 				<Section title="À faire" tasks={dueTasks} now={now} />
-				{overdueTasks.length == 0 && dueTasks.length == 0 && (
-					<EmptySection />
-				)}
 				<Section
 					title="En attente"
 					tasks={waitingTasks}
@@ -137,7 +138,7 @@ const Section = ({
 	);
 };
 
-const EmptySection = () => {
+const Congratulations = () => {
 	return (
 		<div className={styles.taskList({ isCollapsed: false })}>
 			Aucune tâche à effectuer!
