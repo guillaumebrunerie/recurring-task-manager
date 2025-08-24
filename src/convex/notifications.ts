@@ -97,6 +97,9 @@ const doNotDisturb = () => {
 
 export const notifyAllUsers = internalAction({
 	handler: async (ctx) => {
+		if (process.env.ENABLE_CRON_NOTIFICATIONS !== "true") {
+			return;
+		}
 		if (doNotDisturb()) {
 			console.log("Do not disturb.");
 			return;
