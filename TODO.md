@@ -1,3 +1,10 @@
+=== Better notifications ===
+- Actions?
+- Make notification automatically disappear if the task is done (?)
+
+=== Details ===
+- Possibility to add custom person who completed the task
+
 === Fixes ===
 - Make it possible to reset next time to be done
 
@@ -15,10 +22,3 @@
 === Performance & loading states ===
 - Overhaul all loading states
 - View transitions everywhere?
-
-=== Details ===
-- Possibility to add custom person who completed the task
-
-=== Better notifications ===
-- Actions?
-- Make notification automatically disappear if the task is done (?)
