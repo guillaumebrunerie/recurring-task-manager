@@ -3,7 +3,7 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.ENABLE_CRON_NOTIFICATIONS === "true") {
 	crons.hourly(
 		"notification for tasks",
 		{ minuteUTC: 30 },
