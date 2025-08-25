@@ -19,14 +19,14 @@ self.addEventListener("push", function (event) {
 			],
 		};
 		event.waitUntil(
-			self.registration.showNotification(data.title + "---", options),
+			self.registration.showNotification(data.title + "--1", options),
 		);
 	}
 });
 
 self.addEventListener("notificationclick", function (event) {
 	const { CONVEX_URL, taskId, url } = event.notification.data;
-	if (event.action === "add_accomplishment") {
+	if (event.action === "add-accomplishment") {
 		console.log(CONVEX_URL);
 		const convexClient = new ConvexClient(CONVEX_URL);
 		console.log(convexClient);
