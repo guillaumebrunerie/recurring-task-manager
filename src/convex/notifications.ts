@@ -39,6 +39,7 @@ const sendNotification = async ({
 					url: `https://project-happy-home.netlify.app/?task=${task.id}`,
 					taskId: task.id,
 					CONVEX_URL: process.env.CONVEX_CLOUD_URL || "xxx",
+					token: subscription,
 				},
 				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
 			}),

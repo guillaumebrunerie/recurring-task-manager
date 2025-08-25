@@ -13,11 +13,7 @@ self.addEventListener("push", function (event) {
 	if (event.data) {
 		const data = event.data.json();
 		const options = {
-			// body: data.body,
-			body:
-				data.data.CONVEX_URL +
-				data.data.taskId +
-				ConvexClient.toString(),
+			body: data.body,
 			badge: data.badge,
 			data: data.data,
 			icon: "/icon.png",
@@ -31,13 +27,13 @@ self.addEventListener("push", function (event) {
 			],
 		};
 		event.waitUntil(
-			self.registration.showNotification(data.title + "--2", options),
+			self.registration.showNotification(data.title, options),
 		);
 	}
 });
 
 self.addEventListener("notificationclick", function (event) {
-	const { CONVEX_URL, taskId, url } = event.notification.data;
+	const { CONVEX_URL, taskId, url, token } = event.notification.data;
 	if (event.action === "add-accomplishment") {
 		console.log(CONVEX_URL);
 		const convexClient = new ConvexClient(CONVEX_URL);
@@ -47,6 +43,7 @@ self.addEventListener("notificationclick", function (event) {
 				taskId,
 				completionTime: Date.now(),
 				updateToBeDoneTime: true,
+				token,
 			}),
 		);
 	} else {

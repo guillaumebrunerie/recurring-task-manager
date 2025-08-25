@@ -27,18 +27,36 @@ export const parseAccomplishment = async (
 
 /** Mutations */
 
+const getUserId = async (ctx: QueryCtx, subscription?: string) => {
+	if (subscription) {
+		const result = await ctx.db
+			.query("subscriptions")
+			.filter((q) => q.eq(q.field("subscription"), subscription))
+			.unique();
+		return result?.userId;
+	} else {
+		return await getAuthUserId(ctx);
+	}
+};
+
 // Adds an accomplishment for a task
 export const addAccomplishment = mutation({
 	args: {
 		taskId: v.id("tasks"),
 		completionTime: v.optional(v.number()),
 		updateToBeDoneTime: v.boolean(),
+		subscription: v.optional(v.string()), // For push notifications
 	},
 	handler: async (
 		ctx,
-		{ taskId, completionTime = Date.now(), updateToBeDoneTime },
+		{
+			taskId,
+			completionTime = Date.now(),
+			updateToBeDoneTime,
+			subscription,
+		},
 	) => {
-		const userId = await getAuthUserId(ctx);
+		const userId = await getUserId(ctx, subscription);
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
