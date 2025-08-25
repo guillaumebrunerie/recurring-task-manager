@@ -12,13 +12,14 @@ self.addEventListener("push", function (event) {
 			tag: data.tag,
 			actions: [
 				{
-					action: "add_accomplishment",
-					title: "Marquer comme effectuée",
+					action: "add-accomplishment",
+					title: "Effectué",
+					type: "button",
 				},
 			],
 		};
 		event.waitUntil(
-			self.registration.showNotification(data.title, options),
+			self.registration.showNotification(data.title + "---", options),
 		);
 	}
 });
