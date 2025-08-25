@@ -27,11 +27,11 @@ export const parseAccomplishment = async (
 
 /** Mutations */
 
-const getUserId = async (ctx: QueryCtx, subscription?: string) => {
-	if (subscription) {
+const getUserId = async (ctx: QueryCtx, token?: string) => {
+	if (token) {
 		const result = await ctx.db
 			.query("subscriptions")
-			.filter((q) => q.eq(q.field("subscription"), subscription))
+			.filter((q) => q.eq(q.field("subscription"), token))
 			.unique();
 		return result?.userId;
 	} else {
@@ -45,18 +45,13 @@ export const addAccomplishment = mutation({
 		taskId: v.id("tasks"),
 		completionTime: v.optional(v.number()),
 		updateToBeDoneTime: v.boolean(),
-		subscription: v.optional(v.string()), // For push notifications
+		token: v.optional(v.string()), // For push notifications
 	},
 	handler: async (
 		ctx,
-		{
-			taskId,
-			completionTime = Date.now(),
-			updateToBeDoneTime,
-			subscription,
-		},
+		{ taskId, completionTime = Date.now(), updateToBeDoneTime, token },
 	) => {
-		const userId = await getUserId(ctx, subscription);
+		const userId = await getUserId(ctx, token);
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
