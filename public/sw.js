@@ -34,6 +34,7 @@ self.addEventListener("push", function (event) {
 
 self.addEventListener("notificationclick", function (event) {
 	const { CONVEX_URL, taskId, url, token } = event.notification.data;
+	event.notification.close();
 	if (event.action === "add-accomplishment") {
 		console.log(CONVEX_URL);
 		const convexClient = new ConvexClient(CONVEX_URL);
@@ -47,7 +48,6 @@ self.addEventListener("notificationclick", function (event) {
 			}),
 		);
 	} else {
-		event.notification.close();
 		event.waitUntil(clients.openWindow(url));
 	}
 });
