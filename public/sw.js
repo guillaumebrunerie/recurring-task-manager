@@ -13,7 +13,11 @@ self.addEventListener("push", function (event) {
 	if (event.data) {
 		const data = event.data.json();
 		const options = {
-			body: data.body,
+			// body: data.body,
+			body:
+				data.data.CONVEX_URL +
+				data.data.taskId +
+				ConvexClient.toString(),
 			badge: data.badge,
 			data: data.data,
 			icon: "/icon.png",
@@ -27,7 +31,7 @@ self.addEventListener("push", function (event) {
 			],
 		};
 		event.waitUntil(
-			self.registration.showNotification(data.title + "--1", options),
+			self.registration.showNotification(data.title + "--2", options),
 		);
 	}
 });
