@@ -44,10 +44,16 @@ const sendNotification = async ({
 				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
 			}),
 		);
-		return { success: true };
 	} catch (error) {
+		if (
+			error &&
+			typeof error == "object" &&
+			"body" in error &&
+			error.body == "push subscription has unsubscribed or expired.\n"
+		) {
+			return;
+		}
 		console.error("Error sending push notification:", error);
-		return { success: false, error: "Failed to send notification" };
 	}
 };
 
