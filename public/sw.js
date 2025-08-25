@@ -13,7 +13,7 @@ self.addEventListener("push", function (event) {
 			actions: [
 				{
 					action: "add-accomplishment",
-					title: "Effectué",
+					title: "Marquer comme effectué",
 					type: "button",
 				},
 			],
