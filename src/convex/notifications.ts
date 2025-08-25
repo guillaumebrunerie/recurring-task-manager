@@ -6,6 +6,7 @@ import { ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
 import { Task } from "@/shared/tasks";
+import { v } from "convex/values";
 /** Configuration */
 
 webpush.setVapidDetails(
@@ -36,6 +37,8 @@ const sendNotification = async ({
 				body: task.name,
 				data: {
 					url: `https://project-happy-home.netlify.app/?task=${task.id}`,
+					taskId: task.id,
+					CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
 				},
 				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
 			}),
@@ -114,10 +117,11 @@ export const notifyAllUsers = internalAction({
 });
 
 export const notifyTest = internalAction({
-	handler: async (ctx) => {
+	args: { name: v.optional(v.string()) },
+	handler: async (ctx, { name }) => {
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getByUserName,
-			{ userName: "Guillaume Brunerie" },
+			{ userName: name || "Guillaume Brunerie" },
 		);
 		await Promise.all(
 			subscriptions.map((subscription) =>

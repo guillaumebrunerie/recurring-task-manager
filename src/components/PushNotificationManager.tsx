@@ -40,6 +40,7 @@ export const PushNotificationManager = () => {
 		const registration = await navigator.serviceWorker.register("/sw.js", {
 			scope: "/",
 			updateViaCache: "none",
+			type: "module",
 		});
 		const sub = await registration.pushManager.getSubscription();
 		setSubscription(sub);
