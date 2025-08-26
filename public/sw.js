@@ -1,15 +1,15 @@
 import { ConvexClient } from "https://esm.sh/convex/browser";
 import { anyApi } from "https://esm.sh/convex/server";
 
-self.addEventListener("install", function () {
+self.addEventListener("install", () => {
 	self.skipWaiting();
 });
 
-self.addEventListener("activate", function (event) {
+self.addEventListener("activate", (event) => {
 	event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener("push", function (event) {
+self.addEventListener("push", (event) => {
 	if (event.data) {
 		const data = event.data.json();
 		const options = {
@@ -32,13 +32,11 @@ self.addEventListener("push", function (event) {
 	}
 });
 
-self.addEventListener("notificationclick", function (event) {
+self.addEventListener("notificationclick", (event) => {
 	const { CONVEX_URL, taskId, url, token } = event.notification.data;
 	event.notification.close();
 	if (event.action === "add-accomplishment") {
-		console.log(CONVEX_URL);
 		const convexClient = new ConvexClient(CONVEX_URL);
-		console.log(convexClient);
 		event.waitUntil(
 			convexClient.mutation(anyApi.accomplishments.addAccomplishment, {
 				taskId,
@@ -48,6 +46,16 @@ self.addEventListener("notificationclick", function (event) {
 			}),
 		);
 	} else {
-		event.waitUntil(clients.openWindow(url));
+		event.waitUntil(
+			self.clients.matchAll({ type: "window" }).then((clients) => {
+				if (clients.length > 0) {
+					const client = clients[0];
+					event.waitUntil(client.navigate(url));
+					event.waitUntil(client.focus());
+				} else {
+					event.waitUntil(clients.openWindow(url));
+				}
+			}),
+		);
 	}
 });

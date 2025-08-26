@@ -1,5 +1,4 @@
 === Better notifications ===
-- Actions?
 - Make notification automatically disappear if the task is done (?)
 
 === Details ===
