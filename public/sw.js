@@ -59,3 +59,15 @@ self.addEventListener("notificationclick", (event) => {
 		);
 	}
 });
+
+self.addEventListener("message", (event) => {
+	if (event.data?.type == "task-completed") {
+		self.registration.getNotifications().then((notifications) => {
+			for (const notification of notifications) {
+				if (notification.data?.taskId == event.data.taskId) {
+					notification.close();
+				}
+			}
+		});
+	}
+});

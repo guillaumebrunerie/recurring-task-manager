@@ -1,5 +1,5 @@
 === Better notifications ===
-- Make notification automatically disappear if the task is done (?)
+- Notifications on/off icon
 
 === Details ===
 - Possibility to add custom person who completed the task
@@ -15,8 +15,8 @@
 - Less weird way to choose responsibles
 
 === Design ===
-- Overhaul colors + dark mode
 - New logo
+- Overhaul colors + dark mode
 
 === Performance & loading states ===
 - Overhaul all loading states
