@@ -20,6 +20,7 @@ const visibleUnits: TimeUnit[] = [
 	"days",
 	"weeks",
 	"months",
+	"years",
 ];
 
 const Field = ({ title, children }: { title: string; children: ReactNode }) => {
@@ -136,6 +137,10 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			case "months":
 				setToleranceUnit("weeks");
 				setTolerance(`${Math.floor((period * 4) / 5)}`);
+				break;
+			case "years":
+				setToleranceUnit("months");
+				setTolerance(`${Math.floor((period * 12) / 5)}`);
 				break;
 		}
 	};
