@@ -11,7 +11,7 @@ const compat = new FlatCompat({
 	baseDirectory: __dirname,
 });
 
-const eslintConfig = [
+export default [
 	{
 		ignores: [
 			"node_modules/**",
@@ -21,6 +21,7 @@ const eslintConfig = [
 			"next-env.d.ts",
 		],
 	},
+	globalIgnores(["src/convex/_generated"]),
 	...convexPlugin.configs.recommended,
 	...compat.config({
 		extends: ["next/core-web-vitals", "next/typescript"],
@@ -28,7 +29,10 @@ const eslintConfig = [
 			"@next/next/no-img-element": "off",
 		},
 	}),
-	globalIgnores(["src/convex/_generated"]),
+	{
+		files: ["**/*.config.*"],
+		rules: {
+			"import/no-anonymous-default-export": "off",
+		},
+	},
 ];
-
-export default eslintConfig;

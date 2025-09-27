@@ -13,8 +13,3 @@ export const title = style({
 	fontWeight: 600,
 	color: colors.hfforeground,
 });
-
-export const container = style({
-	backgroundColor: "#f9fafb",
-	height: "100%",
-});

@@ -13,7 +13,7 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { TaskCard } from "./TaskCard";
 import { BlueButton } from "@/components/Button";
 import { Modal } from "@/components/Modal";
-import Edit from "./Edit";
+import { Edit } from "./Edit";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 const HomeContents = () => {

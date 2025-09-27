@@ -25,7 +25,7 @@ export type Task = {
 	archivedAt?: number;
 };
 
-export type TaskStatus =
+type TaskStatus =
 	| "overdue" // Task is overdue
 	| "due" // Task is due now or soon
 	| "waiting" // Task does not need to be completed again for now

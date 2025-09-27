@@ -9,13 +9,6 @@ export const formWrapper = style({
 	width: "100%",
 });
 
-export const heading = style({
-	fontSize: "1.5rem",
-	fontWeight: 600,
-	marginBottom: "0.5rem",
-	textAlign: "center",
-});
-
 export const label = style({
 	fontSize: "0.95rem",
 	fontWeight: "bold",

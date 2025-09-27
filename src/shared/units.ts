@@ -49,7 +49,7 @@ export const convertDurationFromUnit = (
 	}
 };
 
-export const unitToString: Record<TimeUnit, string> = {
+const unitToString: Record<TimeUnit, string> = {
 	minutes: "minute",
 	hours: "heure",
 	days: "jour",
@@ -184,7 +184,7 @@ export const timeToString = (time: number, unit: TimeUnit) => {
 };
 
 export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {
-	return `${durationUnit} ${unitToString[unit]}${durationUnit !== 1 && unit !== "months" ? "s" : ""}`;
+	return `${durationUnit} ${durationUnit == 1 ? unitToString[unit] : unitToStringPlural[unit]}`;
 };
 
 /** Returns the earliest time at which the task should be completed again. If

@@ -286,5 +286,3 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 		</div>
 	);
 };
-
-export default Edit;

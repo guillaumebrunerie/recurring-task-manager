@@ -1,23 +1,18 @@
-=== Better notifications ===
+- Round remaining time, if it would be two or more of the next unit
+- Fix layout issue on iOS
+- Changing periodicity should change next time
+- Regularly update now time (check whether it works?)
+- Automatically hide private tasks
 - Notifications on/off icon
-
-=== Details ===
-- Possibility to add custom person who completed the task
-
-=== Fixes ===
 - Make it possible to reset next time to be done
-
-=== Validation ===
+- Possibility to add custom person who completed the task
 - Validate edit/new task form
-
-=== Groups ===
+- Convert to SPA
 - Implement profile page + groups (households)
-- Less weird way to choose responsibles
-
-=== Design ===
+- Double check all loading states (seems good?) + useTransition for async
+  requests + view transitions
+- Refactor responsible-picker
+- Think about joint tasks vs alternating tasks vs tasks with addons
 - New logo
 - Overhaul colors + dark mode
 
-=== Performance & loading states ===
-- Overhaul all loading states
-- View transitions everywhere?

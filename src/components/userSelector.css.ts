@@ -1,15 +1,5 @@
 import { style } from "@vanilla-extract/css";
 
-export const selector = style({
-	marginBottom: "1.5rem",
-});
-
-export const label = style({
-	fontWeight: 600,
-	marginBottom: "0.5rem",
-	display: "block",
-});
-
 export const grid = style({
 	display: "flex",
 	flexWrap: "wrap",
