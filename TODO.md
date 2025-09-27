@@ -1,4 +1,3 @@
-- Round remaining time, if it would be two or more of the next unit
 - Fix layout issue on iOS
 - Changing periodicity should change next time
 - Regularly update now time (check whether it works?)
