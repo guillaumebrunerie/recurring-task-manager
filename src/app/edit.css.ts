@@ -23,9 +23,7 @@ export const input = style({
 
 	width: "100%", // iOS
 
-	// flexGrow: 1,
-	// flexShrink: 1,
-	// fieldSizing: "content",
+	fieldSizing: "content", // Android
 
 	background: "#fff",
 	color: "#111",
@@ -45,12 +43,9 @@ export const inputSmall = style({
 	border: "1px solid #ccc",
 	borderRadius: "6px",
 
-	width: "40%", // iOS
+	width: "45%", // iOS
 
-	// flexGrow: 2,
-	// flexShrink: 1,
-	// fieldSizing: "content",
-	// // maxWidth: "40%",
+	fieldSizing: "content", // Android
 
 	background: "#fff",
 	color: "#111",

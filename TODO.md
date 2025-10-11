@@ -1,4 +1,3 @@
-- Fix layout issue on iOS
 - Changing periodicity should change next time
 - Regularly update now time (check whether it works?)
 - Notifications on/off icon
