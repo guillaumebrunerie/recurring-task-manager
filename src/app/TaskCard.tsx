@@ -14,6 +14,7 @@ import { Modal } from "@/components/Modal";
 import { Details } from "./Details";
 import { Edit } from "./Edit";
 import { Spinner } from "@/components/Spinner";
+import { Id } from "@/convex/_generated/dataModel";
 
 const celebrateCompletionWithConfetti = () => {
 	confetti({
@@ -73,10 +74,6 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	};
 
 	const isPrivate = task.visibleTo.length == 1;
-	const user = useQuery(api.users.getUser, {
-		userId: task.toBeCompletedBy || undefined,
-	});
-	const imageUrl = user?.image;
 
 	const allUsers = useQuery(api.users.getAll);
 	const currentUser = useQuery(api.users.getCurrentUser);
@@ -138,13 +135,22 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 					</div>
 				</div>
 				<div className={styles.bottomRow}>
-					{imageUrl ?
-						<img
-							src={imageUrl}
-							alt="Profile"
-							className={styles.assignee}
-						/>
-					:	<div />}
+					<div className={styles.userIndicators}>
+						{task.responsibleFor.toReversed().map((userId) => {
+							if (userId === task.toBeCompletedBy) {
+								return null;
+							} else {
+								return (
+									<UserIndicator
+										key={userId}
+										userId={userId}
+										isDisabled
+									/>
+								);
+							}
+						})}
+						<UserIndicator userId={task.toBeCompletedBy} />
+					</div>
 					<div className={styles.time}>{timeString}</div>
 				</div>
 				{isContextMenuOpen && (
@@ -186,6 +192,33 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				</Modal>
 			)}
 		</>
+	);
+};
+
+type UserIndicatorProps = {
+	userId?: Id<"users">;
+	isDisabled?: boolean;
+};
+
+const UserIndicator = ({ userId, isDisabled }: UserIndicatorProps) => {
+	const user = useQuery(api.users.getUser, {
+		userId,
+	});
+	const imageUrl = user?.image;
+	if (!imageUrl) {
+		return;
+	}
+
+	return (
+		<img
+			src={imageUrl}
+			alt="Profile"
+			className={
+				styles.assignee +
+				" " +
+				(isDisabled ? styles.disabledAssignee : "")
+			}
+		/>
 	);
 };
 

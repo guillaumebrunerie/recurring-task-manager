@@ -27,11 +27,25 @@ export const time = style({
 
 export const lock = style({});
 
+export const userIndicators = style({
+	display: "flex",
+	flexDirection: "row-reverse",
+	marginLeft: 10,
+});
+
 export const assignee = style({
 	width: "24px",
 	height: "24px",
 	borderRadius: "50%",
 	objectFit: "cover",
+	filter: "grayscale(0%)",
+	border: "1px solid white",
+	marginLeft: -10,
+});
+
+export const disabledAssignee = style({
+	filter: "grayscale(100%)",
+	opacity: 0.3,
 });
 
 export const topRow = style({

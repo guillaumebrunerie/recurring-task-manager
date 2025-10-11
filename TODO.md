@@ -1,3 +1,4 @@
+- Implement joint tasks
 - Changing periodicity should change next time
 - Notifications on/off icon
 - Automatically hide private tasks
@@ -9,7 +10,7 @@
 - Double check all loading states (seems good?) + useTransition for async
   requests + view transitions (?)
 - Refactor responsible-picker
-- Think about joint tasks vs alternating tasks vs tasks with addons
+- Think about tasks with addons
 - New logo
 - Overhaul colors + dark mode
 
