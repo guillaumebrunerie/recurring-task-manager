@@ -170,6 +170,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					<input
 						className={styles.inputSmall}
 						type={isTaskOneTime ? "string" : "number"}
+						inputMode="numeric"
 						min={1}
 						disabled={isTaskOneTime}
 						value={isTaskOneTime ? "—" : period}
@@ -207,6 +208,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					<input
 						className={styles.inputSmall}
 						type="number"
+						inputMode="numeric"
 						min="0"
 						value={tolerance}
 						onChange={(e) => setTolerance(e.target.value)}
@@ -242,7 +244,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					disabled={isTaskDisabled}
 					value={toBeDoneTime}
 					onChange={(e) => setToBeDoneTime(e.target.value)}
-					className={styles.input}
+					className={styles.input + " " + styles.dateTimeInput}
 				/>
 				<label className={styles.checkboxLabel}>
 					<input

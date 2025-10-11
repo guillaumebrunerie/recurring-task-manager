@@ -20,14 +20,23 @@ export const input = style({
 	fontSize: "1rem",
 	border: "1px solid #ccc",
 	borderRadius: "6px",
-	fieldSizing: "content",
-	flexGrow: 1,
-	// width: "100%",
+
+	width: "100%", // iOS
+
+	// flexGrow: 1,
+	// flexShrink: 1,
+	// fieldSizing: "content",
+
 	background: "#fff",
 	color: "#111",
+	alignSelf: "stretch",
 	"&:disabled": {
 		opacity: 0.5,
 	},
+});
+
+export const dateTimeInput = style({
+	WebkitAppearance: "none",
 });
 
 export const inputSmall = style({
@@ -35,9 +44,14 @@ export const inputSmall = style({
 	fontSize: "1rem",
 	border: "1px solid #ccc",
 	borderRadius: "6px",
-	fieldSizing: "content",
-	flexGrow: 2,
-	// maxWidth: "40%",
+
+	width: "40%", // iOS
+
+	// flexGrow: 2,
+	// flexShrink: 1,
+	// fieldSizing: "content",
+	// // maxWidth: "40%",
+
 	background: "#fff",
 	color: "#111",
 	"&:disabled": {
@@ -58,7 +72,6 @@ export const textarea = style([
 	{
 		fontFamily: "inherit",
 		minHeight: "100px",
-		fieldSizing: "content",
 		resize: "none",
 	},
 ]);

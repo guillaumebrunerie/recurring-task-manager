@@ -29,7 +29,7 @@ export const modalContent = style({
 	padding: "1.5rem",
 	width: "90%",
 	maxWidth: "420px",
-	maxHeight: "90vh",
+	maxHeight: "90dvh",
 	overflowY: "auto",
 	boxShadow: `0 10px 30px ${colors.hfshadow}`,
 	display: "flex",
@@ -38,6 +38,7 @@ export const modalContent = style({
 	position: "relative",
 	color: colors.foreground,
 	cursor: "default",
+	overscrollBehavior: "none",
 });
 
 export const modalHeader = style({
