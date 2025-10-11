@@ -15,6 +15,7 @@ import { BlueButton } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 
 const visibleUnits: TimeUnit[] = [
+	// "seconds",
 	"minutes",
 	"hours",
 	"days",
@@ -124,6 +125,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			return;
 		}
 		switch (unit) {
+			case "seconds":
 			case "minutes":
 			case "hours":
 			case "days":

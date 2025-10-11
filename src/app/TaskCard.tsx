@@ -53,7 +53,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				updateToBeDoneTime: true,
 			});
 			celebrateCompletionWithConfetti();
-			navigator.serviceWorker.controller?.postMessage({
+			navigator.serviceWorker?.controller?.postMessage({
 				type: "task-completed",
 				taskId: task.id,
 			});

@@ -1,6 +1,7 @@
 import { Task } from "./tasks";
 
 export const units = [
+	"seconds",
 	"minutes",
 	"hours",
 	"days",
@@ -23,7 +24,7 @@ const weekOffset = 4 * dayDuration + dayOffset; // Monday at 2 AM UTC
 
 // Given a timestamp and a unit, return a number representing that timestamp in
 // that unit.
-export const convertToUnit = (timeMs: number, unit: TimeUnit) => {
+export const convertToUnit = (timeMs: number, unit: TimeUnit): number => {
 	const date = new Date(timeMs - dayOffset);
 	switch (unit) {
 		case "years":
@@ -38,11 +39,13 @@ export const convertToUnit = (timeMs: number, unit: TimeUnit) => {
 			return Math.floor(timeMs / hourDuration);
 		case "minutes":
 			return Math.floor(timeMs / minuteDuration);
+		case "seconds":
+			return Math.floor(timeMs / secondDuration);
 	}
 };
 
 // Converts a time in a unit to the timestamp at the *beginning* of the period
-const convertFromUnit = (timeUnit: number, unit: TimeUnit) => {
+const convertFromUnit = (timeUnit: number, unit: TimeUnit): number => {
 	switch (unit) {
 		case "years":
 			return Date.UTC(timeUnit, 0, 1, 0) + dayOffset;
@@ -59,6 +62,8 @@ const convertFromUnit = (timeUnit: number, unit: TimeUnit) => {
 			return timeUnit * hourDuration;
 		case "minutes":
 			return timeUnit * minuteDuration;
+		case "seconds":
+			return timeUnit * secondDuration;
 	}
 };
 
@@ -67,7 +72,7 @@ const convertFromUnit = (timeUnit: number, unit: TimeUnit) => {
 export const convertDurationFromUnit = (
 	durationUnit: number,
 	unit: TimeUnit,
-) => {
+): number => {
 	switch (unit) {
 		case "years":
 			return durationUnit * yearDuration;
@@ -81,6 +86,8 @@ export const convertDurationFromUnit = (
 			return durationUnit * hourDuration;
 		case "minutes":
 			return durationUnit * minuteDuration;
+		case "seconds":
+			return durationUnit * secondDuration;
 	}
 };
 
@@ -91,6 +98,7 @@ const unitToString: Record<TimeUnit, string> = {
 	days: "jour",
 	hours: "heure",
 	minutes: "minute",
+	seconds: "seconde",
 };
 
 export const unitToStringPlural: Record<TimeUnit, string> = {
@@ -100,6 +108,7 @@ export const unitToStringPlural: Record<TimeUnit, string> = {
 	days: "jours",
 	hours: "heures",
 	minutes: "minutes",
+	seconds: "secondes",
 };
 
 const assertUnreachable: (x: never) => never = () => {
@@ -209,6 +218,23 @@ export const relativeDurationToString = (
 				return `dans ${durationUnit} minutes`;
 			}
 		}
+		case "seconds": {
+			const inMinutes = Math.round(durationUnit / 60);
+			if (Math.abs(inMinutes) >= 2) {
+				return relativeDurationToString(inMinutes, "minutes");
+			}
+			if (durationUnit <= -2) {
+				return `il y a ${-durationUnit} secondes`;
+			} else if (durationUnit === -1) {
+				return `il y a une seconde`;
+			} else if (durationUnit === 0) {
+				return "immédiatement";
+			} else if (durationUnit === 1) {
+				return `dans une seconde`;
+			} else {
+				return `dans ${durationUnit} secondes`;
+			}
+		}
 		default:
 			assertUnreachable(unit);
 	}
@@ -254,6 +280,8 @@ export const timeToString = (time: number, unit: TimeUnit) => {
 		case "hours":
 			return `le ${dateTimeFormat.format(date)}`;
 		case "minutes":
+			return `le ${dateTimeFormat.format(date)}`;
+		case "seconds":
 			return `le ${dateTimeFormat.format(date)}`;
 		default:
 			assertUnreachable(unit);
