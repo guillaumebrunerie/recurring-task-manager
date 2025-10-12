@@ -21,14 +21,6 @@ webpush.setVapidDetails(
 
 /** Helper functions */
 
-export const getUserIdFromToken = async (ctx: QueryCtx, token: string) => {
-	const result = await ctx.db
-		.query("subscriptions")
-		.filter((q) => q.eq(q.field("subscription"), token))
-		.unique();
-	return result?.userId;
-};
-
 const sendNotification = async ({
 	title,
 	task,

@@ -11,9 +11,16 @@ import {
 	getNewResponsibles,
 } from "@/shared/accomplishments";
 import { defaultCompletedBy } from "@/shared/tasks";
-import { getUserIdFromToken } from "./notifications";
 
 /** Helper functions */
+
+const getUserIdFromToken = async (ctx: QueryCtx, token: string) => {
+	const result = await ctx.db
+		.query("subscriptions")
+		.filter((q) => q.eq(q.field("subscription"), token))
+		.unique();
+	return result?.userId;
+};
 
 // Parses an accomplishment document into an Accomplishment object
 export const parseAccomplishment = async (
