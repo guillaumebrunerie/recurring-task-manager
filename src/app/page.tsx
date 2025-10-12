@@ -64,7 +64,8 @@ const HomeContents = () => {
 			<div className={styles.taskPage}>
 				{currentUser &&
 					[...overdueTasks, ...dueTasks].every(
-						(task) => task.toBeCompletedBy != currentUser.id,
+						(task) =>
+							!task.toBeCompletedBy.includes(currentUser.id),
 					) && <Congratulations />}
 				<Section title="En retard" tasks={overdueTasks} now={now} />
 				<Section title="À faire" tasks={dueTasks} now={now} />

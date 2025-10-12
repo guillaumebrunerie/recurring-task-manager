@@ -18,7 +18,7 @@ export type Task = {
 	visibleTo: Id<"users">[];
 	responsibleFor: Id<"users">[];
 	toBeDoneTime?: number;
-	toBeCompletedBy: Id<"users">;
+	toBeCompletedBy: Id<"users">[];
 	accomplishments: Accomplishment[];
 	lastNotified?: number;
 	isArchived: boolean;

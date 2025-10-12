@@ -5,7 +5,11 @@ import { api } from "@/convex/_generated/api";
 import * as styles from "./taskCard.css";
 import { relativeDurationToString } from "@/shared/units";
 import { useEffect, useRef, useState } from "react";
-import { Task, taskStatus, taskTimeDifferenceInUnit } from "@/shared/tasks";
+import {
+	type Task,
+	taskStatus,
+	taskTimeDifferenceInUnit,
+} from "@/shared/tasks";
 import confetti from "canvas-confetti";
 import { fromLocalDateTimeString } from "@/shared/localDateTime";
 
@@ -137,7 +141,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				<div className={styles.bottomRow}>
 					<div className={styles.userIndicators}>
 						{task.responsibleFor.toReversed().map((userId) => {
-							if (userId === task.toBeCompletedBy) {
+							if (task.toBeCompletedBy.includes(userId)) {
 								return null;
 							} else {
 								return (
@@ -149,7 +153,9 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 								);
 							}
 						})}
-						<UserIndicator userId={task.toBeCompletedBy} />
+						{task.toBeCompletedBy.map((userId) => (
+							<UserIndicator key={userId} userId={userId} />
+						))}
 					</div>
 					<div className={styles.time}>{timeString}</div>
 				</div>

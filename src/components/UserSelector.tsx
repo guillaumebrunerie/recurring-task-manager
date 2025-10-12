@@ -6,18 +6,20 @@ import { User } from "@/shared/users";
 type UserSelectorButtonProps = {
 	user: User;
 	isSelected: boolean;
+	isPrimary?: boolean;
 	onToggle: () => void;
 };
 
 const UserSelectorButton = ({
 	user,
 	isSelected,
+	isPrimary,
 	onToggle,
 }: UserSelectorButtonProps) => {
 	const displayName = user.name ? user.name.split(" ")[0] : "Unknown";
 	return (
 		<button
-			className={`${styles.user} ${isSelected ? styles.selected : ""}`}
+			className={`${styles.user} ${isSelected ? styles.selected : ""} ${isPrimary ? styles.primary : ""}`}
 			onClick={onToggle}
 			type="button"
 		>
@@ -34,12 +36,14 @@ const UserSelectorButton = ({
 type UserSelectorProps = {
 	users: User[];
 	selected: Set<Id<"users">>;
+	hasPrimary?: boolean;
 	onChange: (selected: Set<Id<"users">>) => void;
 };
 
 export const UserSelector = ({
 	users,
 	selected,
+	hasPrimary,
 	onChange,
 }: UserSelectorProps) => {
 	const toggle = (id: Id<"users">) => {
@@ -57,6 +61,7 @@ export const UserSelector = ({
 					key={user.id}
 					user={user}
 					isSelected={selected.has(user.id)}
+					isPrimary={hasPrimary && user.id === [...selected][0]}
 					onToggle={() => toggle(user.id)}
 				/>
 			))}

@@ -13,7 +13,6 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { vUnit } from "./schema";
 import { parseAccomplishment } from "./accomplishments";
 
-import { getToBeCompletedBy } from "@/shared/accomplishments";
 import {
 	compareTasks,
 	shouldNotifyForTask,
@@ -24,6 +23,22 @@ import { convertDurationFromUnit } from "@/shared/units";
 
 /** Helper functions */
 
+// Returns the accomplishments for a task
+export const parseTaskAccomplishments = async (
+	ctx: QueryCtx,
+	task: Doc<"tasks">,
+) => {
+	const accomplishmentDocs = await ctx.db
+		.query("accomplishments")
+		.filter((q) => q.eq(q.field("taskId"), task._id))
+		.collect();
+	return await Promise.all(
+		accomplishmentDocs
+			.toSorted((a, b) => b.completionTime - a.completionTime)
+			.map((a) => parseAccomplishment(ctx, a)),
+	);
+};
+
 // Parses a task document into a Task object
 export const parseTask = async (
 	ctx: QueryCtx,
@@ -33,16 +48,6 @@ export const parseTask = async (
 	if (task.visibleTo && !task.visibleTo.includes(userId)) {
 		return;
 	}
-	const accomplishmentDocs = await ctx.db
-		.query("accomplishments")
-		.filter((q) => q.eq(q.field("taskId"), task._id))
-		.collect();
-
-	const accomplishments = await Promise.all(
-		accomplishmentDocs
-			.toSorted((a, b) => b.completionTime - a.completionTime)
-			.map((a) => parseAccomplishment(ctx, a)),
-	);
 	return {
 		id: task._id,
 		name: task.name,
@@ -54,11 +59,8 @@ export const parseTask = async (
 		visibleTo: task.visibleTo,
 		responsibleFor: task.responsibleFor,
 		toBeDoneTime: task.toBeDoneTime,
-		toBeCompletedBy: getToBeCompletedBy(
-			task.responsibleFor,
-			accomplishments,
-		),
-		accomplishments,
+		toBeCompletedBy: [task.responsibleFor[0]],
+		accomplishments: await parseTaskAccomplishments(ctx, task),
 		lastNotified: task.lastNotified,
 		isArchived: task.archivedAt !== undefined,
 		archivedAt: task.archivedAt,
@@ -122,7 +124,7 @@ export const getTasksToNotifyForUser = internalQuery({
 		).filter(
 			(task: Task | undefined): task is Task =>
 				!!task &&
-				task.toBeCompletedBy == userId &&
+				task.toBeCompletedBy.includes(userId) &&
 				shouldNotifyForTask({ task, now, ignoreLastNotified }),
 		);
 
@@ -223,15 +225,7 @@ export const calculateToBeDoneTime = async (
 	ctx: MutationCtx,
 	taskDoc: Doc<"tasks">,
 ) => {
-	const accomplishmentDocs = await ctx.db
-		.query("accomplishments")
-		.filter((q) => q.eq(q.field("taskId"), taskDoc._id))
-		.collect();
-	const accomplishments = await Promise.all(
-		accomplishmentDocs
-			.toSorted((a, b) => b.completionTime - a.completionTime)
-			.map((a) => parseAccomplishment(ctx, a)),
-	);
+	const accomplishments = await parseTaskAccomplishments(ctx, taskDoc);
 
 	if (accomplishments.length == 0) {
 		return Date.now();

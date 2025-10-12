@@ -6,7 +6,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { parseUser } from "./users";
 import { calculateToBeDoneTime, parseTask } from "./tasks";
 
-import { Accomplishment } from "@/shared/accomplishments";
+import { Accomplishment, getNewResponsibles } from "@/shared/accomplishments";
 /** Helper functions */
 
 // Parses an accomplishment document into an Accomplishment object
@@ -69,6 +69,9 @@ export const addAccomplishment = mutation({
 			taskId,
 			completionTime,
 			completedBy: userId,
+		});
+		await ctx.db.patch(taskId, {
+			responsibleFor: await getNewResponsibles(ctx, taskDoc),
 		});
 		if (updateToBeDoneTime) {
 			await ctx.db.patch(taskId, {

@@ -273,6 +273,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					users={(allUsers || []).filter(
 						(u) => visibleTo.has(u.id) || u.id === user?.id,
 					)}
+					hasPrimary
 					selected={responsibleFor}
 					onChange={setResponsibleFor}
 				/>

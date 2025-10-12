@@ -16,15 +16,20 @@ export const user = style({
 	backgroundColor: "white",
 	cursor: "pointer",
 	transition: "background-color 0.2s, border-color 0.2s",
-	selectors: {
-		"&:hover": {
-			borderColor: "#999",
-		},
-	},
+	// selectors: {
+	// 	"&:hover": {
+	// 		borderColor: "#999",
+	// 	},
+	// },
 });
 
 export const selected = style({
 	backgroundColor: "#e0f2ff",
+	borderColor: "#3b82f6",
+});
+
+export const primary = style({
+	backgroundColor: "#aedbfb",
 	borderColor: "#3b82f6",
 });
 
