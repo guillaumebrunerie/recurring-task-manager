@@ -1,12 +1,12 @@
 import {
 	query,
 	mutation,
-	QueryCtx,
+	type QueryCtx,
 	internalQuery,
 	internalMutation,
-	MutationCtx,
+	type MutationCtx,
 } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { ConvexError, v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
@@ -16,7 +16,7 @@ import { parseAccomplishment } from "./accomplishments";
 import {
 	compareTasks,
 	shouldNotifyForTask,
-	Task,
+	type Task,
 	taskStatus,
 } from "@/shared/tasks";
 import { convertDurationFromUnit } from "@/shared/units";

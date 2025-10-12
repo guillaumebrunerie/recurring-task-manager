@@ -1,4 +1,4 @@
-import { Task } from "./tasks";
+import type { Task } from "./tasks";
 
 export const units = [
 	"seconds",

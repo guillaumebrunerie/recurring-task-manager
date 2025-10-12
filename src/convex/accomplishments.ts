@@ -1,12 +1,15 @@
-import { Doc } from "./_generated/dataModel";
-import { mutation, QueryCtx } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
+import { mutation, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 import { parseUser } from "./users";
 import { calculateToBeDoneTime, parseTask } from "./tasks";
 
-import { Accomplishment, getNewResponsibles } from "@/shared/accomplishments";
+import {
+	type Accomplishment,
+	getNewResponsibles,
+} from "@/shared/accomplishments";
 /** Helper functions */
 
 // Parses an accomplishment document into an Accomplishment object

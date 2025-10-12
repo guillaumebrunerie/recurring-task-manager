@@ -1,7 +1,7 @@
 "use client";
 
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 import { SignIn } from "@/components/SignIn";

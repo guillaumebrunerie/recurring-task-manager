@@ -1,8 +1,8 @@
 import { query } from "./_generated/server";
-import { Doc } from "./_generated/dataModel";
+import type { Doc } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
-import { User } from "@/shared/users";
+import type { User } from "@/shared/users";
 
 /** Helper functions */
 

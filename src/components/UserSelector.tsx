@@ -1,7 +1,7 @@
 import React from "react";
 import * as styles from "./userSelector.css";
-import { Id } from "@/convex/_generated/dataModel";
-import { User } from "@/shared/users";
+import type { Id } from "@/convex/_generated/dataModel";
+import type { User } from "@/shared/users";
 
 type UserSelectorButtonProps = {
 	user: User;

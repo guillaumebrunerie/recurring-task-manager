@@ -6,7 +6,7 @@ import * as styles from "./page.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
 import { Suspense, useState } from "react";
-import { Task, compareTasks, taskStatus } from "@/shared/tasks";
+import { type Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
 import { assignInlineVars } from "@vanilla-extract/dynamic";

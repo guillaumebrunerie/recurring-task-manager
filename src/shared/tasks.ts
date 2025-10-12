@@ -1,11 +1,11 @@
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import {
 	convertToUnit,
 	getMaxTimeLeft,
 	getMinTimeLeft,
-	TimeUnit,
+	type TimeUnit,
 } from "./units";
-import { Accomplishment } from "./accomplishments";
+import type { Accomplishment } from "./accomplishments";
 
 export type Task = {
 	id: Id<"tasks">;

@@ -1,16 +1,16 @@
 import { type ReactNode, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { TimeUnit, unitToStringPlural } from "@/shared/units";
+import type { Id } from "@/convex/_generated/dataModel";
+import { type TimeUnit, unitToStringPlural } from "@/shared/units";
 import * as styles from "./edit.css";
 import { UserSelector } from "@/components/UserSelector";
 import {
 	fromLocalDateTimeString,
 	toLocalDateTimeString,
 } from "@/shared/localDateTime";
-import { Task } from "@/shared/tasks";
-import { User } from "@/shared/users";
+import type { Task } from "@/shared/tasks";
+import type { User } from "@/shared/users";
 import { BlueButton } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 

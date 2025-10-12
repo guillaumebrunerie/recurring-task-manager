@@ -1,6 +1,6 @@
-import { Doc, Id } from "@/convex/_generated/dataModel";
-import { User } from "./users";
-import { MutationCtx } from "@/convex/_generated/server";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
+import type { User } from "./users";
+import type { MutationCtx } from "@/convex/_generated/server";
 import { parseTaskAccomplishments } from "@/convex/tasks";
 
 // An accomplishment, format used by the frontend

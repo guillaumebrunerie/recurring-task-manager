@@ -18,7 +18,7 @@ import { Modal } from "@/components/Modal";
 import { Details } from "./Details";
 import { Edit } from "./Edit";
 import { Spinner } from "@/components/Spinner";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 
 const celebrateCompletionWithConfetti = () => {
 	confetti({

@@ -1,10 +1,10 @@
 import { toLocalDateTimeString } from "@/shared/localDateTime";
-import { Task } from "@/shared/tasks";
+import type { Task } from "@/shared/tasks";
 import { useState } from "react";
 import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
 import { Spinner } from "@/components/Spinner";
-import { Accomplishment } from "@/shared/accomplishments";
+import type { Accomplishment } from "@/shared/accomplishments";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { BlueButton, GreenButton } from "@/components/Button";

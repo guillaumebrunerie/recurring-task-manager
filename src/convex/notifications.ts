@@ -2,10 +2,10 @@
 
 import webpush from "web-push";
 
-import { ActionCtx, internalAction } from "./_generated/server";
+import { type ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
-import { Doc } from "./_generated/dataModel";
-import { Task } from "@/shared/tasks";
+import type { Doc } from "./_generated/dataModel";
+import type { Task } from "@/shared/tasks";
 import { v } from "convex/values";
 /** Configuration */
 
