@@ -18,17 +18,10 @@ export const parseAccomplishment = async (
 	ctx: QueryCtx,
 	accomplishment: Doc<"accomplishments">,
 ): Promise<Accomplishment> => {
-	const userIds =
-		accomplishment.completedBy ?
-			Array.isArray(accomplishment.completedBy) ?
-				accomplishment.completedBy
-			:	[accomplishment.completedBy]
-		:	[];
-	const completedBy = await selectUsers(ctx, userIds);
 	return {
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
-		completedBy,
+		completedBy: await selectUsers(ctx, accomplishment.completedBy),
 	};
 };
 
