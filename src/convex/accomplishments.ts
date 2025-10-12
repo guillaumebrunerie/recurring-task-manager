@@ -1,5 +1,5 @@
 import type { Doc } from "./_generated/dataModel";
-import { mutation, type QueryCtx } from "./_generated/server";
+import { internalMutation, mutation, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
@@ -10,6 +10,7 @@ import {
 	type Accomplishment,
 	getNewResponsibles,
 } from "@/shared/accomplishments";
+import { defaultCompletedBy } from "@/shared/tasks";
 /** Helper functions */
 
 // Parses an accomplishment document into an Accomplishment object
@@ -81,8 +82,7 @@ export const addAccomplishment = mutation({
 		await ctx.db.insert("accomplishments", {
 			taskId,
 			completionTime,
-			completedBy:
-				completedBy || task.toBeCompletedBy.map((user) => user.id), // Default to be completed by
+			completedBy: completedBy || defaultCompletedBy(task, userId),
 		});
 		await ctx.db.patch(taskId, {
 			responsibleFor: await getNewResponsibles(ctx, taskDoc),
@@ -124,5 +124,24 @@ export const deleteAccomplishment = mutation({
 		await ctx.db.patch(taskId, {
 			toBeDoneTime: await calculateToBeDoneTime(ctx, taskDoc),
 		});
+	},
+});
+
+export const normalizeAccomplishments = internalMutation({
+	handler: async (ctx) => {
+		const allAccomplishments = await ctx.db
+			.query("accomplishments")
+			.collect();
+		for (const accomplishment of allAccomplishments) {
+			if (Array.isArray(accomplishment.completedBy)) {
+				continue;
+			}
+			await ctx.db.patch(accomplishment._id, {
+				completedBy:
+					accomplishment.completedBy ?
+						[accomplishment.completedBy]
+					:	[],
+			});
+		}
 	},
 });

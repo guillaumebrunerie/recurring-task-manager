@@ -27,6 +27,14 @@ export type Task = {
 	archivedAt?: number;
 };
 
+export const defaultCompletedBy = (task: Task, userId: Id<"users">) => {
+	if (task.isJoint) {
+		return task.responsibleFor.map((user) => user.id);
+	} else {
+		return [userId];
+	}
+};
+
 type TaskStatus =
 	| "overdue" // Task is overdue
 	| "due" // Task is due now or soon

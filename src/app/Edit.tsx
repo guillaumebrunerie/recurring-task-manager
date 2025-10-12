@@ -35,8 +35,8 @@ const Field = ({ title, children }: { title: string; children: ReactNode }) => {
 
 type EditProps = {
 	task?: Task;
-	user?: User;
-	allUsers?: User[];
+	user: User;
+	allUsers: User[];
 	closeModal: () => void;
 };
 

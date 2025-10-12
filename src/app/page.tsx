@@ -38,7 +38,7 @@ const HomeContents = () => {
 	const allUsers = useQuery(api.users.getAll);
 	const currentUser = useQuery(api.users.getCurrentUser);
 
-	if (!tasks) {
+	if (!tasks || !allUsers || !currentUser) {
 		return <div className={common.loading}>Chargement...</div>;
 	}
 
@@ -88,7 +88,7 @@ const HomeContents = () => {
 					<Modal title="Nouvelle tâche" onClose={closeModal}>
 						<Edit
 							task={undefined}
-							user={currentUser || undefined}
+							user={currentUser}
 							allUsers={allUsers}
 							closeModal={closeModal}
 						/>

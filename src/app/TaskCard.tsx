@@ -118,6 +118,10 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		setIsEditing(false, { history: "push" });
 	};
 
+	if (!currentUser || !allUsers) {
+		return;
+	}
+
 	return (
 		<>
 			<div
@@ -175,6 +179,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 						task={task}
 						handleSubmit={handleSubmit}
 						onEdit={openEdit}
+						currentUser={currentUser}
 					/>
 				</Modal>
 			)}
@@ -182,7 +187,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				<Modal title="Éditer la tâche" onClose={closeModal}>
 					<Edit
 						task={task}
-						user={currentUser || undefined}
+						user={currentUser}
 						allUsers={allUsers}
 						closeModal={closeModal}
 					/>

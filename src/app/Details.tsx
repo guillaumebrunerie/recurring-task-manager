@@ -1,5 +1,5 @@
 import { toLocalDateTimeString } from "@/shared/localDateTime";
-import type { Task } from "@/shared/tasks";
+import { defaultCompletedBy, type Task } from "@/shared/tasks";
 import { useState } from "react";
 import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
@@ -11,9 +11,11 @@ import { BlueButton, GreenButton } from "@/components/Button";
 import type { Id } from "@/convex/_generated/dataModel";
 import { UserSelector } from "@/components/UserSelector";
 import { UserIndicators } from "./UserIndicators";
+import type { User } from "@/shared/users";
 
 type DetailsProps = {
 	task: Task;
+	currentUser: User;
 	handleSubmit: (
 		doneTime?: string,
 		completedBy?: Id<"users">[],
@@ -21,12 +23,17 @@ type DetailsProps = {
 	onEdit: () => void;
 };
 
-export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
+export const Details = ({
+	task,
+	currentUser,
+	handleSubmit,
+	onEdit,
+}: DetailsProps) => {
 	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
 	const [isCompleting, setIsCompleting] = useState(false);
 	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
 	const [completedBy, setCompletedBy] = useState<Set<Id<"users">>>(
-		new Set(task.toBeCompletedBy.map((user) => user.id)), // Default to be completed by
+		new Set([...defaultCompletedBy(task, currentUser.id)]),
 	);
 	return (
 		<>
