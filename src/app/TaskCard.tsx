@@ -84,8 +84,8 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 
 	const isPrivate = task.visibleTo.length == 1;
 
-	const allUsers = useQuery(api.users.getAll);
-	const currentUser = useQuery(api.users.getCurrentUser);
+	const allUsers = useQuery(api.users.getAllUsersQuery);
+	const currentUser = useQuery(api.users.getCurrentUserQuery);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {

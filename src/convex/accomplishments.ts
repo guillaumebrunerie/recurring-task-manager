@@ -1,9 +1,9 @@
 import type { Doc } from "./_generated/dataModel";
-import { internalMutation, mutation, type QueryCtx } from "./_generated/server";
+import { mutation, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
-import { selectUsers } from "./users";
+import { getUsers } from "./users";
 import { calculateToBeDoneTime, parseTask } from "./tasks";
 
 import {
@@ -11,6 +11,8 @@ import {
 	getNewResponsibles,
 } from "@/shared/accomplishments";
 import { defaultCompletedBy } from "@/shared/tasks";
+import { getUserIdFromToken } from "./notifications";
+
 /** Helper functions */
 
 // Parses an accomplishment document into an Accomplishment object
@@ -21,23 +23,11 @@ export const parseAccomplishment = async (
 	return {
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
-		completedBy: await selectUsers(ctx, accomplishment.completedBy),
+		completedBy: await getUsers(ctx, accomplishment.completedBy),
 	};
 };
 
 /** Mutations */
-
-const getUserId = async (ctx: QueryCtx, token?: string) => {
-	if (token) {
-		const result = await ctx.db
-			.query("subscriptions")
-			.filter((q) => q.eq(q.field("subscription"), token))
-			.unique();
-		return result?.userId;
-	} else {
-		return await getAuthUserId(ctx);
-	}
-};
 
 // Adds an accomplishment for a task
 export const addAccomplishment = mutation({
@@ -58,7 +48,10 @@ export const addAccomplishment = mutation({
 			token,
 		},
 	) => {
-		const userId = await getUserId(ctx, token);
+		const userId =
+			token ?
+				await getUserIdFromToken(ctx, token)
+			:	await getAuthUserId(ctx);
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
@@ -113,28 +106,11 @@ export const deleteAccomplishment = mutation({
 			throw new Error(`Task with id ${taskId} not found`);
 		}
 
-		// Recalculate the toBeDoneTime for the task
-		await ctx.db.patch(taskId, {
-			toBeDoneTime: await calculateToBeDoneTime(ctx, taskDoc),
-		});
-	},
-});
-
-export const normalizeAccomplishments = internalMutation({
-	handler: async (ctx) => {
-		const allAccomplishments = await ctx.db
-			.query("accomplishments")
-			.collect();
-		for (const accomplishment of allAccomplishments) {
-			if (Array.isArray(accomplishment.completedBy)) {
-				continue;
-			}
-			await ctx.db.patch(accomplishment._id, {
-				completedBy:
-					accomplishment.completedBy ?
-						[accomplishment.completedBy]
-					:	[],
-			});
-		}
+		// Recalculate the toBeDoneTime and the responsibles for the task
+		const [toBeDoneTime, responsibleFor] = await Promise.all([
+			calculateToBeDoneTime(ctx, taskDoc),
+			getNewResponsibles(ctx, taskDoc),
+		]);
+		await ctx.db.patch(taskId, { toBeDoneTime, responsibleFor });
 	},
 });

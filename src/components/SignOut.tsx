@@ -9,7 +9,7 @@ const defaultUserImage = "";
 
 export function SignOut() {
 	const { signOut } = useAuthActions();
-	const user = useQuery(api.users.getCurrentUser);
+	const user = useQuery(api.users.getCurrentUserQuery);
 	return (
 		<ProfileMenu
 			imageUrl={user?.image || defaultUserImage}

@@ -2,7 +2,11 @@
 
 import webpush from "web-push";
 
-import { type ActionCtx, internalAction } from "./_generated/server";
+import {
+	type ActionCtx,
+	internalAction,
+	type QueryCtx,
+} from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import type { Doc } from "./_generated/dataModel";
 import type { Task } from "@/shared/tasks";
@@ -16,6 +20,14 @@ webpush.setVapidDetails(
 );
 
 /** Helper functions */
+
+export const getUserIdFromToken = async (ctx: QueryCtx, token: string) => {
+	const result = await ctx.db
+		.query("subscriptions")
+		.filter((q) => q.eq(q.field("subscription"), token))
+		.unique();
+	return result?.userId;
+};
 
 const sendNotification = async ({
 	title,
@@ -66,7 +78,7 @@ const notifyUser = async (
 		internal.tasks.getTasksToNotifyForUser,
 		{ userId, ignoreLastNotified },
 	);
-	const user = await ctx.runQuery(api.users.getUser, { userId });
+	const user = await ctx.runQuery(api.users.getUserQuery, { userId });
 	console.log(
 		`Notifying user ${user?.name}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);

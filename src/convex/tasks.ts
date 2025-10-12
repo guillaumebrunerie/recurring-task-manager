@@ -20,22 +20,24 @@ import {
 	taskStatus,
 } from "@/shared/tasks";
 import { convertDurationFromUnit } from "@/shared/units";
-import { selectUsers } from "./users";
+import { getUsers } from "./users";
+import type { Accomplishment } from "@/shared/accomplishments";
 
 /** Helper functions */
 
 // Returns the accomplishments for a task
-export const parseTaskAccomplishments = async (
+export const getTaskAccomplishments = async (
 	ctx: QueryCtx,
 	task: Doc<"tasks">,
-) => {
+): Promise<Accomplishment[]> => {
 	const accomplishmentDocs = await ctx.db
 		.query("accomplishments")
 		.filter((q) => q.eq(q.field("taskId"), task._id))
 		.collect();
-	return await Promise.all(
+
+	return Promise.all(
 		accomplishmentDocs
-			.toSorted((a, b) => b.completionTime - a.completionTime)
+			.sort((a, b) => b.completionTime - a.completionTime)
 			.map((a) => parseAccomplishment(ctx, a)),
 	);
 };
@@ -46,10 +48,14 @@ export const parseTask = async (
 	userId: Id<"users">,
 	task: Doc<"tasks">,
 ): Promise<Task | undefined> => {
-	if (task.visibleTo && !task.visibleTo.includes(userId)) {
+	if (!task.visibleTo.includes(userId)) {
 		return;
 	}
-	const responsibleFor = await selectUsers(ctx, task.responsibleFor);
+	const [visibleTo, responsibleFor, accomplishments] = await Promise.all([
+		getUsers(ctx, task.visibleTo),
+		getUsers(ctx, task.responsibleFor),
+		getTaskAccomplishments(ctx, task),
+	]);
 	return {
 		id: task._id,
 		name: task.name,
@@ -58,12 +64,15 @@ export const parseTask = async (
 		period: task.period,
 		toleranceUnit: task.toleranceUnit || task.unit,
 		tolerance: task.tolerance,
-		visibleTo: task.visibleTo,
+		visibleTo,
 		responsibleFor,
 		toBeDoneTime: task.toBeDoneTime,
-		toBeCompletedBy: task.isJoint ? responsibleFor : [responsibleFor[0]],
+		toBeCompletedBy:
+			task.isJoint ? responsibleFor
+			: responsibleFor.length == 0 ? []
+			: [responsibleFor[0]],
 		isJoint: task.isJoint || false,
-		accomplishments: await parseTaskAccomplishments(ctx, task),
+		accomplishments,
 		lastNotified: task.lastNotified,
 		isArchived: task.archivedAt !== undefined,
 		archivedAt: task.archivedAt,
@@ -230,7 +239,7 @@ export const calculateToBeDoneTime = async (
 	ctx: MutationCtx,
 	taskDoc: Doc<"tasks">,
 ) => {
-	const accomplishments = await parseTaskAccomplishments(ctx, taskDoc);
+	const accomplishments = await getTaskAccomplishments(ctx, taskDoc);
 
 	if (accomplishments.length == 0) {
 		return Date.now();

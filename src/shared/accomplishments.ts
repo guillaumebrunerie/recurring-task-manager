@@ -1,7 +1,7 @@
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import type { User } from "./users";
 import type { MutationCtx } from "@/convex/_generated/server";
-import { parseTaskAccomplishments } from "@/convex/tasks";
+import { getTaskAccomplishments } from "@/convex/tasks";
 
 // An accomplishment, format used by the frontend
 export type Accomplishment = {
@@ -16,7 +16,7 @@ export const getNewResponsibles = async (
 	ctx: MutationCtx,
 	taskDoc: Doc<"tasks">,
 ) => {
-	const accomplishments = await parseTaskAccomplishments(ctx, taskDoc);
+	const accomplishments = await getTaskAccomplishments(ctx, taskDoc);
 	let responsibles = taskDoc.responsibleFor;
 	if (responsibles.length <= 1 || taskDoc.isJoint) {
 		return responsibles;

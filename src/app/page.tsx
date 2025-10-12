@@ -35,8 +35,8 @@ const HomeContents = () => {
 		setIsEditing(true, { history: "push" });
 	};
 
-	const allUsers = useQuery(api.users.getAll);
-	const currentUser = useQuery(api.users.getCurrentUser);
+	const allUsers = useQuery(api.users.getAllUsersQuery);
+	const currentUser = useQuery(api.users.getCurrentUserQuery);
 
 	if (!tasks || !allUsers || !currentUser) {
 		return <div className={common.loading}>Chargement...</div>;

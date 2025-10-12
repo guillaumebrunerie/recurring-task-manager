@@ -6,16 +6,13 @@ import type { User } from "@/shared/users";
 
 /** Helper functions */
 
-export const parseUser = async (
-	_ctx: QueryCtx,
-	user: Doc<"users">,
-): Promise<User> => ({
+export const parseUser = (user: Doc<"users">): User => ({
 	id: user._id,
 	name: user.name,
 	image: user.image,
 });
 
-export const selectUser = async (
+export const getUser = async (
 	ctx: QueryCtx,
 	userId: Id<"users">,
 ): Promise<User> => {
@@ -23,34 +20,26 @@ export const selectUser = async (
 	if (!user) {
 		throw new Error(`User with id ${userId} not found`);
 	}
-	return await parseUser(ctx, user);
+	return parseUser(user);
 };
 
-export const selectUserMaybe = async (
-	ctx: QueryCtx,
-	userId?: Id<"users">,
-): Promise<User | undefined> =>
-	userId ? await selectUser(ctx, userId) : undefined;
-
-export const selectUsers = async (
+export const getUsers = async (
 	ctx: QueryCtx,
 	userIds: Id<"users">[],
 ): Promise<User[]> => {
-	return Promise.all(
-		userIds.map(async (userId) => await selectUser(ctx, userId)),
-	);
+	return Promise.all(userIds.map((userId) => getUser(ctx, userId)));
 };
 
 /** Queries */
 
-export const getUser = query({
+export const getUserQuery = query({
 	args: { userId: v.optional(v.id("users")) },
 	handler: async (ctx, { userId }) => {
-		return selectUserMaybe(ctx, userId);
+		return userId ? getUser(ctx, userId) : undefined;
 	},
 });
 
-export const getCurrentUser = query({
+export const getCurrentUserQuery = query({
 	args: {},
 	handler: async (ctx) => {
 		const userId = await getAuthUserId(ctx);
@@ -61,11 +50,11 @@ export const getCurrentUser = query({
 		if (!user) {
 			throw new Error(`User with id ${userId} not found`);
 		}
-		return await parseUser(ctx, user);
+		return parseUser(user);
 	},
 });
 
-export const getAll = query({
+export const getAllUsersQuery = query({
 	args: {},
 	handler: async (ctx) => {
 		const userId = await getAuthUserId(ctx);
@@ -73,8 +62,6 @@ export const getAll = query({
 			return [];
 		}
 		const users = await ctx.db.query("users").collect();
-		return await Promise.all(
-			users.map(async (user) => await parseUser(ctx, user)),
-		);
+		return users.map((user) => parseUser(user));
 	},
 });

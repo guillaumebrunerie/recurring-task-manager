@@ -16,7 +16,7 @@ export type Task = {
 	period: number;
 	toleranceUnit: TimeUnit;
 	tolerance: number;
-	visibleTo: Id<"users">[];
+	visibleTo: User[];
 	responsibleFor: User[];
 	isJoint: boolean;
 	toBeDoneTime?: number;

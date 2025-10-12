@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { internalQuery, mutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { parseUser } from "./users";
+import { getUser } from "./users";
 
 /** Queries */
 
@@ -20,8 +20,7 @@ export const getByUserName = internalQuery({
 		const allSubscriptions = await ctx.db.query("subscriptions").collect();
 		const subscriptions = await Promise.all(
 			allSubscriptions.map(async (subscription) => {
-				const userDoc = await ctx.db.get(subscription.userId);
-				const user = userDoc ? await parseUser(ctx, userDoc) : null;
+				const user = await getUser(ctx, subscription.userId);
 				if (user?.name === userName) {
 					return subscription;
 				}

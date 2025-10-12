@@ -61,7 +61,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 
 	// Who the task is visible to
 	const [visibleTo, setVisibleTo_] = useState<Set<Id<"users">>>(
-		new Set(task?.visibleTo || allUsers?.map((u) => u.id)),
+		new Set((task?.visibleTo || allUsers)?.map((u) => u.id)),
 	);
 	const setVisibleTo = (users: Set<Id<"users">>) => {
 		if (!user) {
