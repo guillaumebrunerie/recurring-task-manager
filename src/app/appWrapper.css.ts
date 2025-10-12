@@ -7,29 +7,22 @@ export const container = style({
 	gridTemplateRows: "4rem 1fr auto",
 });
 
-export const backButton = style({
-	position: "fixed",
-	background: "none",
-	border: "none",
-	//	color: "#333",
-	fontSize: "1rem",
-	padding: "2rem 0.5rem",
-	cursor: "pointer",
-	fontWeight: "bold",
-	// ":hover": {
-	// 	color: "#000",
-	// },
-	left: "calc((4rem - 40px) / 2)",
-});
-
 export const header = style({
 	backgroundColor: colors.hfbackground,
 	borderBottom: "1px solid",
 	borderColor: colors.hfborder,
 	display: "grid",
+	paddingInline: "1rem",
+	gridTemplateColumns: "2rem 1fr 2rem",
 	placeItems: "center",
 	boxShadow: `0 3px 3px ${colors.hfshadow}`,
 	zIndex: 1,
+	"& svg": {
+		width: "110%",
+		height: "auto",
+		strokeWidth: 1.3,
+		fill: "white",
+	},
 });
 
 export const footer = style({

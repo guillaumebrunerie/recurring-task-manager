@@ -2,9 +2,7 @@ import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
 
 export const container = style({
-	position: "fixed",
-	top: "calc((4rem - 40px) / 2)",
-	right: "calc((4rem - 40px) / 2)",
+	position: "relative",
 	zIndex: 1000,
 });
 

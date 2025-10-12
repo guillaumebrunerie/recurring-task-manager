@@ -1,13 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import * as styles from "./profileMenu.css";
-import { PushNotificationManager } from "./PushNotificationManager";
+import type { NotificationsProps } from "./usePushNotificationManager";
 
 type ProfileMenuProps = {
 	imageUrl?: string;
 	onSignOut: () => void;
+	notifications: NotificationsProps;
 };
 
-export const ProfileMenu = ({ imageUrl, onSignOut }: ProfileMenuProps) => {
+export const ProfileMenu = ({
+	imageUrl,
+	onSignOut,
+	notifications,
+}: ProfileMenuProps) => {
 	const [open, setOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +47,16 @@ export const ProfileMenu = ({ imageUrl, onSignOut }: ProfileMenuProps) => {
 			</button>
 			{open && (
 				<div className={styles.dropdown}>
-					<PushNotificationManager />
+					<div
+						onClick={notifications.toggleSubscription}
+						className={styles.dropdownItem}
+					>
+						{notifications.isSupported ?
+							notifications.isSubscribed ?
+								"Notifications ON"
+							:	"Notifications OFF"
+						:	"Notifications non supportées"}
+					</div>
 					<div className={styles.dropdownItem} onClick={onSignOut}>
 						Se déconnecter
 					</div>

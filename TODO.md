@@ -1,5 +1,4 @@
 - Changing periodicity should change next time
-- Notifications on/off icon
 - Automatically hide private tasks
 - Make it possible to reset next time to be done
 - Validate edit/new task form

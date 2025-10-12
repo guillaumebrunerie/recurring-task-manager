@@ -3,7 +3,6 @@
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useState, useEffect } from "react";
-import * as styles from "./profileMenu.css";
 
 function urlBase64ToUint8Array(base64String: string) {
 	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -20,7 +19,13 @@ function urlBase64ToUint8Array(base64String: string) {
 	return outputArray;
 }
 
-export const PushNotificationManager = () => {
+export type NotificationsProps = {
+	isSupported: boolean;
+	isSubscribed: boolean;
+	toggleSubscription?: () => Promise<void>;
+};
+
+export const usePushNotificationManager = (): NotificationsProps => {
 	const [isSupported, setIsSupported] = useState(false);
 	const [subscription, setSubscription] = useState<PushSubscription | null>(
 		null,
@@ -68,16 +73,13 @@ export const PushNotificationManager = () => {
 		await unsubscribeUser({ subscription: JSON.stringify(subscription) });
 	};
 
-	if (!isSupported) {
-		return null;
-	}
-
-	return (
-		<div
-			onClick={subscription ? unsubscribe : subscribe}
-			className={styles.dropdownItem}
-		>
-			{subscription ? "Notifications ON" : "Notifications OFF"}
-		</div>
-	);
+	return {
+		isSupported,
+		isSubscribed: subscription !== null,
+		toggleSubscription:
+			isSupported ?
+				subscription ? unsubscribe
+				:	subscribe
+			:	undefined,
+	};
 };
