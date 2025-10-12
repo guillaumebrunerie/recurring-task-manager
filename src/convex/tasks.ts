@@ -59,7 +59,9 @@ export const parseTask = async (
 		visibleTo: task.visibleTo,
 		responsibleFor: task.responsibleFor,
 		toBeDoneTime: task.toBeDoneTime,
-		toBeCompletedBy: [task.responsibleFor[0]],
+		toBeCompletedBy:
+			task.isJoint ? task.responsibleFor : [task.responsibleFor[0]],
+		isJoint: task.isJoint || false,
 		accomplishments: await parseTaskAccomplishments(ctx, task),
 		lastNotified: task.lastNotified,
 		isArchived: task.archivedAt !== undefined,
@@ -155,6 +157,7 @@ export const saveTask = mutation({
 		tolerance: v.number(),
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),
+		isJoint: v.boolean(),
 		toBeDoneTime: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
@@ -167,6 +170,7 @@ export const saveTask = mutation({
 			tolerance: args.tolerance,
 			visibleTo: args.visibleTo,
 			responsibleFor: args.responsibleFor,
+			isJoint: args.isJoint,
 			toBeDoneTime: args.toBeDoneTime,
 		};
 

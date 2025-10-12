@@ -17,6 +17,7 @@ export type Task = {
 	tolerance: number;
 	visibleTo: Id<"users">[];
 	responsibleFor: Id<"users">[];
+	isJoint: boolean;
 	toBeDoneTime?: number;
 	toBeCompletedBy: Id<"users">[];
 	accomplishments: Accomplishment[];

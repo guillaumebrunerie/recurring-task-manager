@@ -16,6 +16,7 @@ export default defineSchema({
 		tolerance: v.number(),
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),
+		isJoint: v.optional(v.boolean()),
 		lastNotified: v.optional(v.number()),
 		archivedAt: v.optional(v.number()),
 		toBeDoneTime: v.optional(v.number()),

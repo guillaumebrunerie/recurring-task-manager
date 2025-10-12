@@ -60,6 +60,9 @@ export const checkboxLabel = style({
 	alignItems: "center",
 	gap: "0.5rem",
 	cursor: "pointer",
+	"&:has(input:disabled)": {
+		opacity: 0.5,
+	},
 });
 
 export const textarea = style([

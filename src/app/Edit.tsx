@@ -94,6 +94,8 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 		!!task && task.period == 0,
 	);
 
+	const [isTaskJoint, setIsTaskJoint] = useState(!!task && task.isJoint);
+
 	// Transient state when saving the task
 	const [isCompleting, setIsCompleting] = useState(false);
 
@@ -112,6 +114,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			tolerance: Number(tolerance),
 			visibleTo: [...new Set([...visibleTo, user.id])],
 			responsibleFor: [...responsibleFor],
+			isJoint: isTaskJoint,
 			toBeDoneTime:
 				isTaskDisabled ? undefined : (
 					fromLocalDateTimeString(toBeDoneTime)
@@ -273,10 +276,21 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					users={(allUsers || []).filter(
 						(u) => visibleTo.has(u.id) || u.id === user?.id,
 					)}
-					hasPrimary
+					hasPrimary={!isTaskJoint}
 					selected={responsibleFor}
 					onChange={setResponsibleFor}
 				/>
+				<label className={styles.checkboxLabel}>
+					<input
+						type="checkbox"
+						checked={isTaskJoint}
+						onChange={(e) => {
+							setIsTaskJoint(e.target.checked);
+						}}
+						disabled={responsibleFor.size < 2}
+					/>
+					Tâche commune
+				</label>
 			</Field>
 			<div className={styles.bottomBar}>
 				<BlueButton

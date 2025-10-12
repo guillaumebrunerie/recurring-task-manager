@@ -153,7 +153,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 								);
 							}
 						})}
-						{task.toBeCompletedBy.map((userId) => (
+						{task.toBeCompletedBy.toReversed().map((userId) => (
 							<UserIndicator key={userId} userId={userId} />
 						))}
 					</div>
