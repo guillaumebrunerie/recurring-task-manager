@@ -4,6 +4,7 @@ export const grid = style({
 	display: "flex",
 	flexWrap: "wrap",
 	gap: "0.5rem",
+	marginTop: "0.5rem",
 });
 
 export const user = style({
@@ -16,11 +17,6 @@ export const user = style({
 	backgroundColor: "white",
 	cursor: "pointer",
 	transition: "background-color 0.2s, border-color 0.2s",
-	// selectors: {
-	// 	"&:hover": {
-	// 		borderColor: "#999",
-	// 	},
-	// },
 });
 
 export const selected = style({

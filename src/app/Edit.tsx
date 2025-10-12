@@ -73,7 +73,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 
 	// Who is responsible for the task
 	const [responsibleFor, setResponsibleFor_] = useState<Set<Id<"users">>>(
-		new Set(task?.responsibleFor || allUsers?.map((u) => u.id)),
+		new Set((task?.responsibleFor || allUsers)?.map((u) => u.id)),
 	);
 	const setResponsibleFor = (users: Set<Id<"users">>) => {
 		if (!user) {

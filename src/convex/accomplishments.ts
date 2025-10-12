@@ -3,7 +3,7 @@ import { mutation, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
-import { parseUser } from "./users";
+import { selectUsers } from "./users";
 import { calculateToBeDoneTime, parseTask } from "./tasks";
 
 import {
@@ -17,14 +17,17 @@ export const parseAccomplishment = async (
 	ctx: QueryCtx,
 	accomplishment: Doc<"accomplishments">,
 ): Promise<Accomplishment> => {
-	const userDoc =
+	const userIds =
 		accomplishment.completedBy ?
-			await ctx.db.get(accomplishment.completedBy)
-		:	null;
+			Array.isArray(accomplishment.completedBy) ?
+				accomplishment.completedBy
+			:	[accomplishment.completedBy]
+		:	[];
+	const completedBy = await selectUsers(ctx, userIds);
 	return {
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
-		completedBy: userDoc ? parseUser(userDoc) : undefined,
+		completedBy,
 	};
 };
 
@@ -48,11 +51,18 @@ export const addAccomplishment = mutation({
 		taskId: v.id("tasks"),
 		completionTime: v.optional(v.number()),
 		updateToBeDoneTime: v.boolean(),
+		completedBy: v.optional(v.array(v.id("users"))),
 		token: v.optional(v.string()), // For push notifications
 	},
 	handler: async (
 		ctx,
-		{ taskId, completionTime = Date.now(), updateToBeDoneTime, token },
+		{
+			taskId,
+			completionTime = Date.now(),
+			updateToBeDoneTime,
+			completedBy,
+			token,
+		},
 	) => {
 		const userId = await getUserId(ctx, token);
 		if (!userId) {
@@ -71,7 +81,8 @@ export const addAccomplishment = mutation({
 		await ctx.db.insert("accomplishments", {
 			taskId,
 			completionTime,
-			completedBy: userId,
+			completedBy:
+				completedBy || task.toBeCompletedBy.map((user) => user.id), // Default to be completed by
 		});
 		await ctx.db.patch(taskId, {
 			responsibleFor: await getNewResponsibles(ctx, taskDoc),

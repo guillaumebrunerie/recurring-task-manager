@@ -20,6 +20,7 @@ import {
 	taskStatus,
 } from "@/shared/tasks";
 import { convertDurationFromUnit } from "@/shared/units";
+import { selectUsers } from "./users";
 
 /** Helper functions */
 
@@ -48,6 +49,7 @@ export const parseTask = async (
 	if (task.visibleTo && !task.visibleTo.includes(userId)) {
 		return;
 	}
+	const responsibleFor = await selectUsers(ctx, task.responsibleFor);
 	return {
 		id: task._id,
 		name: task.name,
@@ -57,10 +59,9 @@ export const parseTask = async (
 		toleranceUnit: task.toleranceUnit || task.unit,
 		tolerance: task.tolerance,
 		visibleTo: task.visibleTo,
-		responsibleFor: task.responsibleFor,
+		responsibleFor,
 		toBeDoneTime: task.toBeDoneTime,
-		toBeCompletedBy:
-			task.isJoint ? task.responsibleFor : [task.responsibleFor[0]],
+		toBeCompletedBy: task.isJoint ? responsibleFor : [responsibleFor[0]],
 		isJoint: task.isJoint || false,
 		accomplishments: await parseTaskAccomplishments(ctx, task),
 		lastNotified: task.lastNotified,
@@ -126,7 +127,7 @@ export const getTasksToNotifyForUser = internalQuery({
 		).filter(
 			(task: Task | undefined): task is Task =>
 				!!task &&
-				task.toBeCompletedBy.includes(userId) &&
+				task.toBeCompletedBy.some((u) => u.id == userId) &&
 				shouldNotifyForTask({ task, now, ignoreLastNotified }),
 		);
 

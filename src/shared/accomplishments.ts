@@ -7,7 +7,7 @@ import { parseTaskAccomplishments } from "@/convex/tasks";
 export type Accomplishment = {
 	id: Id<"accomplishments">;
 	completionTime: number;
-	completedBy?: User;
+	completedBy: User[];
 };
 
 // Returns a new ordering of the responsibleFor array after an accomplishment,
@@ -18,16 +18,17 @@ export const getNewResponsibles = async (
 ) => {
 	const accomplishments = await parseTaskAccomplishments(ctx, taskDoc);
 	let responsibles = taskDoc.responsibleFor;
-	if (responsibles.length <= 1) {
+	if (responsibles.length <= 1 || taskDoc.isJoint) {
 		return responsibles;
 	}
-	for (const accomplishment of accomplishments) {
-		if (responsibles.length == 1) {
-			break;
+
+	outerLoop: for (const accomplishment of accomplishments) {
+		for (const user of accomplishment.completedBy) {
+			responsibles = responsibles.filter((id) => id !== user.id);
+			if (responsibles.length == 1) {
+				break outerLoop;
+			}
 		}
-		responsibles = responsibles.filter(
-			(id) => id !== accomplishment.completedBy?.id,
-		);
 	}
 
 	return [

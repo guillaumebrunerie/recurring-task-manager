@@ -1,8 +1,8 @@
+- Fix default to be completed by
 - Changing periodicity should change next time
 - Notifications on/off icon
 - Automatically hide private tasks
 - Make it possible to reset next time to be done
-- Possibility to add custom person who completed the task
 - Validate edit/new task form
 - Convert to SPA
 - Implement profile page + groups (households)

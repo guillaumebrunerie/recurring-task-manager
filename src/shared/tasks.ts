@@ -6,6 +6,7 @@ import {
 	type TimeUnit,
 } from "./units";
 import type { Accomplishment } from "./accomplishments";
+import type { User } from "./users";
 
 export type Task = {
 	id: Id<"tasks">;
@@ -16,10 +17,10 @@ export type Task = {
 	toleranceUnit: TimeUnit;
 	tolerance: number;
 	visibleTo: Id<"users">[];
-	responsibleFor: Id<"users">[];
+	responsibleFor: User[];
 	isJoint: boolean;
 	toBeDoneTime?: number;
-	toBeCompletedBy: Id<"users">[];
+	toBeCompletedBy: User[];
 	accomplishments: Accomplishment[];
 	lastNotified?: number;
 	isArchived: boolean;

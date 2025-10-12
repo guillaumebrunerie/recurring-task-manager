@@ -19,6 +19,7 @@ import { Details } from "./Details";
 import { Edit } from "./Edit";
 import { Spinner } from "@/components/Spinner";
 import type { Id } from "@/convex/_generated/dataModel";
+import { UserIndicators } from "./UserIndicators";
 
 const celebrateCompletionWithConfetti = () => {
 	confetti({
@@ -49,12 +50,16 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const isDetailsOpen = taskIdUrl === task.id && !isEditing;
 	const isEditOpen = taskIdUrl === task.id && isEditing;
 
-	const handleSubmit = async (doneTime?: string) => {
+	const handleSubmit = async (
+		doneTime?: string,
+		completedBy?: Id<"users">[],
+	) => {
 		try {
 			await addAccomplishment({
 				taskId: task.id,
 				completionTime:
 					doneTime ? fromLocalDateTimeString(doneTime) : undefined,
+				completedBy,
 				updateToBeDoneTime: true,
 			});
 			celebrateCompletionWithConfetti();
@@ -139,24 +144,10 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 					</div>
 				</div>
 				<div className={styles.bottomRow}>
-					<div className={styles.userIndicators}>
-						{task.responsibleFor.toReversed().map((userId) => {
-							if (task.toBeCompletedBy.includes(userId)) {
-								return null;
-							} else {
-								return (
-									<UserIndicator
-										key={userId}
-										userId={userId}
-										isDisabled
-									/>
-								);
-							}
-						})}
-						{task.toBeCompletedBy.toReversed().map((userId) => (
-							<UserIndicator key={userId} userId={userId} />
-						))}
-					</div>
+					<UserIndicators
+						allUsers={task.responsibleFor}
+						enabledUsers={task.toBeCompletedBy}
+					/>
 					<div className={styles.time}>{timeString}</div>
 				</div>
 				{isContextMenuOpen && (
@@ -198,33 +189,6 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				</Modal>
 			)}
 		</>
-	);
-};
-
-type UserIndicatorProps = {
-	userId?: Id<"users">;
-	isDisabled?: boolean;
-};
-
-const UserIndicator = ({ userId, isDisabled }: UserIndicatorProps) => {
-	const user = useQuery(api.users.getUser, {
-		userId,
-	});
-	const imageUrl = user?.image;
-	if (!imageUrl) {
-		return;
-	}
-
-	return (
-		<img
-			src={imageUrl}
-			alt="Profile"
-			className={
-				styles.assignee +
-				" " +
-				(isDisabled ? styles.disabledAssignee : "")
-			}
-		/>
 	);
 };
 

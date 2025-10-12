@@ -91,11 +91,8 @@ export const options = recipe({
 		interpolateSize: "allow-keywords",
 		transition: `height 0.3s ease`,
 		boxSizing: "border-box",
-		"::before": {
-			content: "",
-			display: "block",
-			height: "1rem",
-		},
+		display: "grid",
+		gap: "0.5rem",
 	},
 	variants: {
 		isCollapsed: {

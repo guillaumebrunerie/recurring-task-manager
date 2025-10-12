@@ -65,7 +65,9 @@ const HomeContents = () => {
 				{currentUser &&
 					[...overdueTasks, ...dueTasks].every(
 						(task) =>
-							!task.toBeCompletedBy.includes(currentUser.id),
+							!task.toBeCompletedBy.some(
+								(u) => u.id == currentUser.id,
+							),
 					) && <Congratulations />}
 				<Section title="En retard" tasks={overdueTasks} now={now} />
 				<Section title="À faire" tasks={dueTasks} now={now} />

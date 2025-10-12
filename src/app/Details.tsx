@@ -8,10 +8,16 @@ import type { Accomplishment } from "@/shared/accomplishments";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { BlueButton, GreenButton } from "@/components/Button";
+import type { Id } from "@/convex/_generated/dataModel";
+import { UserSelector } from "@/components/UserSelector";
+import { UserIndicators } from "./UserIndicators";
 
 type DetailsProps = {
 	task: Task;
-	handleSubmit: (doneTime?: string) => Promise<void>;
+	handleSubmit: (
+		doneTime?: string,
+		completedBy?: Id<"users">[],
+	) => Promise<void>;
 	onEdit: () => void;
 };
 
@@ -19,6 +25,9 @@ export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
 	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
 	const [isCompleting, setIsCompleting] = useState(false);
 	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
+	const [completedBy, setCompletedBy] = useState<Set<Id<"users">>>(
+		new Set(task.toBeCompletedBy.map((user) => user.id)), // Default to be completed by
+	);
 	return (
 		<>
 			<div className={styles.stuff}>
@@ -79,6 +88,9 @@ export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
 							try {
 								await handleSubmit(
 									isOptionsCollapsed ? undefined : doneTime,
+									isOptionsCollapsed ? undefined : (
+										[...completedBy]
+									),
 								);
 							} finally {
 								setIsCompleting(false);
@@ -101,6 +113,14 @@ export const Details = ({ task, handleSubmit, onEdit }: DetailsProps) => {
 							value={doneTime}
 							onChange={(e) => setDoneTime(e.target.value)}
 							className={styles.input}
+						/>
+					</label>
+					<label className={styles.label}>
+						Effectuée par:
+						<UserSelector
+							users={task.responsibleFor}
+							selected={completedBy}
+							onChange={setCompletedBy}
 						/>
 					</label>
 				</div>
@@ -170,13 +190,10 @@ const TaskHistoryItem = ({
 				</span>
 				{dateTimeFormat.format(new Date(accomplishment.completionTime))}
 			</div>
-			{accomplishment.completedBy?.image && (
-				<img
-					src={accomplishment.completedBy.image}
-					alt="Profile"
-					className={styles.accomplishedBy}
-				/>
-			)}
+			<UserIndicators
+				allUsers={accomplishment.completedBy}
+				enabledUsers={accomplishment.completedBy}
+			/>
 		</li>
 	);
 };
