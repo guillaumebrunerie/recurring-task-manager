@@ -35,6 +35,9 @@ export const AppWrapper = ({
 						/>
 					}
 				</Authenticated>
+				<Unauthenticated>
+					<div />
+				</Unauthenticated>
 				<h1 className={common.title}>{title}</h1>
 				<Authenticated>
 					<SignOut notifications={notifications} />
