@@ -1,4 +1,3 @@
-- Implement joint tasks
 - Changing periodicity should change next time
 - Notifications on/off icon
 - Automatically hide private tasks
