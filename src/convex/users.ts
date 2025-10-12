@@ -44,11 +44,11 @@ export const getCurrentUserQuery = query({
 	handler: async (ctx) => {
 		const userId = await getAuthUserId(ctx);
 		if (userId === null) {
-			throw new Error("Not authenticated");
+			return;
 		}
 		const user = await ctx.db.get(userId);
 		if (!user) {
-			throw new Error(`User with id ${userId} not found`);
+			return;
 		}
 		return parseUser(user);
 	},
