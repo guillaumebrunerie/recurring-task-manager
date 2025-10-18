@@ -42,9 +42,13 @@ const HomeContents = () => {
 		if (!tasks) {
 			return;
 		}
-		const lateCount = tasks.length;
+		const lateCount = tasks.filter(
+			(task) =>
+				taskStatus(task, now) == "overdue" &&
+				task.toBeCompletedBy.some((user) => user.id == currentUser?.id),
+		).length;
 		navigator?.setAppBadge?.(lateCount);
-	}, [tasks]);
+	}, [tasks, currentUser, now]);
 
 	if (!tasks || !allUsers) {
 		return <div className={common.loading}>Chargement...</div>;
