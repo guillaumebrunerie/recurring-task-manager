@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import * as styles from "./page.css";
 import * as common from "./common.css";
 import { useTimestamp } from "../hooks/useTimestamp";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { type Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { AppWrapper } from "./AppWrapper";
 import useDelayedTruth from "@/hooks/useDelayedTruth";
@@ -38,6 +38,14 @@ const HomeContents = () => {
 	const allUsers = useQuery(api.users.getAllUsersQuery);
 	const currentUser = useQuery(api.users.getCurrentUserQuery);
 
+	useEffect(() => {
+		if (!tasks) {
+			return;
+		}
+		const lateCount = tasks.length;
+		navigator?.setAppBadge?.(lateCount);
+	}, [tasks]);
+
 	if (!tasks || !allUsers) {
 		return <div className={common.loading}>Chargement...</div>;
 	}
@@ -56,7 +64,7 @@ const HomeContents = () => {
 
 	return (
 		<AppWrapper
-			title="Project Happy Home"
+			title="Happy Home"
 			footer={
 				<BlueButton onClick={openNewTask}>Nouvelle tâche</BlueButton>
 			}
