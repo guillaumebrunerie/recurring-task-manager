@@ -47,6 +47,7 @@ export const parseTask = async (
 	ctx: QueryCtx,
 	userId: Id<"users">,
 	task: Doc<"tasks">,
+	includeAccomplishments = true,
 ): Promise<Task | undefined> => {
 	if (!task.visibleTo.includes(userId)) {
 		return;
@@ -54,7 +55,7 @@ export const parseTask = async (
 	const [visibleTo, responsibleFor, accomplishments] = await Promise.all([
 		getUsers(ctx, task.visibleTo),
 		getUsers(ctx, task.responsibleFor),
-		getTaskAccomplishments(ctx, task),
+		includeAccomplishments ? getTaskAccomplishments(ctx, task) : [],
 	]);
 	return {
 		id: task._id,
@@ -131,7 +132,9 @@ export const getTasksToNotifyForUser = internalQuery({
 		const taskDocs = await ctx.db.query("tasks").collect();
 		const tasks: Task[] = (
 			await Promise.all(
-				taskDocs.map((taskDoc) => parseTask(ctx, userId, taskDoc)),
+				taskDocs.map((taskDoc) =>
+					parseTask(ctx, userId, taskDoc, false),
+				),
 			)
 		).filter(
 			(task: Task | undefined): task is Task =>
