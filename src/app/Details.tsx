@@ -5,7 +5,7 @@ import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
 import { Spinner } from "@/components/Spinner";
 import type { Accomplishment } from "@/shared/accomplishments";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { BlueButton, GreenButton } from "@/components/Button";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -137,20 +137,22 @@ export const Details = ({
 };
 
 const TaskHistory = ({ task }: { task: Task }) => {
-	const history = task.accomplishments;
+	const history = useQuery(api.tasks.getAccomplishments, { id: task.id });
 	return (
 		<div className={styles.section}>
 			<h3 className={styles.sectionTitle}>Historique</h3>
-			{history.length > 0 ?
-				<ul className={styles.completionList}>
-					{history.map((accomplishment) => (
-						<TaskHistoryItem
-							key={accomplishment.id}
-							accomplishment={accomplishment}
-						/>
-					))}
-				</ul>
-			:	"Pas d'historique pour cette tâche."}
+			{history ?
+				history.length > 0 ?
+					<ul className={styles.completionList}>
+						{history.map((accomplishment) => (
+							<TaskHistoryItem
+								key={accomplishment.id}
+								accomplishment={accomplishment}
+							/>
+						))}
+					</ul>
+				:	"Pas d'historique pour cette tâche."
+			:	<ul className={styles.completionList}>Loading...</ul>}
 		</div>
 	);
 };

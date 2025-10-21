@@ -47,15 +47,13 @@ export const parseTask = async (
 	ctx: QueryCtx,
 	userId: Id<"users">,
 	task: Doc<"tasks">,
-	includeAccomplishments = true,
 ): Promise<Task | undefined> => {
 	if (!task.visibleTo.includes(userId)) {
 		return;
 	}
-	const [visibleTo, responsibleFor, accomplishments] = await Promise.all([
+	const [visibleTo, responsibleFor] = await Promise.all([
 		getUsers(ctx, task.visibleTo),
 		getUsers(ctx, task.responsibleFor),
-		includeAccomplishments ? getTaskAccomplishments(ctx, task) : [],
 	]);
 	return {
 		id: task._id,
@@ -73,7 +71,6 @@ export const parseTask = async (
 			: responsibleFor.length == 0 ? []
 			: [responsibleFor[0]],
 		isJoint: task.isJoint || false,
-		accomplishments,
 		lastNotified: task.lastNotified,
 		isArchived: task.archivedAt !== undefined,
 		archivedAt: task.archivedAt,
@@ -100,6 +97,27 @@ export const get = query({
 			throw new ConvexError(`Task with id ${id} not found`);
 		}
 		return await parseTask(ctx, userId, task);
+	},
+});
+
+// Returns the accomplishments of a task
+export const getAccomplishments = query({
+	args: {
+		id: v.optional(v.id("tasks")),
+	},
+	handler: async (ctx, { id }) => {
+		if (!id) {
+			return;
+		}
+		const userId = await getAuthUserId(ctx);
+		if (userId === null) {
+			return;
+		}
+		const task = await ctx.db.get(id);
+		if (!task) {
+			throw new ConvexError(`Task with id ${id} not found`);
+		}
+		return getTaskAccomplishments(ctx, task);
 	},
 });
 
@@ -132,9 +150,7 @@ export const getTasksToNotifyForUser = internalQuery({
 		const taskDocs = await ctx.db.query("tasks").collect();
 		const tasks: Task[] = (
 			await Promise.all(
-				taskDocs.map((taskDoc) =>
-					parseTask(ctx, userId, taskDoc, false),
-				),
+				taskDocs.map((taskDoc) => parseTask(ctx, userId, taskDoc)),
 			)
 		).filter(
 			(task: Task | undefined): task is Task =>

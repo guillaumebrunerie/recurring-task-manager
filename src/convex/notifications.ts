@@ -2,11 +2,7 @@
 
 import webpush from "web-push";
 
-import {
-	type ActionCtx,
-	internalAction,
-	type QueryCtx,
-} from "./_generated/server";
+import { type ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import type { Doc } from "./_generated/dataModel";
 import type { Task } from "@/shared/tasks";

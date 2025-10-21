@@ -5,7 +5,6 @@ import {
 	getMinTimeLeft,
 	type TimeUnit,
 } from "./units";
-import type { Accomplishment } from "./accomplishments";
 import type { User } from "./users";
 
 export type Task = {
@@ -21,7 +20,6 @@ export type Task = {
 	isJoint: boolean;
 	toBeDoneTime?: number;
 	toBeCompletedBy: User[];
-	accomplishments: Accomplishment[];
 	lastNotified?: number;
 	isArchived: boolean;
 	archivedAt?: number;
