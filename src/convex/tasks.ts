@@ -32,7 +32,7 @@ export const getTaskAccomplishments = async (
 ): Promise<Accomplishment[]> => {
 	const accomplishmentDocs = await ctx.db
 		.query("accomplishments")
-		.filter((q) => q.eq(q.field("taskId"), task._id))
+		.withIndex("by_taskId", (q) => q.eq("taskId", task._id))
 		.collect();
 
 	return Promise.all(
