@@ -50,6 +50,8 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	const isDetailsOpen = taskIdUrl === task.id && !isEditing;
 	const isEditOpen = taskIdUrl === task.id && isEditing;
 
+	const history = useQuery(api.tasks.getAccomplishments, { id: task.id });
+
 	const handleSubmit = async (
 		doneTime?: string,
 		completedBy?: Id<"users">[],
@@ -177,6 +179,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				<Modal title={task.name} onClose={closeModal}>
 					<Details
 						task={task}
+						history={history || []}
 						handleSubmit={handleSubmit}
 						onEdit={openEdit}
 						currentUser={currentUser}

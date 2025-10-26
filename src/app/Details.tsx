@@ -5,7 +5,7 @@ import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
 import { Spinner } from "@/components/Spinner";
 import type { Accomplishment } from "@/shared/accomplishments";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { BlueButton, GreenButton } from "@/components/Button";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -15,6 +15,7 @@ import type { User } from "@/shared/users";
 
 type DetailsProps = {
 	task: Task;
+	history: Accomplishment[];
 	currentUser: User;
 	handleSubmit: (
 		doneTime?: string,
@@ -25,6 +26,7 @@ type DetailsProps = {
 
 export const Details = ({
 	task,
+	history,
 	currentUser,
 	handleSubmit,
 	onEdit,
@@ -69,7 +71,7 @@ export const Details = ({
 					<BlueButton onClick={onEdit}>Éditer</BlueButton>
 				</div>
 			</div>
-			<TaskHistory task={task} />
+			<TaskHistory history={history} />
 			<div className={styles.optionsSection}>
 				<div className={styles.modalButtons2}>
 					<div
@@ -136,8 +138,7 @@ export const Details = ({
 	);
 };
 
-const TaskHistory = ({ task }: { task: Task }) => {
-	const history = useQuery(api.tasks.getAccomplishments, { id: task.id });
+const TaskHistory = ({ history }: { history: Accomplishment[] }) => {
 	return (
 		<div className={styles.section}>
 			<h3 className={styles.sectionTitle}>Historique</h3>
