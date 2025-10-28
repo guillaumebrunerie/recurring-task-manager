@@ -18,6 +18,7 @@ export type Task = {
 	visibleTo: User[];
 	responsibleFor: User[];
 	isJoint: boolean;
+	isFixedSchedule: boolean;
 	toBeDoneTime?: number;
 	toBeCompletedBy: User[];
 	lastNotified?: number;

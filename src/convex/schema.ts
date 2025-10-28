@@ -17,6 +17,7 @@ export default defineSchema({
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),
 		isJoint: v.optional(v.boolean()),
+		isFixedSchedule: v.optional(v.boolean()),
 		lastNotified: v.optional(v.number()),
 		archivedAt: v.optional(v.number()),
 		toBeDoneTime: v.optional(v.number()),

@@ -95,6 +95,9 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 	);
 
 	const [isTaskJoint, setIsTaskJoint] = useState(!!task && task.isJoint);
+	const [isFixedSchedule, setIsFixedSchedule] = useState(
+		!!task && task.isFixedSchedule,
+	);
 
 	// Transient state when saving the task
 	const [isCompleting, setIsCompleting] = useState(false);
@@ -115,6 +118,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			visibleTo: [...new Set([...visibleTo, user.id])],
 			responsibleFor: [...responsibleFor],
 			isJoint: isTaskJoint,
+			isFixedSchedule,
 			toBeDoneTime:
 				isTaskDisabled ? undefined : (
 					fromLocalDateTimeString(toBeDoneTime)
@@ -251,6 +255,17 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					onChange={(e) => setToBeDoneTime(e.target.value)}
 					className={styles.input + " " + styles.dateTimeInput}
 				/>
+				<label className={styles.checkboxLabel}>
+					<input
+						type="checkbox"
+						checked={isFixedSchedule}
+						onChange={(e) => {
+							setIsFixedSchedule(e.target.checked);
+						}}
+						disabled={isTaskDisabled}
+					/>
+					Planning fixe
+				</label>
 				<label className={styles.checkboxLabel}>
 					<input
 						type="checkbox"

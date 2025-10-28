@@ -71,6 +71,7 @@ export const parseTask = async (
 			: responsibleFor.length == 0 ? []
 			: [responsibleFor[0]],
 		isJoint: task.isJoint || false,
+		isFixedSchedule: task.isFixedSchedule || false,
 		lastNotified: task.lastNotified,
 		isArchived: task.archivedAt !== undefined,
 		archivedAt: task.archivedAt,
@@ -187,6 +188,7 @@ export const saveTask = mutation({
 		visibleTo: v.array(v.id("users")),
 		responsibleFor: v.array(v.id("users")),
 		isJoint: v.boolean(),
+		isFixedSchedule: v.boolean(),
 		toBeDoneTime: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
@@ -200,6 +202,7 @@ export const saveTask = mutation({
 			visibleTo: args.visibleTo,
 			responsibleFor: args.responsibleFor,
 			isJoint: args.isJoint,
+			isFixedSchedule: args.isFixedSchedule,
 			toBeDoneTime: args.toBeDoneTime,
 		};
 
@@ -258,23 +261,34 @@ export const calculateToBeDoneTime = async (
 	ctx: MutationCtx,
 	taskDoc: Doc<"tasks">,
 ) => {
-	const accomplishments = await getTaskAccomplishments(ctx, taskDoc);
-
-	if (accomplishments.length == 0) {
-		return Date.now();
-	}
 	if (taskDoc.period == 0) {
 		return undefined;
 	}
 
-	const lastAccomplishmentTime = accomplishments
-		.map((a) => a.completionTime)
-		.reduce((a, b) => Math.max(a, b));
+	if (taskDoc.isFixedSchedule) {
+		if (!taskDoc.toBeDoneTime) {
+			return Date.now();
+		}
+		return (
+			taskDoc.toBeDoneTime +
+			convertDurationFromUnit(taskDoc.period, taskDoc.unit)
+		);
+	} else {
+		const accomplishments = await getTaskAccomplishments(ctx, taskDoc);
 
-	return (
-		lastAccomplishmentTime +
-		convertDurationFromUnit(taskDoc.period, taskDoc.unit)
-	);
+		if (accomplishments.length == 0) {
+			return Date.now();
+		}
+
+		const lastAccomplishmentTime = accomplishments
+			.map((a) => a.completionTime)
+			.reduce((a, b) => Math.max(a, b));
+
+		return (
+			lastAccomplishmentTime +
+			convertDurationFromUnit(taskDoc.period, taskDoc.unit)
+		);
+	}
 };
 
 export const resetToBeDoneTime = mutation({
