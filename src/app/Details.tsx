@@ -139,21 +139,32 @@ export const Details = ({
 };
 
 const TaskHistory = ({ history }: { history: Accomplishment[] }) => {
+	const [isCollapsed, setIsCollapsed] = useState(true);
 	return (
-		<div className={styles.section}>
-			<h3 className={styles.sectionTitle}>Historique</h3>
-			{history ?
-				history.length > 0 ?
-					<ul className={styles.completionList}>
-						{history.map((accomplishment) => (
-							<TaskHistoryItem
-								key={accomplishment.id}
-								accomplishment={accomplishment}
-							/>
-						))}
-					</ul>
-				:	"Pas d'historique pour cette tâche."
-			:	<ul className={styles.completionList}>Loading...</ul>}
+		<div className={styles.historySection}>
+			<div
+				className={styles.modalButtons2}
+				onClick={() => setIsCollapsed(!isCollapsed)}
+			>
+				<div className={styles.optionsButton({ isCollapsed })}>
+					<span className={styles.arrow({ isCollapsed })}>▼</span>
+					Historique
+				</div>
+			</div>
+			<div className={styles.history({ isCollapsed })}>
+				{history ?
+					history.length > 0 ?
+						<ul className={styles.completionList}>
+							{history.map((accomplishment) => (
+								<TaskHistoryItem
+									key={accomplishment.id}
+									accomplishment={accomplishment}
+								/>
+							))}
+						</ul>
+					:	"Pas d'historique pour cette tâche."
+				:	<ul className={styles.completionList}>Loading...</ul>}
+			</div>
 		</div>
 	);
 };

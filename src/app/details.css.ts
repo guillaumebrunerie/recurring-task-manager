@@ -64,6 +64,13 @@ export const sectionTitle = style({
 
 export const optionsSection = style({});
 
+export const historySection = style({
+	borderTop: "1px solid #eee",
+	paddingTop: "1rem",
+	display: "flex",
+	flexDirection: "column",
+});
+
 export const optionsButton = recipe({
 	base: {
 		display: "flex",
@@ -72,6 +79,7 @@ export const optionsButton = recipe({
 		gap: "0.25rem",
 		cursor: "pointer",
 		transition: "color 0.3s ease",
+		fontWeight: "500",
 	},
 	variants: {
 		isCollapsed: {
@@ -98,6 +106,29 @@ export const options = recipe({
 		isCollapsed: {
 			true: {
 				height: "0",
+			},
+			false: {
+				height: "auto",
+			},
+		},
+	},
+});
+
+export const history = recipe({
+	base: {
+		overflow: "hidden",
+		interpolateSize: "allow-keywords",
+		transition: `all 0.3s ease`,
+		boxSizing: "border-box",
+		display: "grid",
+		gap: "0.5rem",
+		paddingTop: "1rem",
+	},
+	variants: {
+		isCollapsed: {
+			true: {
+				height: "0",
+				paddingTop: "0",
 			},
 			false: {
 				height: "auto",
