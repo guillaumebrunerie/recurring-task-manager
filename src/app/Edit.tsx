@@ -174,6 +174,36 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					}
 				/>
 			</Field>
+			<Field title="À effectuer le">
+				<input
+					type="datetime-local"
+					disabled={isTaskDisabled}
+					value={toBeDoneTime}
+					onChange={(e) => setToBeDoneTime(e.target.value)}
+					className={styles.input + " " + styles.dateTimeInput}
+				/>
+				<label className={styles.checkboxLabel}>
+					<input
+						type="checkbox"
+						checked={isFixedSchedule}
+						onChange={(e) => {
+							setIsFixedSchedule(e.target.checked);
+						}}
+						disabled={isTaskDisabled}
+					/>
+					Planning fixe
+				</label>
+				<label className={styles.checkboxLabel}>
+					<input
+						type="checkbox"
+						checked={isTaskDisabled}
+						onChange={(e) => {
+							setIsTaskDisabled(e.target.checked);
+						}}
+					/>
+					Désactiver la tâche
+				</label>
+			</Field>
 			<Field title="Périodicité">
 				<div className={styles.periodRow}>
 					<input
@@ -245,36 +275,6 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 						}}
 					/>
 					Tâche non récurrente
-				</label>
-			</Field>
-			<Field title="À effectuer le">
-				<input
-					type="datetime-local"
-					disabled={isTaskDisabled}
-					value={toBeDoneTime}
-					onChange={(e) => setToBeDoneTime(e.target.value)}
-					className={styles.input + " " + styles.dateTimeInput}
-				/>
-				<label className={styles.checkboxLabel}>
-					<input
-						type="checkbox"
-						checked={isFixedSchedule}
-						onChange={(e) => {
-							setIsFixedSchedule(e.target.checked);
-						}}
-						disabled={isTaskDisabled}
-					/>
-					Planning fixe
-				</label>
-				<label className={styles.checkboxLabel}>
-					<input
-						type="checkbox"
-						checked={isTaskDisabled}
-						onChange={(e) => {
-							setIsTaskDisabled(e.target.checked);
-						}}
-					/>
-					Désactiver la tâche
 				</label>
 			</Field>
 			<Field title="Visible pour">
