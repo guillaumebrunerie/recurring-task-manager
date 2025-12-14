@@ -1,5 +1,3 @@
-import type { Task } from "./tasks";
-
 export const units = [
 	"seconds",
 	"minutes",
@@ -290,24 +288,4 @@ export const timeToString = (time: number, unit: TimeUnit) => {
 
 export const durationUnitToString = (durationUnit: number, unit: TimeUnit) => {
 	return `${durationUnit} ${durationUnit == 1 ? unitToString[unit] : unitToStringPlural[unit]}`;
-};
-
-/** Returns the earliest time at which the task should be completed again. If
-    this is after the current time, the task is not due yet. */
-export const getMinTimeLeft = (task: Task, toBeDoneTime: number) => {
-	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.toleranceUnit);
-	return convertFromUnit(
-		toBeDoneTimeInUnit - task.tolerance,
-		task.toleranceUnit,
-	);
-};
-
-/** Returns the latest time at which the task should be completed again. If this
-    is before the current time, the task is overdue. */
-export const getMaxTimeLeft = (task: Task, toBeDoneTime: number) => {
-	const toBeDoneTimeInUnit = convertToUnit(toBeDoneTime, task.toleranceUnit);
-	return convertFromUnit(
-		toBeDoneTimeInUnit + task.tolerance + 1,
-		task.toleranceUnit,
-	);
 };

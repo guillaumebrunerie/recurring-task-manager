@@ -12,22 +12,27 @@ export const colors = createGlobalTheme(":root", {
 	foreground: `light-dark(${tw.slate800}, oklch(0.87 0 0))`,
 	sectionTitle: `light-dark(${tw.slate800}, oklch(0.87 0 0))`,
 	cardStatus: {
-		overdue: {
+		red: {
 			backgroundColor: `light-dark(${tw.red50}, oklch(0.25 0.02 25))`,
 			borderColor: `light-dark(${tw.red700}, oklch(0.5 0.1 25))`,
 			color: `light-dark(${tw.red800}, oklch(0.7 0.15 25))`,
 		},
-		due: {
+		yellow: {
+			backgroundColor: `light-dark(${tw.yellow50}, oklch(0.25 0.02 90))`,
+			borderColor: `light-dark(${tw.yellow700}, oklch(0.5 0.1 90))`,
+			color: `light-dark(${tw.yellow800}, oklch(0.7 0.15 90))`,
+		},
+		blue: {
 			backgroundColor: `light-dark(${tw.sky50}, oklch(0.25 0.02 260))`,
 			borderColor: `light-dark(${tw.sky700}, oklch(0.5 0.1 260))`,
 			color: `light-dark(${tw.sky800}, oklch(0.7 0.15 260))`,
 		},
-		waiting: {
+		green: {
 			backgroundColor: `light-dark(${tw.emerald50}, oklch(0.25 0.02 150))`,
 			borderColor: `light-dark(${tw.emerald700}, oklch(0.5 0.1 150))`,
 			color: `light-dark(${tw.emerald800}, oklch(0.7 0.15 150))`,
 		},
-		archived: {
+		grey: {
 			backgroundColor: `light-dark(${tw.zinc50}, oklch(0.25 0 0))`,
 			borderColor: `light-dark(${tw.zinc400}, oklch(0.4 0 0))`,
 			color: `light-dark(${tw.zinc500}, oklch(0.5 0 0))`,

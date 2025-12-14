@@ -66,7 +66,7 @@ export const statusVariants = recipe({
 		marginBlock: "4px",
 	},
 	variants: {
-		status: colors.cardStatus,
+		color: colors.cardStatus,
 	},
 });
 

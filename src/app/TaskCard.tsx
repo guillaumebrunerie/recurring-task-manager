@@ -123,13 +123,21 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	if (!currentUser || !allUsers) {
 		return;
 	}
+	const color = (
+		{
+			veryLate: "red",
+			late: "yellow",
+			dueNow: "blue",
+			dueSoon: "blue",
+			waiting: "green",
+			archived: "grey",
+		} as const
+	)[status];
 
 	return (
 		<>
 			<div
-				className={
-					styles.statusVariants({ status }) + " " + styles.card
-				}
+				className={styles.statusVariants({ color }) + " " + styles.card}
 				onClick={openDetails}
 				role="button"
 				tabIndex={0}

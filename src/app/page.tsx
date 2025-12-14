@@ -44,7 +44,9 @@ const HomeContents = () => {
 		}
 		const lateCount = tasks.filter(
 			(task) =>
-				taskStatus(task, now) == "overdue" &&
+				["veryLate", "late", "dueNow"].includes(
+					taskStatus(task, now),
+				) &&
 				task.toBeCompletedBy.some((user) => user.id == currentUser?.id),
 		).length;
 		navigator?.setAppBadge?.(lateCount);
@@ -55,12 +57,11 @@ const HomeContents = () => {
 	}
 
 	tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
-	const overdueTasks = tasks.filter(
-		(task) => taskStatus(task, now) === "overdue",
+	const dueTasks = tasks.filter((task) =>
+		["veryLate", "late", "dueNow"].includes(taskStatus(task, now)),
 	);
-	const dueTasks = tasks.filter((task) => taskStatus(task, now) === "due");
-	const waitingTasks = tasks.filter(
-		(task) => taskStatus(task, now) === "waiting",
+	const waitingTasks = tasks.filter((task) =>
+		["dueSoon", "waiting"].includes(taskStatus(task, now)),
 	);
 	const archivedTasks = tasks.filter(
 		(task) => taskStatus(task, now) === "archived",
@@ -75,13 +76,12 @@ const HomeContents = () => {
 		>
 			<div className={styles.taskPage}>
 				{currentUser &&
-					[...overdueTasks, ...dueTasks].every(
+					dueTasks.every(
 						(task) =>
 							!task.toBeCompletedBy.some(
 								(u) => u.id == currentUser.id,
 							),
 					) && <Congratulations />}
-				<Section title="En retard" tasks={overdueTasks} now={now} />
 				<Section title="À faire" tasks={dueTasks} now={now} />
 				<Section
 					title="En attente"

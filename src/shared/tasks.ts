@@ -1,10 +1,5 @@
 import type { Id } from "@/convex/_generated/dataModel";
-import {
-	convertToUnit,
-	getMaxTimeLeft,
-	getMinTimeLeft,
-	type TimeUnit,
-} from "./units";
+import { convertToUnit, type TimeUnit } from "./units";
 import type { User } from "./users";
 
 export type Task = {
@@ -35,8 +30,10 @@ export const defaultCompletedBy = (task: Task, userId: Id<"users">) => {
 };
 
 type TaskStatus =
-	| "overdue" // Task is overdue
-	| "due" // Task is due now or soon
+	| "veryLate" // Task is very late
+	| "late" // Task is late
+	| "dueNow" // Task is due now
+	| "dueSoon" // Task is due soon
 	| "waiting" // Task does not need to be completed again for now
 	| "archived"; // Task is archived
 
@@ -47,15 +44,24 @@ export const taskStatus = (task: Task, now: number): TaskStatus => {
 	if (task.toBeDoneTime === undefined) {
 		return "waiting";
 	}
-	const minTimeLeft = getMinTimeLeft(task, task.toBeDoneTime);
-	const maxTimeLeft = getMaxTimeLeft(task, task.toBeDoneTime);
 
-	if (maxTimeLeft < now) {
-		return "overdue";
-	} else if (minTimeLeft > now) {
-		return "waiting";
+	const toBeDoneTimeInUnit = convertToUnit(
+		task.toBeDoneTime,
+		task.toleranceUnit,
+	);
+	const nowInUnit = convertToUnit(now, task.toleranceUnit);
+	const delta = toBeDoneTimeInUnit - nowInUnit;
+
+	if (delta < -task.tolerance) {
+		return "veryLate";
+	} else if (delta < 0) {
+		return "late";
+	} else if (delta == 0) {
+		return "dueNow";
+	} else if (delta <= task.tolerance) {
+		return "dueSoon";
 	} else {
-		return "due";
+		return "waiting";
 	}
 };
 
@@ -76,7 +82,14 @@ export const taskTimeDifferenceInUnit = (task: Task, now: number) => {
 export const compareTasks = (taskA: Task, taskB: Task, now: number) => {
 	const statusA = taskStatus(taskA, now);
 	const statusB = taskStatus(taskB, now);
-	const statusOrder: TaskStatus[] = ["overdue", "due", "waiting", "archived"];
+	const statusOrder: TaskStatus[] = [
+		"veryLate",
+		"late",
+		"dueNow",
+		"dueSoon",
+		"waiting",
+		"archived",
+	];
 	if (statusA !== statusB) {
 		return statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
 	} else {
