@@ -13,30 +13,47 @@ self.addEventListener("activate", (event) => {
 
 /** Receiving push notifications */
 
+const openNotification = async ({
+	taskId,
+	taskName,
+	isLate,
+	convexUrl,
+	subscription,
+}) => {
+	const notifications = await registration.getNotifications();
+	const previousNotification = notifications.find(
+		(notification) => notification.data?.taskId === taskId,
+	);
+	const count =
+		previousNotification && isLate ?
+			previousNotification.data.count + 1
+		:	1;
+	const title = isLate ? `En retard ⚠️ (rappel #${count})` : "À faire";
+	const options = {
+		body: taskName,
+		badge: isLate ? "/badge-sad.svg" : "/badge-happy.svg",
+		data: {
+			taskId,
+			convexUrl,
+			subscription,
+			count,
+		},
+		icon: "/icon.png",
+		tag: `task=${taskId}`,
+		actions: [
+			{
+				action: "add-accomplishment",
+				title: "Marquer comme effectué",
+				type: "button",
+			},
+		],
+	};
+	await self.registration.showNotification(title, options);
+};
+
 self.addEventListener("push", (event) => {
 	if (event.data) {
-		const { taskId, taskName, isLate, convexUrl, subscription } =
-			event.data.json();
-		const title = isLate ? "En retard ⚠️" : "À faire";
-		const options = {
-			body: taskName,
-			badge: isLate ? "/badge-sad.svg" : "/badge-happy.svg",
-			data: {
-				taskId,
-				convexUrl,
-				subscription,
-			},
-			icon: "/icon.png",
-			tag: `task=${taskId}`,
-			actions: [
-				{
-					action: "add-accomplishment",
-					title: "Marquer comme effectué",
-					type: "button",
-				},
-			],
-		};
-		event.waitUntil(self.registration.showNotification(title, options));
+		event.waitUntil(openNotification(event.data.json()));
 	}
 });
 
@@ -46,8 +63,7 @@ self.addEventListener("push", (event) => {
 const addAccomplishment = async (notification) => {
 	const { title, body, data, icon, tag } = notification;
 	const { convexUrl, taskId, subscription } = data;
-	const convexClient = new ConvexClient(convexUrl);
-	await self.registration.showNotification(title, {
+	self.registration.showNotification(title, {
 		body,
 		badge: "/badge-loading.svg",
 		data,
@@ -55,6 +71,7 @@ const addAccomplishment = async (notification) => {
 		tag,
 	});
 	try {
+		const convexClient = new ConvexClient(convexUrl);
 		await convexClient.mutation(anyApi.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
