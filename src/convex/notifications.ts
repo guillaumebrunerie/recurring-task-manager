@@ -7,6 +7,7 @@ import { api, internal } from "./_generated/api";
 import type { Doc } from "./_generated/dataModel";
 import type { Task } from "@/shared/tasks";
 import { v } from "convex/values";
+
 /** Configuration */
 
 webpush.setVapidDetails(
@@ -17,32 +18,37 @@ webpush.setVapidDetails(
 
 /** Helper functions */
 
-const sendNotification = async ({
-	title,
-	task,
-	subscription,
-	isSad,
-}: {
-	title: string;
-	task: Task;
+type NotificationData = {
+	taskId: string;
+	taskName: string;
+	isLate: boolean;
+	convexUrl: string | undefined;
 	subscription: string;
-	isSad: boolean;
+};
+
+const sendNotification = async ({
+	subscription,
+	task,
+	isLate,
+}: {
+	subscription: string;
+	task: Task;
+	isLate: boolean;
 }) => {
 	try {
-		console.log("Sending notification", title, task.name);
+		console.log(
+			`Sending notification for '${task.name}' (late: ${isLate})`,
+		);
+		const data: NotificationData = {
+			taskId: task.id,
+			taskName: task.name,
+			isLate,
+			convexUrl: process.env.CONVEX_CLOUD_URL,
+			subscription,
+		};
 		await webpush.sendNotification(
 			JSON.parse(subscription),
-			JSON.stringify({
-				title,
-				body: task.name,
-				data: {
-					url: `https://project-happy-home.netlify.app/?task=${task.id}`,
-					taskId: task.id,
-					CONVEX_URL: process.env.CONVEX_CLOUD_URL || "xxx",
-					token: subscription,
-				},
-				badge: isSad ? "/badge-sad.svg" : "/badge-happy.svg",
-			}),
+			JSON.stringify(data),
 		);
 	} catch (error) {
 		if (
@@ -72,18 +78,16 @@ const notifyUser = async (
 	);
 	for (const task of dueTasks) {
 		await sendNotification({
-			title: `À faire`,
-			task,
 			subscription,
-			isSad: false,
+			task,
+			isLate: false,
 		});
 	}
 	for (const task of overdueTasks) {
 		await sendNotification({
-			title: `⚠️ En retard!`,
-			task,
 			subscription,
-			isSad: true,
+			task,
+			isLate: true,
 		});
 	}
 	if (!ignoreLastNotified) {

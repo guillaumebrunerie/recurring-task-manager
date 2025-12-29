@@ -1,5 +1,6 @@
-- tolerance -> late after and in two lines
+- Change "tolerance" to "late after" and in a separate line
 
+- Set badge in service worker instead
 - Changing periodicity should change next time
 - Make it possible to reset next time to be done
 - Validate edit/new task form
@@ -14,4 +15,4 @@
 
 - Think about tasks with addons
 
-- custom convex eslint rules
+- Use custom convex eslint rules

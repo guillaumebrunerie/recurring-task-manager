@@ -14,10 +14,13 @@ import { defaultCompletedBy } from "@/shared/tasks";
 
 /** Helper functions */
 
-const getUserIdFromToken = async (ctx: QueryCtx, token: string) => {
+const getUserIdFromSubscription = async (
+	ctx: QueryCtx,
+	subscription: string,
+) => {
 	const result = await ctx.db
 		.query("subscriptions")
-		.filter((q) => q.eq(q.field("subscription"), token))
+		.filter((q) => q.eq(q.field("subscription"), subscription))
 		.unique();
 	return result?.userId;
 };
@@ -43,7 +46,7 @@ export const addAccomplishment = mutation({
 		completionTime: v.optional(v.number()),
 		updateToBeDoneTime: v.boolean(),
 		completedBy: v.optional(v.array(v.id("users"))),
-		token: v.optional(v.string()), // For push notifications
+		subscription: v.optional(v.string()), // For push notifications
 	},
 	handler: async (
 		ctx,
@@ -52,12 +55,12 @@ export const addAccomplishment = mutation({
 			completionTime = Date.now(),
 			updateToBeDoneTime,
 			completedBy,
-			token,
+			subscription,
 		},
 	) => {
 		const userId =
-			token ?
-				await getUserIdFromToken(ctx, token)
+			subscription ?
+				await getUserIdFromSubscription(ctx, subscription)
 			:	await getAuthUserId(ctx);
 		if (!userId) {
 			throw new Error("User not authenticated");
