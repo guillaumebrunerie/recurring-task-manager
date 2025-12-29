@@ -62,7 +62,9 @@ const addAccomplishment = async (notification) => {
 			updateToBeDoneTime: true,
 			subscription,
 		});
-		notification.close();
+		setTimeout(() => {
+			notification.close();
+		}, 1000);
 	} catch (error) {
 		await self.registration.showNotification(title + " (erreur)", {
 			body: error.message,
@@ -86,8 +88,7 @@ const openUrl = async (notification) => {
 	});
 	if (windowClients.length > 0) {
 		const client = windowClients.find((c) => c.focused) ?? windowClients[0];
-		await client.focus();
-		await client.navigate(url);
+		await Promise.all([client.focus(), client.navigate(url)]);
 	} else {
 		await self.clients.openWindow(url);
 	}
