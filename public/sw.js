@@ -95,8 +95,10 @@ self.addEventListener("notificationclick", (event) => {
 	switch (action) {
 		case "add-accomplishment":
 			event.waitUntil(addAccomplishment(notification));
+			break;
 		default:
 			event.waitUntil(openUrl(notification));
+			break;
 	}
 });
 
@@ -115,5 +117,6 @@ self.addEventListener("message", (event) => {
 	switch (event.data?.type) {
 		case "task-completed":
 			event.waitUntil(closeRelatedNotifications(event.data.taskId));
+			break;
 	}
 });
