@@ -28,7 +28,12 @@ const openNotification = async ({
 		previousNotification && isLate ?
 			previousNotification.data.count + 1
 		:	1;
-	const title = isLate ? `En retard ⚠️ (rappel #${count})` : "À faire";
+	const title =
+		isLate ?
+			count > 1 ?
+				`En retard ⚠️ (rappel ${count})`
+			:	"En retard ⚠️"
+		:	"À faire";
 	const options = {
 		body: taskName,
 		badge: isLate ? "/badge-sad.svg" : "/badge-happy.svg",
@@ -40,6 +45,7 @@ const openNotification = async ({
 		},
 		icon: "/icon.png",
 		tag: `task=${taskId}`,
+		renotify: true,
 		actions: [
 			{
 				action: "add-accomplishment",
