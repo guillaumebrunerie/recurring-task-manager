@@ -79,21 +79,17 @@ const addAccomplishment = async (notification) => {
 const openUrl = async (notification) => {
 	const { taskId } = notification.data;
 	const url = `${location.origin}/?task=${taskId}`;
+	notification.close();
 	const windowClients = await self.clients.matchAll({
 		type: "window",
 		includeUncontrolled: true,
 	});
-	try {
-		if (windowClients.length > 0) {
-			const client =
-				windowClients.find((c) => c.focused) ?? windowClients[0];
-			await client.focus();
-			await client.navigate(url);
-		} else {
-			await self.clients.openWindow(url);
-		}
-	} finally {
-		notification.close();
+	if (windowClients.length > 0) {
+		const client = windowClients.find((c) => c.focused) ?? windowClients[0];
+		await client.focus();
+		await client.navigate(url);
+	} else {
+		await self.clients.openWindow(url);
 	}
 };
 
