@@ -1,5 +1,5 @@
-import { ConvexClient } from "https://esm.sh/convex/browser";
-import { anyApi } from "https://esm.sh/convex/server";
+import { ConvexClient } from "https://esm.sh/convex@1.27.5/browser";
+import { anyApi } from "https://esm.sh/convex@1.27.5/server";
 
 /** Installation and activation */
 
