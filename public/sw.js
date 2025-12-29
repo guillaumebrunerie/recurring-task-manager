@@ -79,11 +79,14 @@ const addAccomplishment = async (notification) => {
 const openUrl = async (notification) => {
 	const { taskId } = notification.data;
 	const url = `https://project-happy-home.netlify.app/?task=${taskId}`;
-	const windowClients = await self.clients.matchAll();
+	const windowClients = await self.clients.matchAll({
+		type: "window",
+		includeUncontrolled: true,
+	});
 	if (windowClients.length > 0) {
-		const client = windowClients[0];
-		await client.navigate(url);
+		const client = windowClients.find((c) => c.focused) ?? windowClients[0];
 		await client.focus();
+		await client.navigate(url);
 	} else {
 		await self.clients.openWindow(url);
 	}
