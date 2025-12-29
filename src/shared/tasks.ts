@@ -32,8 +32,8 @@ export const defaultCompletedBy = (task: Task, userId: Id<"users">) => {
 type TaskStatus =
 	| "veryLate" // Task is very late
 	| "late" // Task is late
-	| "dueNow" // Task is due now
-	| "dueSoon" // Task is due soon
+	| "dueNow" // Task is due now (or needs to be completed in the near future)
+	| "dueSoon" // Task will be due soon (it is not currently due)
 	| "waiting" // Task does not need to be completed again for now
 	| "archived"; // Task is archived
 
@@ -52,11 +52,17 @@ export const taskStatus = (task: Task, now: number): TaskStatus => {
 	const nowInUnit = convertToUnit(now, task.toleranceUnit);
 	const delta = toBeDoneTimeInUnit - nowInUnit;
 
-	if (delta < -task.tolerance) {
+	// If tolerance is 0, it is:
+	// - never due soon, due at 0, late at -1, very late at -2
+	// If tolerance is 1, it is:
+	// - due soon at 1, due at 0/-1, late at -2/-3, very late at -4/-5
+	// If tolerance is 2, it is:
+	// - due soon at 2/1, due at 0/-1/-2, late at -3/-4/-5, very late at -6/-7/-8
+	if (delta <= -(task.tolerance + 1) * 2) {
 		return "veryLate";
-	} else if (delta < 0) {
+	} else if (delta <= -(task.tolerance + 1)) {
 		return "late";
-	} else if (delta == 0) {
+	} else if (delta <= 0) {
 		return "dueNow";
 	} else if (delta <= task.tolerance) {
 		return "dueSoon";

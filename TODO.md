@@ -1,13 +1,17 @@
+- tolerance -> late after
+
 - Changing periodicity should change next time
-- Automatically hide private tasks
 - Make it possible to reset next time to be done
 - Validate edit/new task form
 - Convert to SPA
+
 - Implement profile page + groups (households)
-- Double check all loading states (seems good?) + useTransition for async
-  requests + view transitions (?)
 - Refactor responsible-picker
-- Think about tasks with addons
+- Automatically hide private tasks
+
 - New logo
 - Overhaul colors + dark mode
 
+- Think about tasks with addons
+
+- custom convex eslint rules
