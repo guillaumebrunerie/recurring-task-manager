@@ -8,6 +8,7 @@ export type Accomplishment = {
 	id: Id<"accomplishments">;
 	completionTime: number;
 	completedBy: User[];
+	isFailed: boolean;
 };
 
 // Returns a new ordering of the responsibleFor array after an accomplishment,

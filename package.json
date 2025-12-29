@@ -20,6 +20,7 @@
 		"@vanilla-extract/dynamic": "^2.1.5",
 		"@vanilla-extract/recipes": "^0.5.5",
 		"canvas-confetti": "^1.9.3",
+		"classnames": "^2.5.1",
 		"convex": "^1.24.3",
 		"next": "^15.5.0",
 		"nuqs": "^2.4.3",

@@ -12,6 +12,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { UserSelector } from "@/components/UserSelector";
 import { UserIndicators } from "./UserIndicators";
 import type { User } from "@/shared/users";
+import classNames from "classnames";
 
 type DetailsProps = {
 	task: Task;
@@ -138,7 +139,9 @@ export const Details = ({
 	);
 };
 
-const TaskHistory = ({ history }: { history: Accomplishment[] }) => {
+type TaskHistoryProps = { history: Accomplishment[] };
+
+const TaskHistory = ({ history }: TaskHistoryProps) => {
 	const [isCollapsed, setIsCollapsed] = useState(true);
 	return (
 		<div className={styles.historySection}>
@@ -174,11 +177,9 @@ const dateTimeFormat = new Intl.DateTimeFormat("fr-FR", {
 	timeStyle: "short",
 });
 
-const TaskHistoryItem = ({
-	accomplishment,
-}: {
-	accomplishment: Accomplishment;
-}) => {
+type TaskHistoryItemProps = { accomplishment: Accomplishment };
+
+const TaskHistoryItem = ({ accomplishment }: TaskHistoryItemProps) => {
 	const [isCompleting, setIsCompleting] = useState(false);
 	const deleteAccomplishment = useMutation(
 		api.accomplishments.deleteAccomplishment,
@@ -194,7 +195,10 @@ const TaskHistoryItem = ({
 	};
 	return (
 		<li
-			className={styles.completionItem}
+			className={classNames(
+				styles.completionItem,
+				accomplishment.isFailed && styles.failedCompletionItem,
+			)}
 			onClick={() => {
 				setShowDeleteButton(!showDeleteButton);
 			}}

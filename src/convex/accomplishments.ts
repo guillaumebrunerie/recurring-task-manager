@@ -34,6 +34,7 @@ export const parseAccomplishment = async (
 		id: accomplishment._id,
 		completionTime: accomplishment.completionTime,
 		completedBy: await getUsers(ctx, accomplishment.completedBy),
+		isFailed: accomplishment.isFailed || false,
 	};
 };
 

@@ -164,6 +164,11 @@ export const completionItem = style({
 	"-webkit-tap-highlight-color": "transparent",
 });
 
+export const failedCompletionItem = style({
+	opacity: 0.5,
+	textDecoration: "line-through",
+});
+
 export const accomplishedBy = style({
 	width: "20px",
 	height: "20px",
