@@ -78,19 +78,23 @@ const addAccomplishment = async (notification) => {
 // Clicking on the notification itself
 const openUrl = async (notification) => {
 	const { taskId } = notification.data;
-	const url = `https://project-happy-home.netlify.app/?task=${taskId}`;
+	const url = `${location.origin}/?task=${taskId}`;
 	const windowClients = await self.clients.matchAll({
 		type: "window",
 		includeUncontrolled: true,
 	});
-	if (windowClients.length > 0) {
-		const client = windowClients.find((c) => c.focused) ?? windowClients[0];
-		await client.focus();
-		await client.navigate(url);
-	} else {
-		await self.clients.openWindow(url);
+	try {
+		if (windowClients.length > 0) {
+			const client =
+				windowClients.find((c) => c.focused) ?? windowClients[0];
+			await client.focus();
+			await client.navigate(url);
+		} else {
+			await self.clients.openWindow(url);
+		}
+	} finally {
+		notification.close();
 	}
-	notification.close();
 };
 
 self.addEventListener("notificationclick", (event) => {
