@@ -44,16 +44,15 @@ self.addEventListener("push", (event) => {
 
 // Clicking on the "Mark as done" button
 const addAccomplishment = async (notification) => {
-	const { title, body, badge, data, icon, tag, actions } = notification;
+	const { title, body, data, icon, tag } = notification;
 	const { convexUrl, taskId, subscription } = data;
 	const convexClient = new ConvexClient(convexUrl);
-	await self.registration.showNotification(title + " (veuillez patienter)", {
+	await self.registration.showNotification(title, {
 		body,
-		badge,
+		badge: "/badge-loading.svg",
 		data,
 		icon,
 		tag,
-		// No more actions
 	});
 	try {
 		await convexClient.mutation(anyApi.accomplishments.addAccomplishment, {
@@ -62,17 +61,12 @@ const addAccomplishment = async (notification) => {
 			updateToBeDoneTime: true,
 			subscription,
 		});
-		setTimeout(() => {
-			notification.close();
-		}, 1000);
+		notification.close();
 	} catch (error) {
-		await self.registration.showNotification(title + " (erreur)", {
+		await self.registration.showNotification("Erreur", {
 			body: error.message,
-			badge,
+			badge: "/badge-sad.svg",
 			data,
-			icon,
-			tag,
-			actions,
 		});
 	}
 };
