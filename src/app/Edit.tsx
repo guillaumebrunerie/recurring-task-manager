@@ -2,7 +2,11 @@ import { type ReactNode, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { type TimeUnit, unitToStringPlural } from "@/shared/units";
+import {
+	type TimeUnit,
+	unitToString,
+	unitToStringPlural,
+} from "@/shared/units";
 import * as styles from "./edit.css";
 import { UserSelector } from "@/components/UserSelector";
 import {
@@ -238,7 +242,9 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 							]
 						:	visibleUnits.map((unit) => (
 								<option key={unit} value={unit}>
-									{unitToStringPlural[unit]}
+									{period === "1" ?
+										unitToString[unit]
+									:	unitToStringPlural[unit]}
 								</option>
 							))
 						}
@@ -261,7 +267,9 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					>
 						{visibleUnits.map((unit) => (
 							<option key={unit} value={unit}>
-								{unitToStringPlural[unit]}
+								{tolerance === "1" ?
+									unitToString[unit]
+								:	unitToStringPlural[unit]}
 							</option>
 						))}
 					</select>

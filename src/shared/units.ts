@@ -89,7 +89,7 @@ export const convertDurationFromUnit = (
 	}
 };
 
-const unitToString: Record<TimeUnit, string> = {
+export const unitToString: Record<TimeUnit, string> = {
 	years: "an",
 	months: "mois",
 	weeks: "semaine",

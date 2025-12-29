@@ -1,4 +1,4 @@
-- tolerance -> late after
+- tolerance -> late after and in two lines
 
 - Changing periodicity should change next time
 - Make it possible to reset next time to be done
