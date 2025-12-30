@@ -4,7 +4,6 @@ import {
 	type QueryCtx,
 	internalQuery,
 	internalMutation,
-	type MutationCtx,
 } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import { ConvexError, v } from "convex/values";
@@ -28,11 +27,11 @@ import type { Accomplishment } from "@/shared/accomplishments";
 // Returns the accomplishments for a task
 export const getTaskAccomplishments = async (
 	ctx: QueryCtx,
-	task: Doc<"tasks">,
+	taskDoc: Doc<"tasks">,
 ): Promise<Accomplishment[]> => {
 	const accomplishmentDocs = await ctx.db
 		.query("accomplishments")
-		.withIndex("by_taskId", (q) => q.eq("taskId", task._id))
+		.withIndex("by_taskId", (q) => q.eq("taskId", taskDoc._id))
 		.collect();
 
 	return Promise.all(
@@ -114,11 +113,11 @@ export const getAccomplishments = query({
 		if (userId === null) {
 			return;
 		}
-		const task = await ctx.db.get(id);
-		if (!task) {
+		const taskDoc = await ctx.db.get(id);
+		if (!taskDoc) {
 			throw new ConvexError(`Task with id ${id} not found`);
 		}
-		return getTaskAccomplishments(ctx, task);
+		return getTaskAccomplishments(ctx, taskDoc);
 	},
 });
 
@@ -257,8 +256,21 @@ export const deleteTask = mutation({
 	},
 });
 
+export const calculateToBeDoneTimeFixed = (task: Task) => {
+	if (!task.isFixedSchedule) {
+		throw new Error("Task is not on a fixed schedule");
+	}
+	if (task.period == 0) {
+		return undefined;
+	}
+	if (!task.toBeDoneTime) {
+		return Date.now();
+	}
+	return task.toBeDoneTime + convertDurationFromUnit(task.period, task.unit);
+};
+
 export const calculateToBeDoneTime = async (
-	ctx: MutationCtx,
+	ctx: QueryCtx,
 	taskDoc: Doc<"tasks">,
 ) => {
 	if (taskDoc.period == 0) {
@@ -291,35 +303,14 @@ export const calculateToBeDoneTime = async (
 	}
 };
 
-export const resetToBeDoneTime = mutation({
-	args: { id: v.id("tasks") },
-	handler: async (ctx, args) => {
-		const taskDoc = await ctx.db.get(args.id);
-		if (!taskDoc) {
-			throw new ConvexError(`Task with id ${args.id} not found`);
-		}
-		const toBeDoneTime = await calculateToBeDoneTime(ctx, taskDoc);
-		await ctx.db.patch(args.id, { toBeDoneTime });
-	},
-});
-
-/** Migrations */
-
-export const populateToBeDoneTime = internalMutation({
-	handler: async (ctx) => {
-		const taskDocs = await ctx.db.query("tasks").collect();
-		await Promise.all(
-			taskDocs.map(async (task) => {
-				if (
-					task.toBeDoneTime !== undefined ||
-					task.archivedAt !== undefined
-				) {
-					return;
-				}
-				const toBeDoneTime = await calculateToBeDoneTime(ctx, task);
-
-				await ctx.db.patch(task._id, { toBeDoneTime });
-			}),
-		);
-	},
-});
+// export const resetToBeDoneTime = mutation({
+// 	args: { id: v.id("tasks") },
+// 	handler: async (ctx, args) => {
+// 		const taskDoc = await ctx.db.get(args.id);
+// 		if (!taskDoc) {
+// 			throw new ConvexError(`Task with id ${args.id} not found`);
+// 		}
+// 		const toBeDoneTime = await calculateToBeDoneTime(ctx, taskDoc);
+// 		await ctx.db.patch(args.id, { toBeDoneTime });
+// 	},
+// });

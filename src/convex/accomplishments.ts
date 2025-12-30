@@ -4,13 +4,17 @@ import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 import { getUsers } from "./users";
-import { calculateToBeDoneTime, parseTask } from "./tasks";
+import {
+	calculateToBeDoneTime,
+	calculateToBeDoneTimeFixed,
+	parseTask,
+} from "./tasks";
 
 import {
 	type Accomplishment,
 	getNewResponsibles,
 } from "@/shared/accomplishments";
-import { defaultCompletedBy } from "@/shared/tasks";
+import { defaultCompletedBy, isTaskLate } from "@/shared/tasks";
 
 /** Helper functions */
 
@@ -76,6 +80,23 @@ export const addAccomplishment = mutation({
 				`Task with id ${taskId} is not visible to user ${userId}`,
 			);
 		}
+		if (task.isFixedSchedule) {
+			let infiniteLoopGuard = 0;
+			while (
+				infiniteLoopGuard < 100 &&
+				isTaskLate(task, completionTime) &&
+				task.toBeDoneTime
+			) {
+				infiniteLoopGuard++;
+				await ctx.db.insert("accomplishments", {
+					taskId,
+					completionTime: task.toBeDoneTime,
+					completedBy: [],
+					isFailed: true,
+				});
+				task.toBeDoneTime = calculateToBeDoneTimeFixed(task);
+			}
+		}
 		await ctx.db.insert("accomplishments", {
 			taskId,
 			completionTime,
@@ -86,7 +107,10 @@ export const addAccomplishment = mutation({
 		});
 		if (updateToBeDoneTime) {
 			await ctx.db.patch(taskId, {
-				toBeDoneTime: await calculateToBeDoneTime(ctx, taskDoc),
+				toBeDoneTime:
+					task.isFixedSchedule ?
+						calculateToBeDoneTimeFixed(task)
+					:	await calculateToBeDoneTime(ctx, taskDoc),
 			});
 		}
 	},

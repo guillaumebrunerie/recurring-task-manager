@@ -195,10 +195,7 @@ const TaskHistoryItem = ({ accomplishment }: TaskHistoryItemProps) => {
 	};
 	return (
 		<li
-			className={classNames(
-				styles.completionItem,
-				accomplishment.isFailed && styles.failedCompletionItem,
-			)}
+			className={styles.completionItem}
 			onClick={() => {
 				setShowDeleteButton(!showDeleteButton);
 			}}
@@ -213,7 +210,15 @@ const TaskHistoryItem = ({ accomplishment }: TaskHistoryItemProps) => {
 					{isCompleting && <Spinner />}
 					Supprimer?
 				</span>
-				{dateTimeFormat.format(new Date(accomplishment.completionTime))}
+				<span
+					className={classNames(
+						accomplishment.isFailed && styles.failedCompletionItem,
+					)}
+				>
+					{dateTimeFormat.format(
+						new Date(accomplishment.completionTime),
+					)}
+				</span>
 			</div>
 			<UserIndicators
 				allUsers={accomplishment.completedBy}

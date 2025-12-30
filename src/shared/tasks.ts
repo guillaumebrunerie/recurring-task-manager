@@ -71,6 +71,11 @@ export const taskStatus = (task: Task, now: number): TaskStatus => {
 	}
 };
 
+export const isTaskLate = (task: Task, now: number) => {
+	const status = taskStatus(task, now);
+	return status === "late" || status === "veryLate";
+};
+
 export const taskTimeDifferenceInUnit = (task: Task, now: number) => {
 	if (task.isArchived && task.archivedAt) {
 		return null;
