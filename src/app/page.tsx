@@ -15,6 +15,7 @@ import { BlueButton } from "@/components/Button";
 import { Modal } from "@/components/Modal";
 import { Edit } from "./Edit";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import classNames from "classnames";
 
 const HomeContents = () => {
 	const now = useTimestamp(15 * 60 * 1000); // Update every 15 minutes
@@ -134,11 +135,22 @@ const Section = ({
 				className={styles.sectionTitle}
 				onClick={() => setIsCollapsed(!isCollapsed)}
 			>
-				<span className={styles.arrow({ isCollapsed })}>▼</span>
+				<span
+					className={classNames(
+						styles.arrow,
+						isCollapsed && styles.arrowCollapsed,
+					)}
+				>
+					▼
+				</span>
 				{isCollapsed ? ` ${title} (${tasks.length})` : ` ${title}`}
 			</h2>
 			<div
-				className={styles.taskList({ isCollapsed, fullyOpen })}
+				className={classNames(
+					styles.taskList,
+					isCollapsed && styles.taskListCollapsed,
+					fullyOpen && styles.taskListFullyOpen,
+				)}
 				style={assignInlineVars({
 					[styles.collapseDelayVar]: `${collapseDelay}ms`,
 				})}
@@ -154,11 +166,7 @@ const Section = ({
 };
 
 const Congratulations = () => {
-	return (
-		<div className={styles.taskList({ isCollapsed: false })}>
-			Aucune tâche à effectuer!
-		</div>
-	);
+	return <div className={styles.taskList}>Aucune tâche à effectuer!</div>;
 };
 
 const Home = () => {

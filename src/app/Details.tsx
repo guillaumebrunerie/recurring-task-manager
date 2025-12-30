@@ -76,17 +76,19 @@ export const Details = ({
 			<div className={styles.optionsSection}>
 				<div className={styles.modalButtons2}>
 					<div
-						className={styles.optionsButton({
-							isCollapsed: isOptionsCollapsed,
-						})}
+						className={classNames(
+							styles.optionsButton,
+							isOptionsCollapsed && styles.optionsButtonCollapsed,
+						)}
 						onClick={() =>
 							setIsOptionsCollapsed(!isOptionsCollapsed)
 						}
 					>
 						<span
-							className={styles.arrow({
-								isCollapsed: isOptionsCollapsed,
-							})}
+							className={classNames(
+								styles.arrow,
+								isOptionsCollapsed && styles.arrowCollapsed,
+							)}
 						>
 							▼
 						</span>
@@ -112,9 +114,10 @@ export const Details = ({
 					</GreenButton>
 				</div>
 				<div
-					className={styles.options({
-						isCollapsed: isOptionsCollapsed,
-					})}
+					className={classNames(
+						styles.options,
+						isOptionsCollapsed && styles.optionsCollapsed,
+					)}
 				>
 					<label className={styles.label}>
 						Effectuée le :
@@ -149,12 +152,29 @@ const TaskHistory = ({ history }: TaskHistoryProps) => {
 				className={styles.modalButtons2}
 				onClick={() => setIsCollapsed(!isCollapsed)}
 			>
-				<div className={styles.optionsButton({ isCollapsed })}>
-					<span className={styles.arrow({ isCollapsed })}>▼</span>
+				<div
+					className={classNames(
+						styles.optionsButton,
+						isCollapsed && styles.optionsButtonCollapsed,
+					)}
+				>
+					<span
+						className={classNames(
+							styles.arrow,
+							isCollapsed && styles.arrowCollapsed,
+						)}
+					>
+						▼
+					</span>
 					Historique
 				</div>
 			</div>
-			<div className={styles.history({ isCollapsed })}>
+			<div
+				className={classNames(
+					styles.history,
+					isCollapsed && styles.historyCollapsed,
+				)}
+			>
 				{history ?
 					history.length > 0 ?
 						<ul className={styles.completionList}>
@@ -202,9 +222,10 @@ const TaskHistoryItem = ({ accomplishment }: TaskHistoryItemProps) => {
 		>
 			<div className={styles.deleteHistoryItem}>
 				<span
-					className={styles.deleteHistoryItemButton({
-						showDeleteButton,
-					})}
+					className={classNames(
+						styles.deleteHistoryItemButton,
+						showDeleteButton && styles.showDeleteButton,
+					)}
 					onClick={doDelete}
 				>
 					{isCompleting && <Spinner />}

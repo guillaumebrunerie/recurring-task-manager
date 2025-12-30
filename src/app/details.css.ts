@@ -1,5 +1,4 @@
 import { style } from "@vanilla-extract/css";
-import { recipe } from "@vanilla-extract/recipes";
 import { colors } from "./themes.css";
 
 export const description = style({
@@ -71,70 +70,48 @@ export const historySection = style({
 	flexDirection: "column",
 });
 
-export const optionsButton = recipe({
-	base: {
-		display: "flex",
-		justifyContent: "flex-end",
-		alignItems: "center",
-		gap: "0.25rem",
-		cursor: "pointer",
-		transition: "color 0.3s ease",
-		fontWeight: "500",
-	},
-	variants: {
-		isCollapsed: {
-			true: {
-				color: colors.detailsSection,
-			},
-			false: {
-				color: "currentColor",
-			},
-		},
-	},
+export const optionsButton = style({
+	display: "flex",
+	justifyContent: "flex-end",
+	alignItems: "center",
+	gap: "0.25rem",
+	cursor: "pointer",
+	transition: "color 0.3s ease",
+	fontWeight: "500",
 });
 
-export const options = recipe({
-	base: {
-		overflow: "hidden",
-		interpolateSize: "allow-keywords",
-		transition: `height 0.3s ease`,
-		boxSizing: "border-box",
-		display: "grid",
-		gap: "0.5rem",
-	},
-	variants: {
-		isCollapsed: {
-			true: {
-				height: "0",
-			},
-			false: {
-				height: "auto",
-			},
-		},
-	},
+export const optionsButtonCollapsed = style({
+	color: colors.detailsSection,
 });
 
-export const history = recipe({
-	base: {
-		overflow: "hidden",
-		interpolateSize: "allow-keywords",
-		transition: `all 0.3s ease`,
-		boxSizing: "border-box",
-		display: "grid",
-		gap: "0.5rem",
-		paddingTop: "1rem",
-	},
-	variants: {
-		isCollapsed: {
-			true: {
-				height: "0",
-				paddingTop: "0",
-			},
-			false: {
-				height: "auto",
-			},
-		},
-	},
+export const options = style({
+	overflow: "hidden",
+	interpolateSize: "allow-keywords",
+	transition: `height 0.3s ease`,
+	boxSizing: "border-box",
+	display: "grid",
+	gap: "0.5rem",
+	height: "auto",
+});
+
+export const optionsCollapsed = style({
+	height: "0",
+});
+
+export const history = style({
+	overflow: "hidden",
+	interpolateSize: "allow-keywords",
+	transition: `all 0.3s ease`,
+	boxSizing: "border-box",
+	display: "grid",
+	gap: "0.5rem",
+	paddingTop: "1rem",
+	height: "auto",
+});
+
+export const historyCollapsed = style({
+	height: "0",
+	paddingTop: "0",
 });
 
 export const completionList = style({
@@ -176,22 +153,13 @@ export const accomplishedBy = style({
 	objectFit: "cover",
 });
 
-export const arrow = recipe({
-	base: {
-		display: "inline-block",
-		transition: "rotate 0.3s ease",
-	},
-	variants: {
-		isCollapsed: {
-			true: {
-				rotate: "-90deg",
-			},
-			false: {},
-		},
-	},
-	defaultVariants: {
-		isCollapsed: false,
-	},
+export const arrow = style({
+	display: "inline-block",
+	transition: "rotate 0.3s ease",
+});
+
+export const arrowCollapsed = style({
+	rotate: "-90deg",
 });
 
 export const infoRow = style({
@@ -212,22 +180,17 @@ export const deleteHistoryItem = style({
 	whiteSpace: "nowrap",
 });
 
-export const deleteHistoryItemButton = recipe({
-	base: {
-		width: 0,
-		interpolateSize: "allow-keywords",
-		transition: "all 0.2s ease",
-		overflow: "hidden",
-		marginRight: 0,
-		fontWeight: "bold",
-		color: colors.deleteButton,
-	},
-	variants: {
-		showDeleteButton: {
-			true: {
-				width: "auto",
-				marginRight: "1ch",
-			},
-		},
-	},
+export const deleteHistoryItemButton = style({
+	width: 0,
+	interpolateSize: "allow-keywords",
+	transition: "all 0.2s ease",
+	overflow: "hidden",
+	marginRight: 0,
+	fontWeight: "bold",
+	color: colors.deleteButton,
+});
+
+export const showDeleteButton = style({
+	width: "auto",
+	marginRight: "1ch",
 });

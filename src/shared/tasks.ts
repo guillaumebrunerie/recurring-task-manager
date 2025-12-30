@@ -71,12 +71,16 @@ export const taskStatus = (task: Task, now: number): TaskStatus => {
 	}
 };
 
-export const isTaskLate = (task: Task, now: number) => {
-	const status = taskStatus(task, now);
-	return status === "late" || status === "veryLate";
+export const isTaskFailed = (task: Task, now: number) => {
+	const delta = taskTimeDifferenceInUnit(task, now, task.unit);
+	return delta !== null && delta <= -task.period;
 };
 
-export const taskTimeDifferenceInUnit = (task: Task, now: number) => {
+export const taskTimeDifferenceInUnit = (
+	task: Task,
+	now: number,
+	unit = task.toleranceUnit,
+) => {
 	if (task.isArchived && task.archivedAt) {
 		return null;
 	}
@@ -84,10 +88,7 @@ export const taskTimeDifferenceInUnit = (task: Task, now: number) => {
 		return null;
 	}
 
-	return (
-		convertToUnit(task.toBeDoneTime, task.toleranceUnit) -
-		convertToUnit(now, task.toleranceUnit)
-	);
+	return convertToUnit(task.toBeDoneTime, unit) - convertToUnit(now, unit);
 };
 
 export const compareTasks = (taskA: Task, taskB: Task, now: number) => {
