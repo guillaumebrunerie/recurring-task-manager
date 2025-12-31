@@ -46,11 +46,17 @@ const sendNotification = async ({
 			convexUrl: process.env.CONVEX_CLOUD_URL,
 			subscription,
 		};
-		await webpush.sendNotification(
+		const response = await webpush.sendNotification(
 			JSON.parse(subscription),
 			JSON.stringify(data),
 		);
+		console.log(
+			`# Success, status code: ${response.statusCode}, body: ${response.body}`,
+		);
 	} catch (error) {
+		console.log(
+			`# Error, status code: ${(error as any)?.statusCode}, body: ${(error as any)?.body}`,
+		);
 		if (
 			error &&
 			typeof error == "object" &&
