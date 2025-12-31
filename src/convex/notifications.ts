@@ -91,9 +91,11 @@ const notifyUser = async (
 			isLate: true,
 		});
 		if (removeSubscription) {
-			await ctx.runMutation(internal.subscriptions.removeSubscription, {
-				subscription,
-			});
+			ctx.scheduler.runAfter(
+				1000,
+				internal.subscriptions.removeSubscription,
+				{ subscription },
+			);
 		}
 	}
 	if (!ignoreLastNotified) {
