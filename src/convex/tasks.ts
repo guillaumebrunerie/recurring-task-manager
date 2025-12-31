@@ -219,15 +219,13 @@ export const markTasksAsNotified = internalMutation({
 		now: v.number(),
 	},
 	handler: async (ctx, { ids, now }) => {
-		await Promise.all(
-			ids.map(async (id) => {
-				const task = await ctx.db.get(id);
-				if (!task) {
-					throw new ConvexError(`Task with id ${id} not found`);
-				}
-				await ctx.db.patch(id, { lastNotified: now });
-			}),
-		);
+		for (const id of ids) {
+			const task = await ctx.db.get(id);
+			if (!task) {
+				throw new ConvexError(`Task with id ${id} not found`);
+			}
+			await ctx.db.patch(id, { lastNotified: now });
+		}
 	},
 });
 
