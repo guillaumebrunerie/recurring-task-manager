@@ -26,15 +26,17 @@ type NotificationData = {
 	subscription: string;
 };
 
+type SendNotificationArgs = {
+	subscription: string;
+	task: Task;
+	isLate: boolean;
+};
+
 const sendNotification = async ({
 	subscription,
 	task,
 	isLate,
-}: {
-	subscription: string;
-	task: Task;
-	isLate: boolean;
-}) => {
+}: SendNotificationArgs): Promise<{ removeSubscription: boolean }> => {
 	try {
 		console.log(
 			`Sending notification for '${task.name}' (late: ${isLate})`,
@@ -46,27 +48,20 @@ const sendNotification = async ({
 			convexUrl: process.env.CONVEX_CLOUD_URL,
 			subscription,
 		};
-		const response = await webpush.sendNotification(
+		await webpush.sendNotification(
 			JSON.parse(subscription),
 			JSON.stringify(data),
 		);
-		console.log(
-			`# Success, status code: ${response.statusCode}, body: ${response.body}`,
-		);
 	} catch (error) {
-		console.log(
-			`# Error, status code: ${(error as WebPushError)?.statusCode}, body: ${(error as WebPushError)?.body}`,
-		);
 		if (
-			error &&
-			typeof error == "object" &&
-			"body" in error &&
-			error.body == "push subscription has unsubscribed or expired.\n"
+			error instanceof WebPushError &&
+			[404, 410].includes(error.statusCode)
 		) {
-			return;
+			return { removeSubscription: true };
 		}
 		console.error("Error sending push notification:", error);
 	}
+	return { removeSubscription: false };
 };
 
 const notifyUser = async (
@@ -90,11 +85,16 @@ const notifyUser = async (
 		});
 	}
 	for (const task of overdueTasks) {
-		await sendNotification({
+		const { removeSubscription } = await sendNotification({
 			subscription,
 			task,
 			isLate: true,
 		});
+		if (removeSubscription) {
+			await ctx.runMutation(api.subscriptions.unsubscribe, {
+				subscription,
+			});
+		}
 	}
 	if (!ignoreLastNotified) {
 		await ctx.runMutation(internal.tasks.markTasksAsNotified, {
