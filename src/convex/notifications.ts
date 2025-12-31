@@ -91,7 +91,7 @@ const notifyUser = async (
 			isLate: true,
 		});
 		if (removeSubscription) {
-			await ctx.runMutation(api.subscriptions.unsubscribe, {
+			await ctx.runMutation(internal.subscriptions.removeSubscription, {
 				subscription,
 			});
 		}

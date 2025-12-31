@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalQuery, mutation } from "./_generated/server";
+import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { getUser } from "./users";
 
@@ -70,5 +70,20 @@ export const unsubscribe = mutation({
 		if (existingSubscription) {
 			await ctx.db.delete(existingSubscription._id);
 		}
+	},
+});
+
+export const removeSubscription = internalMutation({
+	args: { subscription: v.string() },
+	handler: async (ctx, { subscription }) => {
+		const existingSubscription = await ctx.db
+			.query("subscriptions")
+			.filter((q) => q.eq(q.field("subscription"), subscription))
+			.unique();
+		if (!existingSubscription) {
+			console.log("Subscription not found:", subscription);
+			return;
+		}
+		await ctx.db.delete(existingSubscription._id);
 	},
 });
