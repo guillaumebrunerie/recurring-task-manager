@@ -1,6 +1,6 @@
 "use node";
 
-import webpush from "web-push";
+import webpush, { WebPushError } from "web-push";
 
 import { type ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
@@ -55,7 +55,7 @@ const sendNotification = async ({
 		);
 	} catch (error) {
 		console.log(
-			`# Error, status code: ${(error as any)?.statusCode}, body: ${(error as any)?.body}`,
+			`# Error, status code: ${(error as WebPushError)?.statusCode}, body: ${(error as WebPushError)?.body}`,
 		);
 		if (
 			error &&
