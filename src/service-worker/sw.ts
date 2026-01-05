@@ -1,5 +1,5 @@
-import { ConvexClient } from "https://esm.sh/convex@1.27.5/browser";
-import { anyApi } from "https://esm.sh/convex@1.27.5/server";
+import { ConvexClient } from "https://esm.sh/convex@1.31.1/browser";
+import { anyApi } from "https://esm.sh/convex@1.31.1/server";
 import type { MessageData, PushMessageData } from "../shared/messages";
 import type { Id } from "@/convex/_generated/dataModel";
 

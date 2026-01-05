@@ -1,6 +1,6 @@
-declare module "https://esm.sh/convex@1.27.5/browser" {
+declare module "https://esm.sh/convex@1.31.1/browser" {
 	export * from "convex/browser";
 }
-declare module "https://esm.sh/convex@1.27.5/server" {
+declare module "https://esm.sh/convex@1.31.1/server" {
 	export * from "convex/server";
 }
