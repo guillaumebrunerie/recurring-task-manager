@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 /**
  * Returns true iff `value` has been true for at least `delay` ms.
  */
-const useDelayedTruth = (value: boolean, delay: number): boolean => {
+export const useDelayedTruth = (value: boolean, delay: number): boolean => {
 	const [isDelayedTrue, setIsDelayedTrue] = useState(value);
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -34,5 +34,3 @@ const useDelayedTruth = (value: boolean, delay: number): boolean => {
 
 	return isDelayedTrue;
 };
-
-export default useDelayedTruth;
