@@ -81,7 +81,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 	};
 
 	// When the task should be done
-	const [toBeDoneTime, setToBeDoneTime] = useState(
+	const [toBeDoneTime, setToBeDoneTime] = useState(() =>
 		toLocalDateTimeString(task?.toBeDoneTime || Date.now()),
 	);
 	const [isTaskDisabled, setIsTaskDisabled] = useState(

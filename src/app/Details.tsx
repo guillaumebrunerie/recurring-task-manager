@@ -34,7 +34,9 @@ export const Details = ({
 }: DetailsProps) => {
 	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
 	const [isCompleting, startTransition] = useTransition();
-	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
+	const [doneTime, setDoneTime] = useState(() =>
+		toLocalDateTimeString(Date.now()),
+	);
 	const [completedBy, setCompletedBy] = useState<Set<Id<"users">>>(
 		new Set([...defaultCompletedBy(task, currentUser.id)]),
 	);

@@ -29,9 +29,4 @@ export const primary = style({
 	borderColor: "#3b82f6",
 });
 
-export const avatar = style({
-	width: "24px",
-	height: "24px",
-	borderRadius: "50%",
-	objectFit: "cover",
-});
+export const avatar = style({ borderRadius: "50%", objectFit: "cover" });

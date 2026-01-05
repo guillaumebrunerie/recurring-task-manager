@@ -1,6 +1,7 @@
 import * as styles from "./userSelector.css";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { User } from "@/shared/users";
+import Image from "next/image";
 
 type UserSelectorButtonProps = {
 	user: User;
@@ -22,9 +23,11 @@ const UserSelectorButton = ({
 			onClick={onToggle}
 			type="button"
 		>
-			<img
-				src={user.image || undefined}
-				alt={user.name}
+			<Image
+				width={24}
+				height={24}
+				src={user.image || "/missing-profile-picture.png"}
+				alt={displayName}
 				className={styles.avatar}
 			/>
 			<span>{displayName}</span>

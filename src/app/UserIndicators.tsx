@@ -1,25 +1,23 @@
 import type { User } from "@/shared/users";
 import * as styles from "./taskCard.css";
+import Image from "next/image";
+import classNames from "classnames";
 
 // Single user indicator
 
-type UserIndicatorProps = { user?: User; isDisabled?: boolean };
+type UserIndicatorProps = { user: User; isDisabled?: boolean };
 
 const UserIndicator = ({ user, isDisabled }: UserIndicatorProps) => {
-	const imageUrl = user?.image;
-	if (!imageUrl) {
-		return;
-	}
-
 	return (
-		<img
-			src={imageUrl}
+		<Image
+			width={24}
+			height={24}
+			src={user.image || "/missing-profile-picture.png"}
 			alt="Profile"
-			className={
-				styles.assignee +
-				" " +
-				(isDisabled ? styles.disabledAssignee : "")
-			}
+			className={classNames(
+				styles.assignee,
+				isDisabled && styles.disabledAssignee,
+			)}
 		/>
 	);
 };
@@ -36,7 +34,7 @@ export const UserIndicators = ({
 		<div className={styles.userIndicators}>
 			{allUsers.toReversed().map((user) => {
 				if (enabledUsers.some((u) => u.id == user.id)) {
-					return null;
+					return;
 				} else {
 					return (
 						<UserIndicator key={user.id} user={user} isDisabled />

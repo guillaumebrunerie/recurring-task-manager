@@ -14,11 +14,7 @@ export const avatarButton = style({
 	boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
 });
 
-export const avatarImage = style({
-	width: "100%",
-	height: "100%",
-	objectFit: "cover",
-});
+export const avatarImage = style({ objectFit: "cover" });
 
 export const dropdown = style({
 	position: "absolute",

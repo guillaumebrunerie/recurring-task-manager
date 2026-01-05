@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
 			],
 		},
 	],
+	images: {
+		remotePatterns: [new URL("https://lh3.googleusercontent.com/**")],
+	},
 };
 
 export default withVanillaExtract(nextConfig);

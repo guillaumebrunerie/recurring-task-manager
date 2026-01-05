@@ -36,16 +36,6 @@ export const usePushNotificationManager = (): NotificationsProps => {
 		null,
 	);
 
-	useEffect(() => {
-		if ("serviceWorker" in navigator && "PushManager" in window) {
-			setIsSupported(true);
-			void registerServiceWorker();
-		}
-	}, []);
-
-	const subscribeUser = useMutation(api.subscriptions.subscribe);
-	const unsubscribeUser = useMutation(api.subscriptions.unsubscribe);
-
 	const registerServiceWorker = async () => {
 		const registration = await navigator.serviceWorker.register("/sw.js", {
 			scope: "/",
@@ -55,6 +45,16 @@ export const usePushNotificationManager = (): NotificationsProps => {
 		const sub = await registration.pushManager.getSubscription();
 		setSubscription(sub);
 	};
+
+	useEffect(() => {
+		if ("serviceWorker" in navigator && "PushManager" in window) {
+			setIsSupported(true);
+			void registerServiceWorker();
+		}
+	}, []);
+
+	const subscribeUser = useMutation(api.subscriptions.subscribe);
+	const unsubscribeUser = useMutation(api.subscriptions.unsubscribe);
 
 	const [isPending, startTransition] = useTransition();
 

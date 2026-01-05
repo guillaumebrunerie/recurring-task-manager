@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import * as styles from "./profileMenu.css";
 import type { NotificationsProps } from "./usePushNotificationManager";
+import Image from "next/image";
 
 type ProfileMenuProps = {
 	imageUrl?: string;
@@ -44,13 +45,13 @@ export const ProfileMenu = ({
 				className={styles.avatarButton}
 				onClick={() => setOpen(!open)}
 			>
-				{imageUrl && (
-					<img
-						src={imageUrl}
-						alt="Profile"
-						className={styles.avatarImage}
-					/>
-				)}
+				<Image
+					width={36}
+					height={36}
+					src={imageUrl || "/missing-profile-picture.png"}
+					alt="Profile"
+					className={styles.avatarImage}
+				/>
 			</button>
 			{open && (
 				<div className={styles.dropdown}>

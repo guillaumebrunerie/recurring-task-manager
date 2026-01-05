@@ -2,15 +2,16 @@ import { defineConfig, globalIgnores, type Config } from "eslint/config";
 import convexPlugin from "@convex-dev/eslint-plugin";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-// import nextVitals from "eslint-config-next/core-web-vitals";
+import nextVitals from "eslint-config-next/core-web-vitals";
 
-export default defineConfig(
+export default defineConfig([
 	// Main rules
 	eslint.configs.recommended,
 	tseslint.configs.strictTypeChecked,
 	{ languageOptions: { parserOptions: { projectService: true } } },
 	convexPlugin.configs.recommended as Config,
-	// ...(nextVitals as Config[]),
+	...nextVitals,
+	// Overrides
 	{
 		rules: {
 			"@typescript-eslint/restrict-template-expressions": [
@@ -28,13 +29,5 @@ export default defineConfig(
 		rules: { "import/no-anonymous-default-export": "off" },
 	},
 	// Ignores
-	globalIgnores([
-		"src/convex/_generated",
-		"node_modules/**",
-		".next/**",
-		"out/**",
-		"build/**",
-		"next-env.d.ts",
-		"public/sw.js",
-	]),
-);
+	globalIgnores(["src/convex/_generated", "public/sw.js"]),
+]);
