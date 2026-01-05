@@ -23,11 +23,7 @@ export const googleButton = style({
 	cursor: "pointer",
 	transition: "box-shadow 0.2s",
 	color: "#333",
-	selectors: {
-		"&:hover": {
-			boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-		},
-	},
+	selectors: { "&:hover": { boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" } },
 });
 
 export const googleLogo = style({

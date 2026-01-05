@@ -15,9 +15,7 @@ const button = style({
 export const greenButton = style([
 	button,
 	{
-		":hover": {
-			backgroundColor: "#158a1a",
-		},
+		":hover": { backgroundColor: "#158a1a" },
 		backgroundColor: colors.doneButton,
 	},
 ]);
@@ -25,9 +23,7 @@ export const greenButton = style([
 export const blueButton = style([
 	button,
 	{
-		":hover": {
-			backgroundColor: "#005fa3",
-		},
+		":hover": { backgroundColor: "#005fa3" },
 		backgroundColor: colors.editButton,
 	},
 ]);

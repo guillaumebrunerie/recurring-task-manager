@@ -15,15 +15,9 @@ export const card = style({
 	"-webkit-tap-highlight-color": "transparent",
 });
 
-export const name = style({
-	fontWeight: "bold",
-	fontSize: "1.1rem",
-});
+export const name = style({ fontWeight: "bold", fontSize: "1.1rem" });
 
-export const time = style({
-	fontSize: "0.9rem",
-	textAlign: "right",
-});
+export const time = style({ fontSize: "0.9rem", textAlign: "right" });
 
 export const lock = style({});
 
@@ -61,13 +55,8 @@ export const bottomRow = style({
 });
 
 export const statusVariants = recipe({
-	base: {
-		borderLeft: "4px solid",
-		marginBlock: "4px",
-	},
-	variants: {
-		color: colors.cardStatus,
-	},
+	base: { borderLeft: "4px solid", marginBlock: "4px" },
+	variants: { color: colors.cardStatus },
 });
 
 export const threeDots = style({
@@ -109,11 +98,7 @@ export const contextMenuItem = style({
 	padding: "0.5rem 1rem",
 	fontSize: "0.95rem",
 	cursor: "pointer",
-	selectors: {
-		"&:hover": {
-			backgroundColor: colors.hfbackgroundhover,
-		},
-	},
+	selectors: { "&:hover": { backgroundColor: colors.hfbackgroundhover } },
 });
 
 export const warningText = style({
@@ -121,6 +106,4 @@ export const warningText = style({
 	color: colors.contextMenu.warning,
 });
 
-export const separator = style({
-	marginBlock: "0.25rem",
-});
+export const separator = style({ marginBlock: "0.25rem" });

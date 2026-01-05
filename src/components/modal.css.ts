@@ -56,7 +56,5 @@ export const closeButton = style({
 	fontSize: "1.25rem",
 	cursor: "pointer",
 	color: colors.modal.closeButton,
-	":hover": {
-		color: colors.modal.closeButtonHover,
-	},
+	":hover": { color: colors.modal.closeButtonHover },
 });

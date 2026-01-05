@@ -44,9 +44,7 @@ export const colors = createGlobalTheme(":root", {
 		hover: `light-dark(#f1f1f1, #f1f1f1)`,
 		warning: `light-dark(#cc0000, #cc0000)`,
 	},
-	accomplishment: {
-		background: `light-dark(#f6f6f6, oklch(0.3 0 0))`,
-	},
+	accomplishment: { background: `light-dark(#f6f6f6, oklch(0.3 0 0))` },
 	doneButton: `light-dark(#4CAF50, oklch(0.4 0.1 144))`,
 	editButton: `light-dark(#0077cc, oklch(0.4 0.1 250))`,
 	buttonText: `light-dark(#ffffff, oklch(0.97 0 0))`,

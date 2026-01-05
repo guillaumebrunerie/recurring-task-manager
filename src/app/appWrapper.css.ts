@@ -17,12 +17,7 @@ export const header = style({
 	placeItems: "center",
 	boxShadow: `0 3px 3px ${colors.hfshadow}`,
 	zIndex: 1,
-	"& svg": {
-		width: "110%",
-		height: "auto",
-		strokeWidth: 1.3,
-		fill: "white",
-	},
+	"& svg": { width: "110%", height: "auto", strokeWidth: 1.3, fill: "white" },
 });
 
 export const footer = style({
@@ -38,7 +33,4 @@ export const footer = style({
 	zIndex: 1,
 });
 
-export const contents = style({
-	overflow: "auto",
-	overscrollBehavior: "none",
-});
+export const contents = style({ overflow: "auto", overscrollBehavior: "none" });

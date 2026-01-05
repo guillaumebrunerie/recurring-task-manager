@@ -1,8 +1,6 @@
 import { keyframes, style } from "@vanilla-extract/css";
 
-const spin = keyframes({
-	to: { transform: "rotate(360deg)" },
-});
+const spin = keyframes({ to: { transform: "rotate(360deg)" } });
 
 export const spinner = style({
 	width: "1em",

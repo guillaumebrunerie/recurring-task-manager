@@ -28,14 +28,10 @@ export const input = style({
 	background: "#fff",
 	color: "#111",
 	alignSelf: "stretch",
-	"&:disabled": {
-		opacity: 0.5,
-	},
+	"&:disabled": { opacity: 0.5 },
 });
 
-export const dateTimeInput = style({
-	WebkitAppearance: "none",
-});
+export const dateTimeInput = style({ WebkitAppearance: "none" });
 
 export const inputSmall = style({
 	padding: "0.5rem",
@@ -49,9 +45,7 @@ export const inputSmall = style({
 
 	background: "#fff",
 	color: "#111",
-	"&:disabled": {
-		opacity: 0.5,
-	},
+	"&:disabled": { opacity: 0.5 },
 });
 
 export const checkboxLabel = style({
@@ -60,18 +54,12 @@ export const checkboxLabel = style({
 	alignItems: "center",
 	gap: "0.5rem",
 	cursor: "pointer",
-	"&:has(input:disabled)": {
-		opacity: 0.5,
-	},
+	"&:has(input:disabled)": { opacity: 0.5 },
 });
 
 export const textarea = style([
 	input,
-	{
-		fontFamily: "inherit",
-		minHeight: "100px",
-		resize: "none",
-	},
+	{ fontFamily: "inherit", minHeight: "100px", resize: "none" },
 ]);
 
 export const periodRow = style({
@@ -86,7 +74,4 @@ export const field = style({
 	gap: "0.3rem",
 });
 
-export const bottomBar = style({
-	display: "flex",
-	justifyContent: "flex-end",
-});
+export const bottomBar = style({ display: "flex", justifyContent: "flex-end" });

@@ -3,10 +3,7 @@ import * as styles from "./taskCard.css";
 
 // Single user indicator
 
-type UserIndicatorProps = {
-	user?: User;
-	isDisabled?: boolean;
-};
+type UserIndicatorProps = { user?: User; isDisabled?: boolean };
 
 const UserIndicator = ({ user, isDisabled }: UserIndicatorProps) => {
 	const imageUrl = user?.image;
@@ -29,10 +26,7 @@ const UserIndicator = ({ user, isDisabled }: UserIndicatorProps) => {
 
 // Multiple user indicators
 
-type UserIndicatorsProps = {
-	enabledUsers: User[];
-	allUsers: User[];
-};
+type UserIndicatorsProps = { enabledUsers: User[]; allUsers: User[] };
 
 export const UserIndicators = ({
 	enabledUsers,

@@ -9,10 +9,7 @@ export const taskPage = style({
 	paddingBottom: "3rem",
 });
 
-export const section = style({
-	display: "flex",
-	flexDirection: "column",
-});
+export const section = style({ display: "flex", flexDirection: "column" });
 
 export const sectionTitle = style({
 	fontSize: "1.2rem",
@@ -27,9 +24,7 @@ export const arrow = style({
 	transition: "rotate 0.3s ease",
 });
 
-export const arrowCollapsed = style({
-	rotate: "-90deg",
-});
+export const arrowCollapsed = style({ rotate: "-90deg" });
 
 export const collapseDelayVar = createVar();
 
@@ -42,10 +37,6 @@ export const taskList = style({
 	overflow: "hidden",
 });
 
-export const taskListCollapsed = style({
-	height: "0",
-});
+export const taskListCollapsed = style({ height: "0" });
 
-export const taskListFullyOpen = style({
-	overflow: "visible",
-});
+export const taskListFullyOpen = style({ overflow: "visible" });

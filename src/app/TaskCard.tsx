@@ -23,11 +23,7 @@ import { UserIndicators } from "./UserIndicators";
 import { taskCompleted } from "@/shared/messages";
 
 const celebrateCompletionWithConfetti = () => {
-	void confetti({
-		particleCount: 100,
-		spread: 70,
-		origin: { y: 1 },
-	});
+	void confetti({ particleCount: 100, spread: 70, origin: { y: 1 } });
 };
 
 export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
@@ -209,9 +205,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	);
 };
 
-type CompleteMenuItemProps = {
-	onComplete: () => Promise<void>;
-};
+type CompleteMenuItemProps = { onComplete: () => Promise<void> };
 
 const CompleteMenuItem = ({ onComplete }: CompleteMenuItemProps) => {
 	const [isCompleting, startTransition] = useTransition();

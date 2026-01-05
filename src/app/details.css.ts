@@ -1,14 +1,9 @@
 import { style } from "@vanilla-extract/css";
 import { colors } from "./themes.css";
 
-export const description = style({
-	whiteSpace: "pre-wrap",
-});
+export const description = style({ whiteSpace: "pre-wrap" });
 
-export const label = style({
-	fontSize: "0.95rem",
-	fontWeight: 500,
-});
+export const label = style({ fontSize: "0.95rem", fontWeight: 500 });
 
 export const input = style({
 	appearance: "none",
@@ -31,12 +26,8 @@ export const input = style({
 			borderColor: "#888",
 			boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.1)",
 		},
-		"&::-webkit-datetime-edit-fields-wrapper": {
-			backgroundColor: "#fff",
-		},
-		"&::-webkit-datetime-edit": {
-			color: "#111",
-		},
+		"&::-webkit-datetime-edit-fields-wrapper": { backgroundColor: "#fff" },
+		"&::-webkit-datetime-edit": { color: "#111" },
 		"&::-webkit-clear-button, &::-webkit-inner-spin-button": {
 			display: "none",
 		},
@@ -68,9 +59,7 @@ export const optionsButton = style({
 	fontWeight: "500",
 });
 
-export const optionsButtonCollapsed = style({
-	color: colors.detailsSection,
-});
+export const optionsButtonCollapsed = style({ color: colors.detailsSection });
 
 export const options = style({
 	overflow: "hidden",
@@ -82,9 +71,7 @@ export const options = style({
 	height: "auto",
 });
 
-export const optionsCollapsed = style({
-	height: "0",
-});
+export const optionsCollapsed = style({ height: "0" });
 
 export const history = style({
 	overflow: "hidden",
@@ -97,10 +84,7 @@ export const history = style({
 	height: "auto",
 });
 
-export const historyCollapsed = style({
-	height: "0",
-	paddingTop: "0",
-});
+export const historyCollapsed = style({ height: "0", paddingTop: "0" });
 
 export const completionList = style({
 	listStyle: "none",
@@ -139,9 +123,7 @@ export const arrow = style({
 	transition: "rotate 0.3s ease",
 });
 
-export const arrowCollapsed = style({
-	rotate: "-90deg",
-});
+export const arrowCollapsed = style({ rotate: "-90deg" });
 
 export const infoRow = style({
 	display: "flex",
@@ -171,7 +153,4 @@ export const deleteHistoryItemButton = style({
 	color: colors.deleteButton,
 });
 
-export const showDeleteButton = style({
-	width: "auto",
-	marginRight: "1ch",
-});
+export const showDeleteButton = style({ width: "auto", marginRight: "1ch" });

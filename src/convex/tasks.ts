@@ -81,9 +81,7 @@ export const parseTask = async (
 
 // Returns a task by its ID
 export const get = query({
-	args: {
-		id: v.optional(v.id("tasks")),
-	},
+	args: { id: v.optional(v.id("tasks")) },
 	handler: async (ctx, { id }) => {
 		if (!id) {
 			return;
@@ -102,9 +100,7 @@ export const get = query({
 
 // Returns the accomplishments of a task
 export const getAccomplishments = query({
-	args: {
-		id: v.optional(v.id("tasks")),
-	},
+	args: { id: v.optional(v.id("tasks")) },
 	handler: async (ctx, { id }) => {
 		if (!id) {
 			return;
@@ -140,10 +136,7 @@ export const getAll = query({
 });
 
 export const getTasksToNotifyForUser = internalQuery({
-	args: {
-		userId: v.id("users"),
-		ignoreLastNotified: v.boolean(),
-	},
+	args: { userId: v.id("users"), ignoreLastNotified: v.boolean() },
 	handler: async (ctx, { userId, ignoreLastNotified }) => {
 		const now = Date.now();
 
@@ -214,10 +207,7 @@ export const saveTask = mutation({
 });
 
 export const markTasksAsNotified = internalMutation({
-	args: {
-		ids: v.array(v.id("tasks")),
-		now: v.number(),
-	},
+	args: { ids: v.array(v.id("tasks")), now: v.number() },
 	handler: async (ctx, { ids, now }) => {
 		for (const id of ids) {
 			await ctx.db.patch(id, { lastNotified: now });
@@ -228,18 +218,14 @@ export const markTasksAsNotified = internalMutation({
 export const archiveTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.patch(args.id, {
-			archivedAt: Date.now(),
-		});
+		await ctx.db.patch(args.id, { archivedAt: Date.now() });
 	},
 });
 
 export const unarchiveTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.patch(args.id, {
-			archivedAt: undefined,
-		});
+		await ctx.db.patch(args.id, { archivedAt: undefined });
 	},
 });
 

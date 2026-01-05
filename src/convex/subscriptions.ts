@@ -13,9 +13,7 @@ export const getAllSubscriptions = internalQuery({
 });
 
 export const getByUserName = internalQuery({
-	args: {
-		userName: v.string(),
-	},
+	args: { userName: v.string() },
 	handler: async (ctx, { userName }) => {
 		const allSubscriptions = await ctx.db.query("subscriptions").collect();
 		const subscriptions = await Promise.all(
@@ -34,25 +32,18 @@ export const getByUserName = internalQuery({
 /** Mutations */
 
 export const subscribe = mutation({
-	args: {
-		subscription: v.string(),
-	},
+	args: { subscription: v.string() },
 	handler: async (ctx, { subscription }) => {
 		const userId = await getAuthUserId(ctx);
 		if (userId === null) {
 			return [];
 		}
-		await ctx.db.insert("subscriptions", {
-			userId,
-			subscription,
-		});
+		await ctx.db.insert("subscriptions", { userId, subscription });
 	},
 });
 
 export const unsubscribe = mutation({
-	args: {
-		subscription: v.string(),
-	},
+	args: { subscription: v.string() },
 	handler: async (ctx, { subscription }) => {
 		const userId = await getAuthUserId(ctx);
 		if (userId === null) {

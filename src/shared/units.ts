@@ -243,9 +243,7 @@ const dateTimeFormat = new Intl.DateTimeFormat("fr-FR", {
 	timeStyle: "short",
 });
 
-const dateFormat = new Intl.DateTimeFormat("fr-FR", {
-	dateStyle: "full",
-});
+const dateFormat = new Intl.DateTimeFormat("fr-FR", { dateStyle: "full" });
 
 export const timeToString = (time: number, unit: TimeUnit) => {
 	const timeUnit = convertToUnit(time, unit);

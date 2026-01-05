@@ -1,10 +1,7 @@
 import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
 
-export const container = style({
-	position: "relative",
-	zIndex: 1000,
-});
+export const container = style({ position: "relative", zIndex: 1000 });
 
 export const avatarButton = style({
 	width: "40px",
@@ -39,9 +36,5 @@ export const dropdownItem = style({
 	padding: "0.5rem 1rem",
 	fontSize: "0.95rem",
 	cursor: "pointer",
-	selectors: {
-		"&:hover": {
-			backgroundColor: "#f1f1f1",
-		},
-	},
+	selectors: { "&:hover": { backgroundColor: "#f1f1f1" } },
 });

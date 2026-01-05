@@ -17,16 +17,9 @@ globalStyle("html, body", {
 	height: "100%",
 });
 
-globalStyle("*", {
-	boxSizing: "border-box",
-	padding: 0,
-	margin: 0,
-});
+globalStyle("*", { boxSizing: "border-box", padding: 0, margin: 0 });
 
-globalStyle("a", {
-	color: "inherit",
-	textDecoration: "none",
-});
+globalStyle("a", { color: "inherit", textDecoration: "none" });
 
 // /* @media (prefers-color-scheme: dark) { */
 // /* 	:root { */

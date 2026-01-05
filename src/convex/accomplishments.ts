@@ -117,9 +117,7 @@ export const addAccomplishment = mutation({
 });
 
 export const deleteAccomplishment = mutation({
-	args: {
-		accomplishmentId: v.id("accomplishments"),
-	},
+	args: { accomplishmentId: v.id("accomplishments") },
 	handler: async (ctx, { accomplishmentId }) => {
 		const userId = await getAuthUserId(ctx);
 		if (!userId) {

@@ -1,9 +1,6 @@
 import * as styles from "./button.css";
 
-type ButtonProps = {
-	children?: React.ReactNode;
-	onClick: () => void;
-};
+type ButtonProps = { children?: React.ReactNode; onClick: () => void };
 
 export const BlueButton = ({ children, onClick }: ButtonProps) => {
 	return (
