@@ -1,7 +1,6 @@
 import { ConvexClient } from "https://esm.sh/convex@1.27.5/browser";
 import { anyApi } from "https://esm.sh/convex@1.27.5/server";
-import type { PushMessageData } from "../convex/notifications";
-import type { MessageData } from "../shared/messages";
+import type { MessageData, PushMessageData } from "../shared/messages";
 import type { Id } from "@/convex/_generated/dataModel";
 
 declare const self: ServiceWorkerGlobalScope;

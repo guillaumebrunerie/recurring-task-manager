@@ -1,12 +1,14 @@
 "use node";
 
 import webpush, { WebPushError, type PushSubscription } from "web-push";
+import { v } from "convex/values";
 
 import { type ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
-import type { Doc, Id } from "./_generated/dataModel";
+import type { Doc } from "./_generated/dataModel";
+
 import type { Task } from "@/shared/tasks";
-import { v } from "convex/values";
+import type { PushMessageData } from "@/shared/messages";
 
 /** Configuration */
 
@@ -17,14 +19,6 @@ webpush.setVapidDetails(
 );
 
 /** Helper functions */
-
-export type PushMessageData = {
-	taskId: Id<"tasks">;
-	taskName: string;
-	isLate: boolean;
-	convexUrl: string;
-	subscription: string;
-};
 
 type SendNotificationArgs = {
 	subscription: string;
@@ -114,6 +108,7 @@ const doNotDisturb = () => {
 };
 
 export const notifyAllUsers = internalAction({
+	args: {},
 	handler: async (ctx) => {
 		if (process.env.ENABLE_CRON_NOTIFICATIONS !== "true") {
 			return;

@@ -39,7 +39,6 @@
 		"@vanilla-extract/next-plugin": "^2.4.11",
 		"esbuild": "^0.27.2",
 		"eslint": "^9.39.2",
-		"eslint-config-next": "^15.5.9",
 		"knip": "^5.64.1",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.51.0"
