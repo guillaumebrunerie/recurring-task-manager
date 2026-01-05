@@ -8,7 +8,6 @@ import { useTimestamp } from "@/hooks/useTimestamp";
 import { Suspense, useEffect, useState } from "react";
 import { type Task, compareTasks, taskStatus } from "@/shared/tasks";
 import { AppWrapper } from "./AppWrapper";
-import { useDelayedTruth } from "@/hooks/useDelayedTruth";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { TaskCard } from "./TaskCard";
 import { BlueButton } from "@/components/Button";
@@ -126,7 +125,6 @@ const Section = ({
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
 	const collapseDelay = 300;
-	const fullyOpen = useDelayedTruth(!isCollapsed, collapseDelay);
 	if (tasks.length == 0) {
 		return null;
 	}
@@ -150,7 +148,6 @@ const Section = ({
 				className={classNames(
 					styles.taskList,
 					isCollapsed && styles.taskListCollapsed,
-					fullyOpen && styles.taskListFullyOpen,
 				)}
 				style={assignInlineVars({
 					[styles.collapseDelayVar]: `${collapseDelay}ms`,

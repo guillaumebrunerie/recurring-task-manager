@@ -30,27 +30,29 @@ export type NotificationsProps = {
 	toggleSubscription?: () => void;
 };
 
+const isPushManagerSupported =
+	"serviceWorker" in navigator && "PushManager" in window;
+
 export const usePushNotificationManager = (): NotificationsProps => {
-	const [isSupported, setIsSupported] = useState(false);
 	const [subscription, setSubscription] = useState<PushSubscription | null>(
 		null,
 	);
 
-	const registerServiceWorker = async () => {
-		const registration = await navigator.serviceWorker.register("/sw.js", {
-			scope: "/",
-			updateViaCache: "none",
-			type: "module",
-		});
-		const sub = await registration.pushManager.getSubscription();
-		setSubscription(sub);
-	};
-
 	useEffect(() => {
-		if ("serviceWorker" in navigator && "PushManager" in window) {
-			setIsSupported(true);
-			void registerServiceWorker();
+		if (!isPushManagerSupported) {
+			return;
 		}
+
+		const registerServiceWorker = async () => {
+			const registration = await navigator.serviceWorker.register(
+				"/sw.js",
+				{ scope: "/", updateViaCache: "none", type: "module" },
+			);
+			const sub = await registration.pushManager.getSubscription();
+			setSubscription(sub);
+		};
+
+		void registerServiceWorker();
 	}, []);
 
 	const subscribeUser = useMutation(api.subscriptions.subscribe);
@@ -88,12 +90,12 @@ export const usePushNotificationManager = (): NotificationsProps => {
 
 	return {
 		state:
-			!isSupported ? "unsupported"
+			!isPushManagerSupported ? "unsupported"
 			: isPending ? "pending"
 			: subscription !== null ? "subscribed"
 			: "unsubscribed",
 		toggleSubscription:
-			isSupported ?
+			isPushManagerSupported ?
 				subscription ? unsubscribe
 				:	subscribe
 			:	undefined,

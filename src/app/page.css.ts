@@ -38,5 +38,3 @@ export const taskList = style({
 });
 
 export const taskListCollapsed = style({ height: "0" });
-
-export const taskListFullyOpen = style({ overflow: "visible" });
