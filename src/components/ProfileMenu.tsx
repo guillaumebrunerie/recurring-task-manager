@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import * as styles from "./profileMenu.css";
 import type { NotificationsProps } from "./usePushNotificationManager";
 import Image from "next/image";
+import { Spinner } from "./Spinner";
 
 type ProfileMenuProps = {
 	imageUrl?: string;
@@ -34,9 +35,9 @@ export const ProfileMenu = ({
 
 	const notificationMessages = {
 		unsupported: "Notifications non supportées",
-		pending: "Notifications ...",
-		unsubscribed: "Notifications OFF",
-		subscribed: "Notifications ON",
+		pending: <Spinner />,
+		unsubscribed: "Notifications désactivées",
+		subscribed: "Notifications activées",
 	} as const;
 
 	return (
