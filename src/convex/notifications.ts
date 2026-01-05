@@ -1,6 +1,6 @@
 "use node";
 
-import webpush, { WebPushError, PushSubscription } from "web-push";
+import webpush, { WebPushError, type PushSubscription } from "web-push";
 
 import { type ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
@@ -78,11 +78,7 @@ const notifyUser = async (
 		`Notifying user ${user?.name}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
 	for (const task of dueTasks) {
-		await sendNotification({
-			subscription,
-			task,
-			isLate: false,
-		});
+		await sendNotification({ subscription, task, isLate: false });
 	}
 	for (const task of overdueTasks) {
 		const { removeSubscription } = await sendNotification({

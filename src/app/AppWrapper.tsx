@@ -16,9 +16,7 @@ import {
 } from "@/components/usePushNotificationManager";
 import { Spinner } from "@/components/Spinner";
 
-type NotificationsButtonProps = {
-	notifications: NotificationsProps;
-};
+type NotificationsButtonProps = { notifications: NotificationsProps };
 const NotificationsButton = ({ notifications }: NotificationsButtonProps) => {
 	switch (notifications.state) {
 		case "unsupported":

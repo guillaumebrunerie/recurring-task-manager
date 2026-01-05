@@ -1,7 +1,6 @@
 {
 	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"lib": ["esnext", "webworker"]
-	},
-	"include": ["./sw.ts"]
+	"compilerOptions": { "lib": ["esnext", "webworker"] },
+	"include": ["./sw.ts", "./globals.d.ts"],
+	"exclude": ["../../node_modules"]
 }
