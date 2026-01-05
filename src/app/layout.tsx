@@ -4,10 +4,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
@@ -17,10 +14,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: "Project Happy Home",
 	manifest: "/manifest.json",
-	icons: {
-		icon: "/icon-192.png",
-		apple: "/icon-192.png",
-	},
+	icons: { icon: "/icon-192x192.png", apple: "/icon-192x192.png" },
 };
 
 export const viewport: Viewport = {
