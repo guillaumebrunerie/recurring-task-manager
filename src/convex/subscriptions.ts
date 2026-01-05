@@ -59,7 +59,7 @@ export const unsubscribe = mutation({
 			)
 			.unique();
 		if (existingSubscription) {
-			await ctx.db.delete(existingSubscription._id);
+			await ctx.db.delete("subscriptions", existingSubscription._id);
 		}
 	},
 });
@@ -75,6 +75,6 @@ export const removeSubscription = internalMutation({
 			console.log("Subscription not found:", subscription);
 			return;
 		}
-		await ctx.db.delete(existingSubscription._id);
+		await ctx.db.delete("subscriptions", existingSubscription._id);
 	},
 });

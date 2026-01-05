@@ -16,7 +16,7 @@ export const getUser = async (
 	ctx: QueryCtx,
 	userId: Id<"users">,
 ): Promise<User> => {
-	const user = await ctx.db.get(userId);
+	const user = await ctx.db.get("users", userId);
 	if (!user) {
 		throw new Error(`User with id ${userId} not found`);
 	}
@@ -46,7 +46,7 @@ export const getCurrentUserQuery = query({
 		if (!userId) {
 			return;
 		}
-		const user = await ctx.db.get(userId);
+		const user = await ctx.db.get("users", userId);
 		if (!user) {
 			return;
 		}

@@ -90,7 +90,7 @@ export const get = query({
 		if (userId === null) {
 			return;
 		}
-		const task = await ctx.db.get(id);
+		const task = await ctx.db.get("tasks", id);
 		if (!task) {
 			throw new ConvexError(`Task with id ${id} not found`);
 		}
@@ -109,7 +109,7 @@ export const getAccomplishments = query({
 		if (userId === null) {
 			return;
 		}
-		const taskDoc = await ctx.db.get(id);
+		const taskDoc = await ctx.db.get("tasks", id);
 		if (!taskDoc) {
 			throw new ConvexError(`Task with id ${id} not found`);
 		}
@@ -199,7 +199,7 @@ export const saveTask = mutation({
 		};
 
 		if (args.id) {
-			await ctx.db.patch(args.id, data);
+			await ctx.db.patch("tasks", args.id, data);
 		} else {
 			await ctx.db.insert("tasks", data);
 		}
@@ -210,7 +210,7 @@ export const markTasksAsNotified = internalMutation({
 	args: { ids: v.array(v.id("tasks")), now: v.number() },
 	handler: async (ctx, { ids, now }) => {
 		for (const id of ids) {
-			await ctx.db.patch(id, { lastNotified: now });
+			await ctx.db.patch("tasks", id, { lastNotified: now });
 		}
 	},
 });
@@ -218,21 +218,21 @@ export const markTasksAsNotified = internalMutation({
 export const archiveTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.patch(args.id, { archivedAt: Date.now() });
+		await ctx.db.patch("tasks", args.id, { archivedAt: Date.now() });
 	},
 });
 
 export const unarchiveTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.patch(args.id, { archivedAt: undefined });
+		await ctx.db.patch("tasks", args.id, { archivedAt: undefined });
 	},
 });
 
 export const deleteTask = mutation({
 	args: { id: v.id("tasks") },
 	handler: async (ctx, args) => {
-		await ctx.db.delete(args.id);
+		await ctx.db.delete("tasks", args.id);
 	},
 });
 

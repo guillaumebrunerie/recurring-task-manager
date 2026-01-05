@@ -70,7 +70,7 @@ export const addAccomplishment = mutation({
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
-		const taskDoc = await ctx.db.get(taskId);
+		const taskDoc = await ctx.db.get("tasks", taskId);
 		if (!taskDoc) {
 			throw new Error(`Task with id ${taskId} not found`);
 		}
@@ -102,11 +102,11 @@ export const addAccomplishment = mutation({
 			completionTime,
 			completedBy: completedBy || defaultCompletedBy(task, userId),
 		});
-		await ctx.db.patch(taskId, {
+		await ctx.db.patch("tasks", taskId, {
 			responsibleFor: await getNewResponsibles(ctx, taskDoc),
 		});
 		if (updateToBeDoneTime) {
-			await ctx.db.patch(taskId, {
+			await ctx.db.patch("tasks", taskId, {
 				toBeDoneTime:
 					task.isFixedSchedule ?
 						calculateToBeDoneTimeFixed(task)
@@ -123,7 +123,10 @@ export const deleteAccomplishment = mutation({
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
-		const accomplishmentDoc = await ctx.db.get(accomplishmentId);
+		const accomplishmentDoc = await ctx.db.get(
+			"accomplishments",
+			accomplishmentId,
+		);
 		if (!accomplishmentDoc) {
 			throw new Error(
 				`Accomplishment with id ${accomplishmentId} not found`,
@@ -131,10 +134,10 @@ export const deleteAccomplishment = mutation({
 		}
 
 		// Delete the accomplishment
-		await ctx.db.delete(accomplishmentId);
+		await ctx.db.delete("accomplishments", accomplishmentId);
 
 		const taskId = accomplishmentDoc.taskId;
-		const taskDoc = await ctx.db.get(taskId);
+		const taskDoc = await ctx.db.get("tasks", taskId);
 		if (!taskDoc) {
 			throw new Error(`Task with id ${taskId} not found`);
 		}
@@ -144,6 +147,6 @@ export const deleteAccomplishment = mutation({
 			calculateToBeDoneTime(ctx, taskDoc),
 			getNewResponsibles(ctx, taskDoc),
 		]);
-		await ctx.db.patch(taskId, { toBeDoneTime, responsibleFor });
+		await ctx.db.patch("tasks", taskId, { toBeDoneTime, responsibleFor });
 	},
 });
