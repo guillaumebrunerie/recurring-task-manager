@@ -3,13 +3,13 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
+		"dev": "next dev --webpack",
 		"build:sw": "esbuild src/service-worker/sw.ts --outdir=public --minify",
-		"build": "npm run build:sw && next build",
+		"build": "npm run build:sw && next build --webpack",
 		"start": "next start",
-		"lint": "eslint .",
+		"typecheck": "tsc -p tsconfig.json && tsc -p src/service-worker/tsconfig.json",
 		"knip": "knip",
-		"typecheck": "tsc -p tsconfig.json && tsc -p src/service-worker/tsconfig.json"
+		"lint": "eslint ."
 	},
 	"type": "module",
 	"dependencies": {
