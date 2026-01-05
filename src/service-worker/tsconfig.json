@@ -1,10 +1,7 @@
 {
-	"extend": "../../tsconfig.json",
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"target": "es2018",
-		"lib": ["es2018", "webworker"],
-		"module": "none",
-		"outDir": "public"
+		"lib": ["esnext", "webworker"]
 	},
-	"include": ["./*.ts"]
+	"include": ["./sw.ts"]
 }
