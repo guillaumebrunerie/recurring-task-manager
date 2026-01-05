@@ -38,6 +38,8 @@ export const usePushNotificationManager = (): NotificationsProps => {
 		null,
 	);
 
+	const [isPending, startTransition] = useTransition();
+
 	useEffect(() => {
 		if (!isPushManagerSupported) {
 			return;
@@ -52,13 +54,11 @@ export const usePushNotificationManager = (): NotificationsProps => {
 			setSubscription(sub);
 		};
 
-		void registerServiceWorker();
+		startTransition(registerServiceWorker);
 	}, []);
 
 	const subscribeUser = useMutation(api.subscriptions.subscribe);
 	const unsubscribeUser = useMutation(api.subscriptions.unsubscribe);
-
-	const [isPending, startTransition] = useTransition();
 
 	const subscribe = () => {
 		startTransition(async () => {
