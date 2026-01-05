@@ -129,9 +129,9 @@ export const notifyAllUsers = internalAction({
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getAllSubscriptions,
 		);
-		await Promise.all(
-			subscriptions.map((subscription) => notifyUser(ctx, subscription)),
-		);
+		for (const subscription of subscriptions) {
+			await notifyUser(ctx, subscription);
+		}
 	},
 });
 
@@ -142,10 +142,8 @@ export const notifyTest = internalAction({
 			internal.subscriptions.getByUserName,
 			{ userName: name || "Guillaume Brunerie" },
 		);
-		await Promise.all(
-			subscriptions.map((subscription) =>
-				notifyUser(ctx, subscription, true),
-			),
-		);
+		for (const subscription of subscriptions) {
+			await notifyUser(ctx, subscription, true);
+		}
 	},
 });
