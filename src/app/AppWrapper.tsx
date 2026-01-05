@@ -10,7 +10,31 @@ import * as styles from "./appWrapper.css";
 import * as common from "./common.css";
 import { NotificationsOn } from "@/components/NotificationsOn";
 import { NotificationsOff } from "@/components/NotificationsOff";
-import { usePushNotificationManager } from "@/components/usePushNotificationManager";
+import {
+	usePushNotificationManager,
+	type NotificationsProps,
+} from "@/components/usePushNotificationManager";
+import { Spinner } from "@/components/Spinner";
+
+type NotificationsButtonProps = {
+	notifications: NotificationsProps;
+};
+const NotificationsButton = ({ notifications }: NotificationsButtonProps) => {
+	switch (notifications.state) {
+		case "unsupported":
+			return <div />;
+		case "pending":
+			return <Spinner />;
+		case "unsubscribed":
+			return (
+				<NotificationsOff onClick={notifications.toggleSubscription} />
+			);
+		case "subscribed":
+			return (
+				<NotificationsOn onClick={notifications.toggleSubscription} />
+			);
+	}
+};
 
 export const AppWrapper = ({
 	title,
@@ -26,14 +50,7 @@ export const AppWrapper = ({
 		<div className={styles.container}>
 			<header className={styles.header}>
 				<Authenticated>
-					{notifications.isSubscribed ?
-						<NotificationsOn
-							onClick={notifications.toggleSubscription}
-						/>
-					:	<NotificationsOff
-							onClick={notifications.toggleSubscription}
-						/>
-					}
+					<NotificationsButton notifications={notifications} />
 				</Authenticated>
 				<Unauthenticated>
 					<div />

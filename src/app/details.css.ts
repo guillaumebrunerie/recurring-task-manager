@@ -49,18 +49,6 @@ export const modalButtons2 = style({
 	gap: "0.5rem",
 });
 
-export const section = style({
-	borderTop: "1px solid #eee",
-	paddingTop: "1rem",
-});
-
-export const sectionTitle = style({
-	fontSize: "1rem",
-	fontWeight: 600,
-	marginBottom: "0.5rem",
-	color: colors.detailsSection,
-});
-
 export const optionsSection = style({});
 
 export const historySection = style({
@@ -144,13 +132,6 @@ export const completionItem = style({
 export const failedCompletionItem = style({
 	opacity: 0.5,
 	textDecoration: "line-through",
-});
-
-export const accomplishedBy = style({
-	width: "20px",
-	height: "20px",
-	borderRadius: "50%",
-	objectFit: "cover",
 });
 
 export const arrow = style({

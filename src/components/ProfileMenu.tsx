@@ -31,6 +31,13 @@ export const ProfileMenu = ({
 		};
 	}, []);
 
+	const notificationMessages = {
+		unsupported: "Notifications non supportées",
+		pending: "Notifications ...",
+		unsubscribed: "Notifications OFF",
+		subscribed: "Notifications ON",
+	} as const;
+
 	return (
 		<div className={styles.container} ref={containerRef}>
 			<button
@@ -48,14 +55,12 @@ export const ProfileMenu = ({
 			{open && (
 				<div className={styles.dropdown}>
 					<div
-						onClick={notifications.toggleSubscription}
+						onClick={() => {
+							void notifications.toggleSubscription;
+						}}
 						className={styles.dropdownItem}
 					>
-						{notifications.isSupported ?
-							notifications.isSubscribed ?
-								"Notifications ON"
-							:	"Notifications OFF"
-						:	"Notifications non supportées"}
+						{notificationMessages[notifications.state]}
 					</div>
 					<div className={styles.dropdownItem} onClick={onSignOut}>
 						Se déconnecter

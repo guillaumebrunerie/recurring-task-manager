@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import * as styles from "./taskCard.css";
 import { relativeDurationToString } from "@/shared/units";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import {
 	type Task,
 	taskStatus,
@@ -20,9 +20,10 @@ import { Edit } from "./Edit";
 import { Spinner } from "@/components/Spinner";
 import type { Id } from "@/convex/_generated/dataModel";
 import { UserIndicators } from "./UserIndicators";
+import { taskCompleted } from "@/shared/messages";
 
 const celebrateCompletionWithConfetti = () => {
-	confetti({
+	void confetti({
 		particleCount: 100,
 		spread: 70,
 		origin: { y: 1 },
@@ -65,10 +66,10 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				updateToBeDoneTime: true,
 			});
 			celebrateCompletionWithConfetti();
-			navigator.serviceWorker?.controller?.postMessage({
-				type: "task-completed",
-				taskId: task.id,
-			});
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			navigator.serviceWorker?.controller?.postMessage(
+				taskCompleted(task.id),
+			);
 		} finally {
 			closeModal();
 			setIsContextMenuOpen(false);
@@ -107,17 +108,17 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 
 	const openDetails = () => {
 		setIsContextMenuOpen(false);
-		setTaskIdUrl(task.id, { history: "push" });
-		setIsEditing(false, { history: "push" });
+		void setTaskIdUrl(task.id, { history: "push" });
+		void setIsEditing(false, { history: "push" });
 	};
 	const openEdit = () => {
 		setIsContextMenuOpen(false);
-		setTaskIdUrl(task.id, { history: "push" });
-		setIsEditing(true, { history: "push" });
+		void setTaskIdUrl(task.id, { history: "push" });
+		void setIsEditing(true, { history: "push" });
 	};
 	const closeModal = () => {
-		setTaskIdUrl(null, { history: "push" });
-		setIsEditing(false, { history: "push" });
+		void setTaskIdUrl(null, { history: "push" });
+		void setIsEditing(false, { history: "push" });
 	};
 
 	if (!currentUser || !allUsers) {
@@ -187,7 +188,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 				<Modal title={task.name} onClose={closeModal}>
 					<Details
 						task={task}
-						history={history || []}
+						history={history || undefined}
 						handleSubmit={handleSubmit}
 						onEdit={openEdit}
 						currentUser={currentUser}
@@ -208,25 +209,23 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	);
 };
 
-const CompleteMenuItem = ({
-	onComplete,
-}: {
+type CompleteMenuItemProps = {
 	onComplete: () => Promise<void>;
-}) => {
-	const [isCompleting, setIsCompleting] = useState(false);
+};
+
+const CompleteMenuItem = ({ onComplete }: CompleteMenuItemProps) => {
+	const [isCompleting, startTransition] = useTransition();
 	return (
 		<div
 			className={styles.contextMenuItem}
-			onClick={async (event) => {
-				event.stopPropagation();
-				if (!isCompleting) {
-					setIsCompleting(true);
-					try {
-						await onComplete();
-					} finally {
-						setIsCompleting(false);
-					}
+			onClick={(event) => {
+				if (isCompleting) {
+					return;
 				}
+				event.stopPropagation();
+				startTransition(async () => {
+					await onComplete();
+				});
 			}}
 		>
 			{isCompleting && <Spinner />}
@@ -252,20 +251,17 @@ const EditMenuItem = ({ onClick }: { onClick: () => void }) => {
 };
 
 const ArchiveMenuItem = ({ task }: { task: Task }) => {
-	const [isCompleting, setIsCompleting] = useState(false);
+	const [isCompleting, startTransition] = useTransition();
 	const archiveTask = useMutation(api.tasks.archiveTask);
 
 	return (
 		<div
 			className={styles.contextMenuItem}
-			onClick={async (event) => {
+			onClick={(event) => {
 				event.stopPropagation();
-				setIsCompleting(true);
-				try {
+				startTransition(async () => {
 					await archiveTask({ id: task.id });
-				} finally {
-					setIsCompleting(false);
-				}
+				});
 			}}
 		>
 			{isCompleting && <Spinner />}
@@ -275,20 +271,17 @@ const ArchiveMenuItem = ({ task }: { task: Task }) => {
 };
 
 const UnarchiveMenuItem = ({ task }: { task: Task }) => {
-	const [isCompleting, setIsCompleting] = useState(false);
+	const [isCompleting, startTransition] = useTransition();
 	const unarchiveTask = useMutation(api.tasks.unarchiveTask);
 
 	return (
 		<div
 			className={styles.contextMenuItem}
-			onClick={async (event) => {
+			onClick={(event) => {
 				event.stopPropagation();
-				setIsCompleting(true);
-				try {
+				startTransition(async () => {
 					await unarchiveTask({ id: task.id });
-				} finally {
-					setIsCompleting(false);
-				}
+				});
 			}}
 		>
 			{isCompleting && <Spinner />}
@@ -298,20 +291,17 @@ const UnarchiveMenuItem = ({ task }: { task: Task }) => {
 };
 
 const DeleteMenuItem = ({ task }: { task: Task }) => {
-	const [isCompleting, setIsCompleting] = useState(false);
+	const [isCompleting, startTransition] = useTransition();
 	const deleteTask = useMutation(api.tasks.deleteTask);
 
 	return (
 		<div
 			className={styles.contextMenuItem + " " + styles.warningText}
-			onClick={async (event) => {
+			onClick={(event) => {
 				event.stopPropagation();
-				setIsCompleting(true);
-				try {
+				startTransition(async () => {
 					await deleteTask({ id: task.id });
-				} finally {
-					setIsCompleting(false);
-				}
+				});
 			}}
 		>
 			{isCompleting && <Spinner />}

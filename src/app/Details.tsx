@@ -1,6 +1,6 @@
 import { toLocalDateTimeString } from "@/shared/localDateTime";
 import { defaultCompletedBy, type Task } from "@/shared/tasks";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
 import { Spinner } from "@/components/Spinner";
@@ -16,7 +16,7 @@ import classNames from "classnames";
 
 type DetailsProps = {
 	task: Task;
-	history: Accomplishment[];
+	history?: Accomplishment[];
 	currentUser: User;
 	handleSubmit: (
 		doneTime?: string,
@@ -33,7 +33,7 @@ export const Details = ({
 	onEdit,
 }: DetailsProps) => {
 	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
-	const [isCompleting, setIsCompleting] = useState(false);
+	const [isCompleting, startTransition] = useTransition();
 	const [doneTime, setDoneTime] = useState(toLocalDateTimeString(Date.now()));
 	const [completedBy, setCompletedBy] = useState<Set<Id<"users">>>(
 		new Set([...defaultCompletedBy(task, currentUser.id)]),
@@ -95,18 +95,15 @@ export const Details = ({
 						Options
 					</div>
 					<GreenButton
-						onClick={async () => {
-							setIsCompleting(true);
-							try {
+						onClick={() => {
+							startTransition(async () => {
 								await handleSubmit(
 									isOptionsCollapsed ? undefined : doneTime,
 									isOptionsCollapsed ? undefined : (
 										[...completedBy]
 									),
 								);
-							} finally {
-								setIsCompleting(false);
-							}
+							});
 						}}
 					>
 						{isCompleting && <Spinner />}
@@ -142,7 +139,7 @@ export const Details = ({
 	);
 };
 
-type TaskHistoryProps = { history: Accomplishment[] };
+type TaskHistoryProps = { history: Accomplishment[] | undefined };
 
 const TaskHistory = ({ history }: TaskHistoryProps) => {
 	const [isCollapsed, setIsCollapsed] = useState(true);
@@ -200,19 +197,11 @@ const dateTimeFormat = new Intl.DateTimeFormat("fr-FR", {
 type TaskHistoryItemProps = { accomplishment: Accomplishment };
 
 const TaskHistoryItem = ({ accomplishment }: TaskHistoryItemProps) => {
-	const [isCompleting, setIsCompleting] = useState(false);
+	const [isCompleting, startTransition] = useTransition();
 	const deleteAccomplishment = useMutation(
 		api.accomplishments.deleteAccomplishment,
 	);
 	const [showDeleteButton, setShowDeleteButton] = useState(false);
-	const doDelete = async () => {
-		setIsCompleting(true);
-		try {
-			await deleteAccomplishment({ accomplishmentId: accomplishment.id });
-		} finally {
-			setIsCompleting(false);
-		}
-	};
 	return (
 		<li
 			className={styles.completionItem}
@@ -226,7 +215,13 @@ const TaskHistoryItem = ({ accomplishment }: TaskHistoryItemProps) => {
 						styles.deleteHistoryItemButton,
 						showDeleteButton && styles.showDeleteButton,
 					)}
-					onClick={doDelete}
+					onClick={() => {
+						startTransition(async () => {
+							await deleteAccomplishment({
+								accomplishmentId: accomplishment.id,
+							});
+						});
+					}}
 				>
 					{isCompleting && <Spinner />}
 					Supprimer?

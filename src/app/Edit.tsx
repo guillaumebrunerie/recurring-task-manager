@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState, useTransition } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -65,24 +65,18 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 
 	// Who the task is visible to
 	const [visibleTo, setVisibleTo_] = useState<Set<Id<"users">>>(
-		new Set((task?.visibleTo || allUsers)?.map((u) => u.id)),
+		new Set((task?.visibleTo || allUsers).map((u) => u.id)),
 	);
 	const setVisibleTo = (users: Set<Id<"users">>) => {
-		if (!user) {
-			return;
-		}
 		setVisibleTo_(users);
 		setResponsibleFor_(responsibleFor.intersection(users));
 	};
 
 	// Who is responsible for the task
 	const [responsibleFor, setResponsibleFor_] = useState<Set<Id<"users">>>(
-		new Set((task?.responsibleFor || allUsers)?.map((u) => u.id)),
+		new Set((task?.responsibleFor || allUsers).map((u) => u.id)),
 	);
 	const setResponsibleFor = (users: Set<Id<"users">>) => {
-		if (!user) {
-			return;
-		}
 		setResponsibleFor_(users);
 	};
 
@@ -91,7 +85,7 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 		toLocalDateTimeString(task?.toBeDoneTime || Date.now()),
 	);
 	const [isTaskDisabled, setIsTaskDisabled] = useState(
-		!!task && task?.toBeDoneTime === undefined,
+		!!task && task.toBeDoneTime === undefined,
 	);
 
 	const [isTaskOneTime, setIsTaskOneTime] = useState(
@@ -103,12 +97,11 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 		!!task && task.isFixedSchedule,
 	);
 
-	// Transient state when saving the task
-	const [isCompleting, setIsCompleting] = useState(false);
+	const [isCompleting, startTransition] = useTransition();
 
 	const saveTask = useMutation(api.tasks.saveTask);
 	const handleSave = async () => {
-		if (!user || !name) {
+		if (!name) {
 			return;
 		}
 		await saveTask({
@@ -287,17 +280,15 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			</Field>
 			<Field title="Visible pour">
 				<UserSelector
-					users={allUsers || []}
-					selected={
-						user ? new Set([...visibleTo, user.id]) : visibleTo
-					}
+					users={allUsers}
+					selected={new Set([...visibleTo, user.id])}
 					onChange={setVisibleTo}
 				/>
 			</Field>
 			<Field title="Responsable(s)">
 				<UserSelector
-					users={(allUsers || []).filter(
-						(u) => visibleTo.has(u.id) || u.id === user?.id,
+					users={allUsers.filter(
+						(u) => visibleTo.has(u.id) || u.id === user.id,
 					)}
 					hasPrimary={!isTaskJoint}
 					selected={responsibleFor}
@@ -317,13 +308,10 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			</Field>
 			<div className={styles.bottomBar}>
 				<BlueButton
-					onClick={async () => {
-						setIsCompleting(true);
-						try {
+					onClick={() => {
+						startTransition(async () => {
 							await handleSave();
-						} finally {
-							setIsCompleting(false);
-						}
+						});
 					}}
 				>
 					{isCompleting && <Spinner />}

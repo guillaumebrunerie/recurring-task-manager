@@ -4,6 +4,7 @@ import { createVanillaExtractPlugin } from "@vanilla-extract/next-plugin";
 const withVanillaExtract = createVanillaExtractPlugin();
 
 const nextConfig: NextConfig = {
+	// eslint-disable-next-line @typescript-eslint/require-await
 	headers: async () => [
 		{
 			source: "/(.*)",

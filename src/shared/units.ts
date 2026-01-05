@@ -253,7 +253,7 @@ export const timeToString = (time: number, unit: TimeUnit) => {
 	switch (unit) {
 		case "years":
 			return `en ${timeUnit}`;
-		case "months":
+		case "months": {
 			const year = Math.floor(timeUnit / 12);
 			const month = timeUnit % 12;
 			const monthNames = [
@@ -271,6 +271,7 @@ export const timeToString = (time: number, unit: TimeUnit) => {
 				"décembre",
 			];
 			return `en ${monthNames[month]} ${year}`;
+		}
 		case "weeks":
 			return `la semaine du ${dateFormat.format(date)}`;
 		case "days":

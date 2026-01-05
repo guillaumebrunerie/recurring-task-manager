@@ -2,7 +2,7 @@
 
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 
 function urlBase64ToUint8Array(base64String: string) {
 	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -19,10 +19,15 @@ function urlBase64ToUint8Array(base64String: string) {
 	return outputArray;
 }
 
+type NotificationsState =
+	| "unsupported"
+	| "pending"
+	| "unsubscribed"
+	| "subscribed";
+
 export type NotificationsProps = {
-	isSupported: boolean;
-	isSubscribed: boolean;
-	toggleSubscription?: () => Promise<void>;
+	state: NotificationsState;
+	toggleSubscription?: () => void;
 };
 
 export const usePushNotificationManager = (): NotificationsProps => {
@@ -34,7 +39,7 @@ export const usePushNotificationManager = (): NotificationsProps => {
 	useEffect(() => {
 		if ("serviceWorker" in navigator && "PushManager" in window) {
 			setIsSupported(true);
-			registerServiceWorker();
+			void registerServiceWorker();
 		}
 	}, []);
 
@@ -51,31 +56,42 @@ export const usePushNotificationManager = (): NotificationsProps => {
 		setSubscription(sub);
 	};
 
-	const subscribe = async () => {
-		const registration = await navigator.serviceWorker.ready;
-		const sub = await registration.pushManager.subscribe({
-			userVisibleOnly: true,
-			applicationServerKey: urlBase64ToUint8Array(
-				process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-			),
+	const [isPending, startTransition] = useTransition();
+
+	const subscribe = () => {
+		startTransition(async () => {
+			const registration = await navigator.serviceWorker.ready;
+			const sub = await registration.pushManager.subscribe({
+				userVisibleOnly: true,
+				applicationServerKey: urlBase64ToUint8Array(
+					process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+				),
+			});
+			setSubscription(sub);
+			const subscription = JSON.stringify(sub);
+			await subscribeUser({ subscription });
 		});
-		setSubscription(sub);
-		const subscription = JSON.stringify(sub);
-		await subscribeUser({ subscription });
 	};
 
-	const unsubscribe = async () => {
+	const unsubscribe = () => {
 		if (!subscription) {
 			return;
 		}
-		await subscription?.unsubscribe();
-		setSubscription(null);
-		await unsubscribeUser({ subscription: JSON.stringify(subscription) });
+		startTransition(async () => {
+			await subscription.unsubscribe();
+			setSubscription(null);
+			await unsubscribeUser({
+				subscription: JSON.stringify(subscription),
+			});
+		});
 	};
 
 	return {
-		isSupported,
-		isSubscribed: subscription !== null,
+		state:
+			!isSupported ? "unsupported"
+			: isPending ? "pending"
+			: subscription !== null ? "subscribed"
+			: "unsubscribed",
 		toggleSubscription:
 			isSupported ?
 				subscription ? unsubscribe

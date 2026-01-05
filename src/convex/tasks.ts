@@ -117,7 +117,7 @@ export const getAccomplishments = query({
 		if (!taskDoc) {
 			throw new ConvexError(`Task with id ${id} not found`);
 		}
-		return getTaskAccomplishments(ctx, taskDoc);
+		return await getTaskAccomplishments(ctx, taskDoc);
 	},
 });
 

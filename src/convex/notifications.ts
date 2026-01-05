@@ -1,10 +1,10 @@
 "use node";
 
-import webpush, { WebPushError } from "web-push";
+import webpush, { WebPushError, PushSubscription } from "web-push";
 
 import { type ActionCtx, internalAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
-import type { Doc } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import type { Task } from "@/shared/tasks";
 import { v } from "convex/values";
 
@@ -12,17 +12,17 @@ import { v } from "convex/values";
 
 webpush.setVapidDetails(
 	"mailto:guillaume.brunerie@gmail.com",
-	process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-	process.env.VAPID_PRIVATE_KEY!,
+	process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+	process.env.VAPID_PRIVATE_KEY,
 );
 
 /** Helper functions */
 
-type NotificationData = {
-	taskId: string;
+export type PushMessageData = {
+	taskId: Id<"tasks">;
 	taskName: string;
 	isLate: boolean;
-	convexUrl: string | undefined;
+	convexUrl: string;
 	subscription: string;
 };
 
@@ -41,7 +41,7 @@ const sendNotification = async ({
 		console.log(
 			`Sending notification for '${task.name}' (late: ${isLate})`,
 		);
-		const data: NotificationData = {
+		const data: PushMessageData = {
 			taskId: task.id,
 			taskName: task.name,
 			isLate,
@@ -49,7 +49,7 @@ const sendNotification = async ({
 			subscription,
 		};
 		await webpush.sendNotification(
-			JSON.parse(subscription),
+			JSON.parse(subscription) as PushSubscription,
 			JSON.stringify(data),
 		);
 	} catch (error) {
@@ -91,7 +91,7 @@ const notifyUser = async (
 			isLate: true,
 		});
 		if (removeSubscription) {
-			ctx.scheduler.runAfter(
+			await ctx.scheduler.runAfter(
 				1000,
 				internal.subscriptions.removeSubscription,
 				{ subscription },

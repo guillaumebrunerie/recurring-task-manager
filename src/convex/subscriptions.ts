@@ -21,7 +21,7 @@ export const getByUserName = internalQuery({
 		const subscriptions = await Promise.all(
 			allSubscriptions.map(async (subscription) => {
 				const user = await getUser(ctx, subscription.userId);
-				if (user?.name === userName) {
+				if (user.name === userName) {
 					return subscription;
 				}
 				return null;

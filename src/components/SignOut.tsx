@@ -8,11 +8,10 @@ import type { NotificationsProps } from "./usePushNotificationManager";
 
 const defaultUserImage = "";
 
-export const SignOut = ({
-	notifications,
-}: {
+type SignOutProps = {
 	notifications: NotificationsProps;
-}) => {
+};
+export const SignOut = ({ notifications }: SignOutProps) => {
 	const { signOut } = useAuthActions();
 	const user = useQuery(api.users.getCurrentUserQuery);
 	return (

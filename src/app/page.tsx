@@ -28,12 +28,12 @@ const HomeContents = () => {
 	);
 	const isNewTaskOpen = !taskIdUrl && isEditing;
 	const closeModal = () => {
-		setTaskIdUrl(null, { history: "push" });
-		setIsEditing(false, { history: "push" });
+		void setTaskIdUrl(null, { history: "push" });
+		void setIsEditing(false, { history: "push" });
 	};
 	const openNewTask = () => {
-		setTaskIdUrl(null, { history: "push" });
-		setIsEditing(true, { history: "push" });
+		void setTaskIdUrl(null, { history: "push" });
+		void setIsEditing(true, { history: "push" });
 	};
 
 	const allUsers = useQuery(api.users.getAllUsersQuery);
@@ -50,7 +50,8 @@ const HomeContents = () => {
 				) &&
 				task.toBeCompletedBy.some((user) => user.id == currentUser?.id),
 		).length;
-		navigator?.setAppBadge?.(lateCount);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		void navigator.setAppBadge?.(lateCount);
 	}, [tasks, currentUser, now]);
 
 	if (!tasks || !allUsers) {
