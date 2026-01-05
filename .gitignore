@@ -44,3 +44,5 @@ next-env.d.ts
 .netlify
 
 certificates
+
+public/sw.js
