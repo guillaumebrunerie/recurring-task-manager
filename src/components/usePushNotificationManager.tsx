@@ -27,7 +27,7 @@ type NotificationsState =
 
 export type NotificationsProps = {
 	state: NotificationsState;
-	toggleSubscription?: () => void;
+	toggleSubscription: () => void;
 };
 
 const isPushManagerSupported =
@@ -98,6 +98,6 @@ export const usePushNotificationManager = (): NotificationsProps => {
 			isPushManagerSupported ?
 				subscription ? unsubscribe
 				:	subscribe
-			:	undefined,
+			:	() => {},
 	};
 };

@@ -57,7 +57,7 @@ export const ProfileMenu = ({
 				<div className={styles.dropdown}>
 					<div
 						onClick={() => {
-							void notifications.toggleSubscription;
+							notifications.toggleSubscription();
 						}}
 						className={styles.dropdownItem}
 					>
