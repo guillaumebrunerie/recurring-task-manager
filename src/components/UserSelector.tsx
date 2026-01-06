@@ -1,7 +1,10 @@
-import * as styles from "./userSelector.css";
-import type { Id } from "@/convex/_generated/dataModel";
-import type { User } from "@/shared/users";
 import Image from "next/image";
+
+import type { Id } from "@/convex/_generated/dataModel";
+
+import type { User } from "@/shared/users";
+
+import * as styles from "./userSelector.css";
 
 type UserSelectorButtonProps = {
 	user: User;

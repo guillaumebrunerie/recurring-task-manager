@@ -1,5 +1,6 @@
-import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
+
+import { colors } from "@/app/themes.css";
 
 export const overlay = style({
 	position: "fixed",

@@ -1,7 +1,8 @@
 import type { Doc, Id } from "@/convex/_generated/dataModel";
-import type { User } from "./users";
 import type { MutationCtx } from "@/convex/_generated/server";
 import { getTaskAccomplishments } from "@/convex/tasks";
+
+import type { User } from "./users";
 
 // An accomplishment, format used by the frontend
 export type Accomplishment = {

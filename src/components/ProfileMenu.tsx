@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import * as styles from "./profileMenu.css";
-import type { NotificationsProps } from "./usePushNotificationManager";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
+import * as styles from "./profileMenu.css";
 import { Spinner } from "./Spinner";
+import type { NotificationsProps } from "./usePushNotificationManager";
 
 type ProfileMenuProps = {
 	imageUrl?: string;

@@ -1,15 +1,15 @@
-import { defineConfig, globalIgnores, type Config } from "eslint/config";
 import convexPlugin from "@convex-dev/eslint-plugin";
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
 import nextVitals from "eslint-config-next/core-web-vitals";
+import { defineConfig, globalIgnores } from "eslint/config";
+import tseslint from "typescript-eslint";
 
 export default defineConfig([
-	// Main rules
+	// Main configs
 	eslint.configs.recommended,
 	tseslint.configs.strictTypeChecked,
 	{ languageOptions: { parserOptions: { projectService: true } } },
-	convexPlugin.configs.recommended as Config,
+	convexPlugin.configs.recommended,
 	...nextVitals,
 	// Overrides
 	{
@@ -23,10 +23,6 @@ export default defineConfig([
 				{ ignoreArrowShorthand: true },
 			],
 		},
-	},
-	{
-		files: ["**/*.config.*"],
-		rules: { "import/no-anonymous-default-export": "off" },
 	},
 	// Ignores
 	globalIgnores(["src/convex/_generated", "public/sw.js"]),

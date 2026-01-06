@@ -1,5 +1,6 @@
-import { colors } from "@/app/themes.css";
 import { style } from "@vanilla-extract/css";
+
+import { colors } from "@/app/themes.css";
 
 const button = style({
 	padding: "0.5rem 0.75rem",

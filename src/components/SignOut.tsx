@@ -1,9 +1,11 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { ProfileMenu } from "./ProfileMenu";
 import { useQuery } from "convex/react";
+
 import { api } from "@/convex/_generated/api";
+
+import { ProfileMenu } from "./ProfileMenu";
 import type { NotificationsProps } from "./usePushNotificationManager";
 
 const defaultUserImage = "";

@@ -1,20 +1,24 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import * as styles from "./page.css";
-import * as common from "./common.css";
-import { useTimestamp } from "@/hooks/useTimestamp";
-import { Suspense, useEffect, useState } from "react";
-import { type Task, compareTasks, taskStatus } from "@/shared/tasks";
-import { AppWrapper } from "./AppWrapper";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import { TaskCard } from "./TaskCard";
+import classNames from "classnames";
+import { useQuery } from "convex/react";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { Suspense, useEffect, useState } from "react";
+
+import { api } from "@/convex/_generated/api";
+
+import { compareTasks, taskStatus, type Task } from "@/shared/tasks";
+
 import { BlueButton } from "@/components/Button";
 import { Modal } from "@/components/Modal";
+import { useTimestamp } from "@/hooks/useTimestamp";
+
+import { AppWrapper } from "./AppWrapper";
+import * as common from "./common.css";
 import { Edit } from "./Edit";
-import { parseAsBoolean, useQueryState } from "nuqs";
-import classNames from "classnames";
+import * as styles from "./page.css";
+import { TaskCard } from "./TaskCard";
 
 const HomeContents = () => {
 	const now = useTimestamp(15 * 60 * 1000); // Update every 15 minutes

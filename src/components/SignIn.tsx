@@ -1,8 +1,9 @@
 import { useAuthActions } from "@convex-dev/auth/react";
-import * as styles from "./signIn.css";
 import Image from "next/image";
 
-export function SignIn() {
+import * as styles from "./signIn.css";
+
+export const SignIn = () => {
 	const { signIn } = useAuthActions();
 
 	return (
@@ -22,4 +23,4 @@ export function SignIn() {
 			</button>
 		</div>
 	);
-}
+};

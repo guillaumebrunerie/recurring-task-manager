@@ -1,7 +1,9 @@
-import type { User } from "@/shared/users";
-import * as styles from "./taskCard.css";
-import Image from "next/image";
 import classNames from "classnames";
+import Image from "next/image";
+
+import type { User } from "@/shared/users";
+
+import * as styles from "./taskCard.css";
 
 // Single user indicator
 

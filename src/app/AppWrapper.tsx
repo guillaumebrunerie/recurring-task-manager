@@ -3,18 +3,18 @@
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import type { ReactNode } from "react";
 
+import { NotificationsOff } from "@/components/NotificationsOff";
+import { NotificationsOn } from "@/components/NotificationsOn";
 import { SignIn } from "@/components/SignIn";
 import { SignOut } from "@/components/SignOut";
-
-import * as styles from "./appWrapper.css";
-import * as common from "./common.css";
-import { NotificationsOn } from "@/components/NotificationsOn";
-import { NotificationsOff } from "@/components/NotificationsOff";
+import { Spinner } from "@/components/Spinner";
 import {
 	usePushNotificationManager,
 	type NotificationsProps,
 } from "@/components/usePushNotificationManager";
-import { Spinner } from "@/components/Spinner";
+
+import * as styles from "./appWrapper.css";
+import * as common from "./common.css";
 
 type NotificationsButtonProps = { notifications: NotificationsProps };
 const NotificationsButton = ({ notifications }: NotificationsButtonProps) => {

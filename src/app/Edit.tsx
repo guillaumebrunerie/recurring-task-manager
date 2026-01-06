@@ -1,22 +1,26 @@
-import { type ReactNode, useState, useTransition } from "react";
 import { useMutation } from "convex/react";
+import { useState, useTransition, type ReactNode } from "react";
+
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import {
-	type TimeUnit,
-	unitToString,
-	unitToStringPlural,
-} from "@/shared/units";
-import * as styles from "./edit.css";
-import { UserSelector } from "@/components/UserSelector";
+
 import {
 	fromLocalDateTimeString,
 	toLocalDateTimeString,
 } from "@/shared/localDateTime";
 import type { Task } from "@/shared/tasks";
+import {
+	unitToString,
+	unitToStringPlural,
+	type TimeUnit,
+} from "@/shared/units";
 import type { User } from "@/shared/users";
+
 import { BlueButton } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
+import { UserSelector } from "@/components/UserSelector";
+
+import * as styles from "./edit.css";
 
 const visibleUnits: TimeUnit[] = [
 	// "seconds",

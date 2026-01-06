@@ -1,18 +1,22 @@
+import classNames from "classnames";
+import { useMutation } from "convex/react";
+import { useState, useTransition } from "react";
+
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+
+import type { Accomplishment } from "@/shared/accomplishments";
 import { toLocalDateTimeString } from "@/shared/localDateTime";
 import { defaultCompletedBy, type Task } from "@/shared/tasks";
-import { useState, useTransition } from "react";
-import * as styles from "./details.css";
 import { durationUnitToString, timeToString } from "@/shared/units";
-import { Spinner } from "@/components/Spinner";
-import type { Accomplishment } from "@/shared/accomplishments";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { BlueButton, GreenButton } from "@/components/Button";
-import type { Id } from "@/convex/_generated/dataModel";
-import { UserSelector } from "@/components/UserSelector";
-import { UserIndicators } from "./UserIndicators";
 import type { User } from "@/shared/users";
-import classNames from "classnames";
+
+import { BlueButton, GreenButton } from "@/components/Button";
+import { Spinner } from "@/components/Spinner";
+import { UserSelector } from "@/components/UserSelector";
+
+import * as styles from "./details.css";
+import { UserIndicators } from "./UserIndicators";
 
 type DetailsProps = {
 	task: Task;

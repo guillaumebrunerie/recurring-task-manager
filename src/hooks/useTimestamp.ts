@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const useTimestamp = (delay: number | null = null) => {
 	const [timestamp, setTimestamp] = useState(() => Date.now());

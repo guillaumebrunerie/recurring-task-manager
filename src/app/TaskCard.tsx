@@ -1,26 +1,29 @@
 "use client";
 
+import confetti from "canvas-confetti";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import * as styles from "./taskCard.css";
-import { relativeDurationToString } from "@/shared/units";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useEffect, useRef, useState, useTransition } from "react";
+
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+
+import { fromLocalDateTimeString } from "@/shared/localDateTime";
+import { taskCompleted } from "@/shared/messages";
 import {
-	type Task,
 	taskStatus,
 	taskTimeDifferenceInUnit,
+	type Task,
 } from "@/shared/tasks";
-import confetti from "canvas-confetti";
-import { fromLocalDateTimeString } from "@/shared/localDateTime";
+import { relativeDurationToString } from "@/shared/units";
 
-import { parseAsBoolean, useQueryState } from "nuqs";
 import { Modal } from "@/components/Modal";
+import { Spinner } from "@/components/Spinner";
+
 import { Details } from "./Details";
 import { Edit } from "./Edit";
-import { Spinner } from "@/components/Spinner";
-import type { Id } from "@/convex/_generated/dataModel";
+import * as styles from "./taskCard.css";
 import { UserIndicators } from "./UserIndicators";
-import { taskCompleted } from "@/shared/messages";
 
 const celebrateCompletionWithConfetti = () => {
 	void confetti({ particleCount: 100, spread: 70, origin: { y: 1 } });

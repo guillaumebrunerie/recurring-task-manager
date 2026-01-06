@@ -1,6 +1,7 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+
 import { units } from "@/shared/units";
 
 export const vUnit = v.union(...units.map((unit) => v.literal(unit)));

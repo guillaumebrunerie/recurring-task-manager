@@ -1,20 +1,21 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
+import { v } from "convex/values";
+
 import type { Doc } from "./_generated/dataModel";
 import { mutation, type QueryCtx } from "./_generated/server";
-import { v } from "convex/values";
-import { getAuthUserId } from "@convex-dev/auth/server";
 
-import { getUsers } from "./users";
+import {
+	getNewResponsibles,
+	type Accomplishment,
+} from "@/shared/accomplishments";
+import { defaultCompletedBy, isTaskFailed } from "@/shared/tasks";
+
 import {
 	calculateToBeDoneTime,
 	calculateToBeDoneTimeFixed,
 	parseTask,
 } from "./tasks";
-
-import {
-	type Accomplishment,
-	getNewResponsibles,
-} from "@/shared/accomplishments";
-import { defaultCompletedBy, isTaskFailed } from "@/shared/tasks";
+import { getUsers } from "./users";
 
 /** Helper functions */
 
