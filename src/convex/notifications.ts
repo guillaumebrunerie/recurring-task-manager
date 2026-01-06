@@ -69,7 +69,7 @@ const notifyUser = async (
 	);
 	const user = await ctx.runQuery(api.users.getUserQuery, { userId });
 	console.log(
-		`Notifying user ${user?.name}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
+		`Notifying user ${user?.name || "(unknown)"}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
 	for (const task of dueTasks) {
 		await sendNotification({ subscription, task, isLate: false });

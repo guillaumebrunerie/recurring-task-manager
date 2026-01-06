@@ -16,7 +16,14 @@ export default defineConfig([
 		rules: {
 			"@typescript-eslint/restrict-template-expressions": [
 				"error",
-				{ allowNumber: true },
+				{
+					allowAny: false,
+					allowBoolean: true,
+					allowNever: false,
+					allowNullish: false,
+					allowNumber: true,
+					allowRegExp: false,
+				},
 			],
 			"@typescript-eslint/no-confusing-void-expression": [
 				"error",
