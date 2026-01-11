@@ -31,7 +31,11 @@ export const footer = style({
 	padding: "1rem",
 	paddingBottom: "calc(env(safe-area-inset-bottom) / 2 + 1rem)",
 	boxShadow: `0 -3px 3px ${colors.hfshadow}`,
-	zIndex: 1,
+	zIndex: 2,
 });
 
-export const contents = style({ overflow: "auto", overscrollBehavior: "none" });
+export const contents = style({
+	overflow: "auto",
+	overscrollBehavior: "none",
+	paddingBottom: "3rem",
+});

@@ -156,6 +156,29 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 						<div className={styles.dot} />
 						<div className={styles.dot} />
 					</div>
+					{isContextMenuOpen && (
+						<div
+							className={styles.contextMenu}
+							onClick={(e) => e.stopPropagation()}
+						>
+							{!task.isArchived ?
+								<>
+									<CompleteMenuItem
+										onComplete={handleSubmit}
+									/>
+									<DetailsMenuItem onClick={openDetails} />
+									<EditMenuItem onClick={openEdit} />
+									<ArchiveMenuItem task={task} />
+								</>
+							:	<>
+									<DetailsMenuItem onClick={openDetails} />
+									<UnarchiveMenuItem task={task} />
+									<hr className={styles.separator} />
+									<DeleteMenuItem task={task} />
+								</>
+							}
+						</div>
+					)}
 				</div>
 				<div className={styles.bottomRow}>
 					<UserIndicators
@@ -164,24 +187,6 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 					/>
 					<div className={styles.time}>{timeString}</div>
 				</div>
-				{isContextMenuOpen && (
-					<div
-						className={styles.contextMenu}
-						onClick={(e) => e.stopPropagation()}
-					>
-						{!task.isArchived && (
-							<CompleteMenuItem onComplete={handleSubmit} />
-						)}
-						<DetailsMenuItem onClick={openDetails} />
-						{!task.isArchived && (
-							<EditMenuItem onClick={openEdit} />
-						)}
-						{!task.isArchived && <ArchiveMenuItem task={task} />}
-						{task.isArchived && <UnarchiveMenuItem task={task} />}
-						{task.isArchived && <hr className={styles.separator} />}
-						{task.isArchived && <DeleteMenuItem task={task} />}
-					</div>
-				)}
 			</div>
 			{isDetailsOpen && (
 				<Modal title={task.name} onClose={closeModal}>

@@ -47,6 +47,7 @@ export const topRow = style({
 	display: "flex",
 	justifyContent: "space-between",
 	alignItems: "center",
+	anchorScope: "all",
 });
 
 export const bottomRow = style({
@@ -69,6 +70,7 @@ export const threeDots = style({
 	width: "12px",
 	height: "24px",
 	cursor: "pointer",
+	anchorName: "--context-menu-anchor",
 });
 
 export const dot = style({
@@ -80,18 +82,21 @@ export const dot = style({
 });
 
 export const contextMenu = style({
-	zIndex: 10000,
 	color: colors.foreground,
-	position: "absolute",
-	top: "40px",
-	right: "10px",
 	backgroundColor: colors.hfbackground,
 	border: "1px solid",
 	borderColor: colors.hfborder,
 	borderRadius: "0.5rem",
 	boxShadow: `3px 4px 6px ${colors.hfshadow}`,
 	minWidth: "150px",
-	overflow: "hidden",
+
+	position: "fixed",
+	positionAnchor: "--context-menu-anchor",
+	top: "anchor(bottom)",
+	right: "anchor(right)",
+	marginTop: "5px",
+	marginRight: "-10px",
+	zIndex: 1,
 });
 
 export const contextMenuItem = style({
