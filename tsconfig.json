@@ -25,5 +25,5 @@
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts"
 	],
-	"exclude": ["node_modules", "src/service-worker"]
+	"exclude": ["src/service-worker"]
 }

@@ -1,3 +1,4 @@
+- Search
 - Change "tolerance" to "late after" and in a separate line
 - Set badge in service worker instead
 - Make it possible to reset next time to be done
