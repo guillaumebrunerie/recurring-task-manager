@@ -1,9 +1,8 @@
 import { createVanillaExtractPlugin } from "@vanilla-extract/next-plugin";
-import type { NextConfig } from "next";
 
 const withVanillaExtract = createVanillaExtractPlugin();
 
-const nextConfig: NextConfig = {
+export default withVanillaExtract({
 	headers: () => [
 		{
 			source: "/(.*)",
@@ -37,6 +36,4 @@ const nextConfig: NextConfig = {
 	images: {
 		remotePatterns: [new URL("https://lh3.googleusercontent.com/**")],
 	},
-};
-
-export default withVanillaExtract(nextConfig);
+});

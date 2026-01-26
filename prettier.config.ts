@@ -1,6 +1,6 @@
 import type { Config } from "prettier";
 
-const config: Config = {
+export default {
 	useTabs: true,
 	tabWidth: 4,
 	experimentalTernaries: true,
@@ -18,6 +18,4 @@ const config: Config = {
 		"^[./]",
 	],
 	importOrderTypeScriptVersion: "5.9.0",
-};
-
-export default config;
+} satisfies Config;

@@ -1,9 +1,9 @@
-import { ConvexClient } from "https://esm.sh/convex@1.31.1/browser";
-import { anyApi } from "https://esm.sh/convex@1.31.1/server";
+import { ConvexClient } from "convex/browser";
 
+import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 
-import type { MessageData, PushMessageData } from "../shared/messages";
+import type { MessageData, PushMessageData } from "@/shared/messages";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -94,7 +94,7 @@ const addAccomplishment = async (notification: Notification) => {
 	});
 	try {
 		const convexClient = new ConvexClient(convexUrl);
-		await convexClient.mutation(anyApi.accomplishments.addAccomplishment, {
+		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
 			updateToBeDoneTime: true,

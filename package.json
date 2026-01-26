@@ -4,13 +4,14 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --webpack",
-		"build:sw": "esbuild src/service-worker/sw.ts --outdir=public --minify",
+		"build:sw": "esbuild src/service-worker/sw.ts --outdir=public --minify --bundle",
 		"build": "npm run build:sw && next build --webpack",
 		"start": "next start",
-		"typecheck": "tsc -p tsconfig.json && tsc -p src/service-worker/tsconfig.json",
+		"typecheck": "tsc -p tsconfig.json",
+		"typecheck-sw": "tsc -p src/service-worker/tsconfig.json",
 		"knip": "knip",
 		"lint": "eslint .",
-		"test": "npm run typecheck && npm run knip && npm run lint"
+		"test": "npm run typecheck && npm run typecheck-sw && npm run knip && npm run lint"
 	},
 	"type": "module",
 	"dependencies": {
