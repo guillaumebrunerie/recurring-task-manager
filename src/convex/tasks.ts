@@ -66,11 +66,10 @@ export const parseTask = async (
 		visibleTo,
 		responsibleFor,
 		toBeDoneTime: task.toBeDoneTime,
-		toBeCompletedBy: task.isJoint
-			? responsibleFor
-			: responsibleFor.length == 0
-				? []
-				: [responsibleFor[0]],
+		toBeCompletedBy:
+			task.isJoint ? responsibleFor
+			: responsibleFor.length == 0 ? []
+			: [responsibleFor[0]],
 		isJoint: task.isJoint || false,
 		isFixedSchedule: task.isFixedSchedule || false,
 		lastNotified: task.lastNotified,

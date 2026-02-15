@@ -120,9 +120,10 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 			responsibleFor: [...responsibleFor],
 			isJoint: isTaskJoint,
 			isFixedSchedule,
-			toBeDoneTime: isTaskDisabled
-				? undefined
-				: fromLocalDateTimeString(toBeDoneTime),
+			toBeDoneTime:
+				isTaskDisabled ? undefined : (
+					fromLocalDateTimeString(toBeDoneTime)
+				),
 		});
 		closeModal();
 	};
@@ -230,19 +231,20 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 							);
 						}}
 					>
-						{isTaskOneTime
-							? [
-									<option key="—" value="—">
-										—
-									</option>,
-								]
-							: visibleUnits.map((unit) => (
-									<option key={unit} value={unit}>
-										{period === "1"
-											? unitToString[unit]
-											: unitToStringPlural[unit]}
-									</option>
-								))}
+						{isTaskOneTime ?
+							[
+								<option key="—" value="—">
+									—
+								</option>,
+							]
+						:	visibleUnits.map((unit) => (
+								<option key={unit} value={unit}>
+									{period === "1" ?
+										unitToString[unit]
+									:	unitToStringPlural[unit]}
+								</option>
+							))
+						}
 					</select>
 					±
 					<input
@@ -262,9 +264,9 @@ export const Edit = ({ task, user, allUsers, closeModal }: EditProps) => {
 					>
 						{visibleUnits.map((unit) => (
 							<option key={unit} value={unit}>
-								{tolerance === "1"
-									? unitToString[unit]
-									: unitToStringPlural[unit]}
+								{tolerance === "1" ?
+									unitToString[unit]
+								:	unitToStringPlural[unit]}
 							</option>
 						))}
 					</select>

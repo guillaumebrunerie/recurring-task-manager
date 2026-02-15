@@ -17,10 +17,7 @@
 				"groupName": "convex",
 				"elementNamePattern": ["@/convex/", "./_generated/"]
 			},
-			{
-				"groupName": "shared",
-				"elementNamePattern": ["@/shared/"]
-			}
+			{ "groupName": "shared", "elementNamePattern": ["@/shared/"] }
 		]
 	},
 	"ignorePatterns": []

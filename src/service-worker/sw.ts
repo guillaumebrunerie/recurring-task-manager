@@ -39,14 +39,15 @@ const openNotification = async ({
 			(notification.data as NotificationData).taskId === taskId,
 	);
 	const count =
-		previousNotification && isLate
-			? (previousNotification.data as NotificationData).count + 1
-			: 1;
-	const title = isLate
-		? count > 1
-			? `En retard ⚠️ (rappel ${count})`
-			: "En retard ⚠️"
-		: "À faire";
+		previousNotification && isLate ?
+			(previousNotification.data as NotificationData).count + 1
+		:	1;
+	const title =
+		isLate ?
+			count > 1 ?
+				`En retard ⚠️ (rappel ${count})`
+			:	"En retard ⚠️"
+		:	"À faire";
 	const notificationData: NotificationData = {
 		taskId,
 		convexUrl,

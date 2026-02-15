@@ -157,11 +157,11 @@ const Section = ({
 					[styles.collapseDelayVar]: `${collapseDelay}ms`,
 				})}
 			>
-				{tasks.length > 0
-					? tasks.map((task) => (
-							<TaskCard key={task.id} task={task} now={now} />
-						))
-					: "Aucune tâche à afficher."}
+				{tasks.length > 0 ?
+					tasks.map((task) => (
+						<TaskCard key={task.id} task={task} now={now} />
+					))
+				:	"Aucune tâche à afficher."}
 			</div>
 		</div>
 	);
