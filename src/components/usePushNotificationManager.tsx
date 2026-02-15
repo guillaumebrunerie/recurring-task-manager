@@ -49,7 +49,11 @@ export const usePushNotificationManager = (): NotificationsProps => {
 		const registerServiceWorker = async () => {
 			const registration = await navigator.serviceWorker.register(
 				"/sw.js",
-				{ scope: "/", updateViaCache: "none", type: "module" },
+				{
+					scope: "/",
+					updateViaCache: "none",
+					type: "module",
+				},
 			);
 			const sub = await registration.pushManager.getSubscription();
 			setSubscription(sub);
@@ -90,15 +94,17 @@ export const usePushNotificationManager = (): NotificationsProps => {
 	};
 
 	return {
-		state:
-			!isPushManagerSupported ? "unsupported"
-			: isPending ? "pending"
-			: subscription !== null ? "subscribed"
-			: "unsubscribed",
-		toggleSubscription:
-			isPushManagerSupported ?
-				subscription ? unsubscribe
-				:	subscribe
-			:	() => {},
+		state: !isPushManagerSupported
+			? "unsupported"
+			: isPending
+				? "pending"
+				: subscription !== null
+					? "subscribed"
+					: "unsubscribed",
+		toggleSubscription: isPushManagerSupported
+			? subscription
+				? unsubscribe
+				: subscribe
+			: () => {},
 	};
 };

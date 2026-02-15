@@ -129,10 +129,9 @@ export const shouldNotifyForTask = ({
 	}
 	const desiredTime = convertToUnit(task.toBeDoneTime, task.toleranceUnit);
 	const nowUnit = convertToUnit(now, task.toleranceUnit);
-	const notifiedAt =
-		task.lastNotified ?
-			convertToUnit(task.lastNotified, task.toleranceUnit)
-		:	-Infinity;
+	const notifiedAt = task.lastNotified
+		? convertToUnit(task.lastNotified, task.toleranceUnit)
+		: -Infinity;
 	if (nowUnit < desiredTime) {
 		return false; // No notification yet
 	}

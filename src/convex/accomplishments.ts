@@ -64,10 +64,9 @@ export const addAccomplishment = mutation({
 			subscription,
 		},
 	) => {
-		const userId =
-			subscription ?
-				await getUserIdFromSubscription(ctx, subscription)
-			:	await getAuthUserId(ctx);
+		const userId = subscription
+			? await getUserIdFromSubscription(ctx, subscription)
+			: await getAuthUserId(ctx);
 		if (!userId) {
 			throw new Error("User not authenticated");
 		}
@@ -108,10 +107,9 @@ export const addAccomplishment = mutation({
 		});
 		if (updateToBeDoneTime) {
 			await ctx.db.patch("tasks", taskId, {
-				toBeDoneTime:
-					task.isFixedSchedule ?
-						calculateToBeDoneTimeFixed(task)
-					:	await calculateToBeDoneTime(ctx, taskDoc),
+				toBeDoneTime: task.isFixedSchedule
+					? calculateToBeDoneTimeFixed(task)
+					: await calculateToBeDoneTime(ctx, taskDoc),
 			});
 		}
 	},

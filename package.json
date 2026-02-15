@@ -2,6 +2,7 @@
 	"name": "project-happy-home",
 	"version": "0.1.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev --webpack",
 		"build:sw": "esbuild src/service-worker/sw.ts --outdir=public --minify --bundle",
@@ -13,7 +14,6 @@
 		"lint": "eslint .",
 		"test": "npm run typecheck && npm run typecheck-sw && npm run knip && npm run lint"
 	},
-	"type": "module",
 	"dependencies": {
 		"@auth/core": "^0.37.0",
 		"@convex-dev/auth": "^0.0.90",
@@ -43,7 +43,7 @@
 		"eslint": "^9.39.2",
 		"eslint-config-next": "^16.1.1",
 		"knip": "^5.80.0",
-		"prettier": "^3.5.3",
+		"oxfmt": "^0.32.0",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.51.0"
 	}

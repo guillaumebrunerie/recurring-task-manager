@@ -105,9 +105,9 @@ export const Details = ({
 							startTransition(async () => {
 								await handleSubmit(
 									isOptionsCollapsed ? undefined : doneTime,
-									isOptionsCollapsed ? undefined : (
-										[...completedBy]
-									),
+									isOptionsCollapsed
+										? undefined
+										: [...completedBy],
 								);
 							});
 						}}
@@ -178,8 +178,8 @@ const TaskHistory = ({ history }: TaskHistoryProps) => {
 					isCollapsed && styles.historyCollapsed,
 				)}
 			>
-				{history ?
-					history.length > 0 ?
+				{history ? (
+					history.length > 0 ? (
 						<ul className={styles.completionList}>
 							{history.map((accomplishment) => (
 								<TaskHistoryItem
@@ -188,8 +188,12 @@ const TaskHistory = ({ history }: TaskHistoryProps) => {
 								/>
 							))}
 						</ul>
-					:	"Pas d'historique pour cette tâche."
-				:	<ul className={styles.completionList}>Loading...</ul>}
+					) : (
+						"Pas d'historique pour cette tâche."
+					)
+				) : (
+					<ul className={styles.completionList}>Loading...</ul>
+				)}
 			</div>
 		</div>
 	);

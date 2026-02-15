@@ -37,9 +37,9 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 	);
 
 	const timeString =
-		actualTimeInUnit === null ? "" : (
-			`(prévu ${relativeDurationToString(actualTimeInUnit, task.toleranceUnit)})`
-		);
+		actualTimeInUnit === null
+			? ""
+			: `(prévu ${relativeDurationToString(actualTimeInUnit, task.toleranceUnit)})`;
 
 	const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 	const [taskIdUrl, setTaskIdUrl] = useQueryState("task");
@@ -59,8 +59,9 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		try {
 			await addAccomplishment({
 				taskId: task.id,
-				completionTime:
-					doneTime ? fromLocalDateTimeString(doneTime) : undefined,
+				completionTime: doneTime
+					? fromLocalDateTimeString(doneTime)
+					: undefined,
 				completedBy,
 				updateToBeDoneTime: true,
 			});
@@ -161,7 +162,7 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 							className={styles.contextMenu}
 							onClick={(e) => e.stopPropagation()}
 						>
-							{!task.isArchived ?
+							{!task.isArchived ? (
 								<>
 									<CompleteMenuItem
 										onComplete={handleSubmit}
@@ -170,13 +171,14 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 									<EditMenuItem onClick={openEdit} />
 									<ArchiveMenuItem task={task} />
 								</>
-							:	<>
+							) : (
+								<>
 									<DetailsMenuItem onClick={openDetails} />
 									<UnarchiveMenuItem task={task} />
 									<hr className={styles.separator} />
 									<DeleteMenuItem task={task} />
 								</>
-							}
+							)}
 						</div>
 					)}
 				</div>
