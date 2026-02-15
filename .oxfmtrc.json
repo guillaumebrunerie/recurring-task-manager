@@ -3,6 +3,25 @@
 	"printWidth": 80,
 	"useTabs": true,
 	"tabWidth": 4,
-	// "experimentalSortImports": {},
+	"experimentalSortImports": {
+		"groups": [
+			"external",
+			"convex",
+			"shared",
+			"internal",
+			"sibling",
+			"style"
+		],
+		"customGroups": [
+			{
+				"groupName": "convex",
+				"elementNamePattern": ["@/convex/", "./_generated/"]
+			},
+			{
+				"groupName": "shared",
+				"elementNamePattern": ["@/shared/"]
+			}
+		]
+	},
 	"ignorePatterns": []
 }
