@@ -42,7 +42,7 @@ export const Details = ({
 		toLocalDateTimeString(Date.now()),
 	);
 	const [completedBy, setCompletedBy] = useState<Set<Id<"users">>>(
-		new Set([...defaultCompletedBy(task, currentUser.id)]),
+		new Set(defaultCompletedBy(task, currentUser.id)),
 	);
 	return (
 		<>
