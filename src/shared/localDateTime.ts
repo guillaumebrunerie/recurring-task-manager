@@ -1,6 +1,6 @@
-export const toLocalDateTimeString = (time: number) => {
-	const pad = (n: number) => String(n).padStart(2, "0");
+const pad = (n: number) => String(n).padStart(2, "0");
 
+export const toLocalDateTimeString = (time: number) => {
 	const date = new Date(time);
 	const year = date.getFullYear();
 	const month = pad(date.getMonth() + 1); // getMonth is 0-based
