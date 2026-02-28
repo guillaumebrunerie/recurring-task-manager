@@ -127,9 +127,9 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		{
 			veryLate: "red",
 			late: "yellow",
-			dueNow: "green",
-			dueSoon: "green",
-			waiting: "blue",
+			dueNow: "blue",
+			dueSoon: "blue",
+			waiting: "green",
 			archived: "grey",
 		} as const
 	)[status];
