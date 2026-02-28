@@ -29,6 +29,10 @@ const HomeContents = () => {
 		"edit",
 		parseAsBoolean.withDefault(false),
 	);
+	const [search, setSearch] = useQueryState("search", {
+		defaultValue: "",
+		clearOnDefault: true,
+	});
 	const isNewTaskOpen = !taskIdUrl && isEditing;
 	const closeModal = () => {
 		void setTaskIdUrl(null, { history: "push" });
@@ -62,43 +66,58 @@ const HomeContents = () => {
 	}
 
 	tasks.sort((taskA, taskB) => compareTasks(taskA, taskB, now));
-	const dueTasks = tasks.filter((task) =>
-		["veryLate", "late", "dueNow"].includes(taskStatus(task, now)),
+	const query = search.toLowerCase();
+	const matchesSearch = (task: Task) =>
+		task.name.toLowerCase().includes(query);
+	const dueTasks = tasks.filter(
+		(task) =>
+			["veryLate", "late", "dueNow"].includes(taskStatus(task, now)) &&
+			matchesSearch(task),
 	);
-	const waitingTasks = tasks.filter((task) =>
-		["dueSoon", "waiting"].includes(taskStatus(task, now)),
+	const waitingTasks = tasks.filter(
+		(task) =>
+			["dueSoon", "waiting"].includes(taskStatus(task, now)) &&
+			matchesSearch(task),
 	);
 	const archivedTasks = tasks.filter(
-		(task) => taskStatus(task, now) === "archived",
+		(task) =>
+			taskStatus(task, now) === "archived" && matchesSearch(task),
 	);
 
 	return (
 		<AppWrapper
 			title="Happy Home"
+			search={search}
+			onSearchChange={(value) => void setSearch(value, { history: "replace" })}
 			footer={
 				<BlueButton onClick={openNewTask}>Nouvelle tâche</BlueButton>
 			}
 		>
 			<div className={styles.taskPage}>
-				{currentUser &&
+				{!search && currentUser &&
 					dueTasks.every(
 						(task) =>
 							!task.toBeCompletedBy.some(
 								(u) => u.id == currentUser.id,
 							),
 					) && <Congratulations />}
-				<Section title="À faire" tasks={dueTasks} now={now} />
+				{search && dueTasks.length === 0 && waitingTasks.length === 0 && archivedTasks.length === 0 && (
+					<div className={styles.taskList}>Aucun résultat pour « {search} ».</div>
+				)}
+				<Section key={`due-${!!search}`} title="À faire" tasks={dueTasks} now={now} />
 				<Section
+					key={`waiting-${!!search}`}
 					title="En attente"
 					tasks={waitingTasks}
 					now={now}
-					startCollapsed
+					startCollapsed={!search}
 				/>
 				<Section
+					key={`archived-${!!search}`}
 					title="Corbeille"
 					tasks={archivedTasks}
 					now={now}
-					startCollapsed
+					startCollapsed={!search}
 				/>
 
 				{isNewTaskOpen && currentUser && (

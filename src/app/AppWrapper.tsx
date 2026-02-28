@@ -1,7 +1,7 @@
 "use client";
 
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useRef, useState } from "react";
 
 import { NotificationsOff } from "@/components/NotificationsOff";
 import { NotificationsOn } from "@/components/NotificationsOn";
@@ -38,12 +38,36 @@ export const AppWrapper = ({
 	title,
 	children,
 	footer,
+	search,
+	onSearchChange,
 }: {
 	title: ReactNode;
 	children: ReactNode;
 	footer: ReactNode;
+	search?: string;
+	onSearchChange?: (value: string) => void;
 }) => {
 	const notifications = usePushNotificationManager();
+	const [isSearchOpen, setIsSearchOpen] = useState(!!search);
+	const [isClosing, setIsClosing] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	const openSearch = () => {
+		setIsSearchOpen(true);
+		setIsClosing(false);
+		setTimeout(() => inputRef.current?.focus(), 0);
+	};
+
+	const handleBlur = () => {
+		if (!search) {
+			setIsClosing(true);
+			setTimeout(() => {
+				setIsSearchOpen(false);
+				setIsClosing(false);
+			}, 200);
+		}
+	};
+
 	return (
 		<div className={styles.container}>
 			<header className={styles.header}>
@@ -66,7 +90,33 @@ export const AppWrapper = ({
 				<Authenticated>{children}</Authenticated>
 			</main>
 			<Authenticated>
-				<footer className={styles.footer}>{footer}</footer>
+				<footer className={styles.footer}>
+					{onSearchChange !== undefined && (
+						isSearchOpen ? (
+							<input
+								ref={inputRef}
+								className={`${isClosing ? styles.searchInputClosing : styles.searchInput}${search ? ` ${styles.searchInputActive}` : ""}`}
+								type="search"
+								placeholder="Rechercher…"
+								value={search ?? ""}
+								onChange={(e) => onSearchChange(e.target.value)}
+								onBlur={handleBlur}
+							/>
+						) : (
+							<button
+								className={styles.searchButton}
+								onClick={openSearch}
+								aria-label="Rechercher"
+							>
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+									<circle cx="10" cy="10" r="7" />
+									<line x1="15.24" y1="15.24" x2="21" y2="21" />
+								</svg>
+							</button>
+						)
+					)}
+					{footer}
+				</footer>
 			</Authenticated>
 		</div>
 	);
