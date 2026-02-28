@@ -2,7 +2,6 @@
 - Set badge in service worker instead
 - Make it possible to reset next time to be done
 - Preload queries
-- Search
 - Validate edit/new task form
 - Implement profile page + groups (households)
 - Automatically hide private tasks

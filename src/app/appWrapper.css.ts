@@ -3,7 +3,7 @@ import { keyframes, style } from "@vanilla-extract/css";
 import { colors } from "./themes.css";
 
 export const container = style({
-	height: "100%",
+	height: "100dvh",
 	display: "grid",
 	gridTemplateRows: "4rem 1fr auto",
 });
