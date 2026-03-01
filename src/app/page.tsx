@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { Home } from "./HomeContents";
 
 const Page = async () => {
-	const token = (await convexAuthNextjsToken()) ?? undefined;
+	const token = await convexAuthNextjsToken();
 	const [preloadedTasks, preloadedAllUsers, preloadedCurrentUser] =
 		await Promise.all([
 			preloadQuery(api.tasks.getAll, {}, { token }),
