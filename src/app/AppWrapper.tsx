@@ -1,7 +1,9 @@
 "use client";
 
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
-import { type ReactNode, useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
+
+import type { User } from "@/shared/users";
 
 import { NotificationsOff } from "@/components/NotificationsOff";
 import { NotificationsOn } from "@/components/NotificationsOn";
@@ -34,18 +36,29 @@ const NotificationsButton = ({ notifications }: NotificationsButtonProps) => {
 	}
 };
 
+const AuthenticatedOrAuthLoading = ({ children }: { children: ReactNode }) => {
+	return (
+		<>
+			<Authenticated>{children}</Authenticated>
+			<AuthLoading>{children}</AuthLoading>
+		</>
+	);
+};
+
 export const AppWrapper = ({
 	title,
 	children,
 	footer,
 	search,
 	onSearchChange,
+	currentUser,
 }: {
 	title: ReactNode;
 	children: ReactNode;
 	footer: ReactNode;
 	search?: string;
 	onSearchChange?: (value: string) => void;
+	currentUser?: User | null;
 }) => {
 	const notifications = usePushNotificationManager();
 	const [isSearchOpen, setIsSearchOpen] = useState(!!search);
@@ -71,28 +84,32 @@ export const AppWrapper = ({
 	return (
 		<div className={styles.container}>
 			<header className={styles.header}>
-				<Authenticated>
+				<AuthenticatedOrAuthLoading>
 					<NotificationsButton notifications={notifications} />
-				</Authenticated>
+				</AuthenticatedOrAuthLoading>
 				<Unauthenticated>
 					<div />
 				</Unauthenticated>
 				<h1 className={common.title}>{title}</h1>
-				<Authenticated>
-					<SignOut notifications={notifications} />
-				</Authenticated>
+				<AuthenticatedOrAuthLoading>
+					<SignOut
+						notifications={notifications}
+						currentUser={currentUser}
+					/>
+				</AuthenticatedOrAuthLoading>
 			</header>
 			<main className={styles.contents}>
-				<AuthLoading>Chargement...</AuthLoading>
 				<Unauthenticated>
 					<SignIn />
 				</Unauthenticated>
-				<Authenticated>{children}</Authenticated>
+				<AuthenticatedOrAuthLoading>
+					{children}
+				</AuthenticatedOrAuthLoading>
 			</main>
-			<Authenticated>
+			<AuthenticatedOrAuthLoading>
 				<footer className={styles.footer}>
-					{onSearchChange !== undefined && (
-						isSearchOpen ? (
+					{onSearchChange !== undefined &&
+						(isSearchOpen ?
 							<input
 								ref={inputRef}
 								className={`${isClosing ? styles.searchInputClosing : styles.searchInput}${search ? ` ${styles.searchInputActive}` : ""}`}
@@ -102,22 +119,31 @@ export const AppWrapper = ({
 								onChange={(e) => onSearchChange(e.target.value)}
 								onBlur={handleBlur}
 							/>
-						) : (
-							<button
+						:	<button
 								className={styles.searchButton}
 								onClick={openSearch}
 								aria-label="Rechercher"
 							>
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
 									<circle cx="10" cy="10" r="7" />
-									<line x1="15.24" y1="15.24" x2="21" y2="21" />
+									<line
+										x1="15.24"
+										y1="15.24"
+										x2="21"
+										y2="21"
+									/>
 								</svg>
-							</button>
-						)
-					)}
+							</button>)}
 					{footer}
 				</footer>
-			</Authenticated>
+			</AuthenticatedOrAuthLoading>
 		</div>
 	);
 };

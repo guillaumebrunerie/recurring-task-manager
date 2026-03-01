@@ -1,22 +1,20 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useQuery } from "convex/react";
 
-import { api } from "@/convex/_generated/api";
+import type { User } from "@/shared/users";
 
 import { ProfileMenu } from "./ProfileMenu";
 import type { NotificationsProps } from "./usePushNotificationManager";
 
 const defaultUserImage = "";
 
-type SignOutProps = { notifications: NotificationsProps };
-export const SignOut = ({ notifications }: SignOutProps) => {
+type SignOutProps = { notifications: NotificationsProps; currentUser?: User | null };
+export const SignOut = ({ notifications, currentUser }: SignOutProps) => {
 	const { signOut } = useAuthActions();
-	const user = useQuery(api.users.getCurrentUserQuery);
 	return (
 		<ProfileMenu
-			imageUrl={user?.image || defaultUserImage}
+			imageUrl={currentUser?.image || defaultUserImage}
 			onSignOut={() => void signOut()}
 			notifications={notifications}
 		/>

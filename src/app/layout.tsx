@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+
 import { ConvexClientProvider } from "./ConvexClientProvider";
 
 import "./globals.css";
@@ -31,9 +33,11 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 	return (
 		<html lang="fr">
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
-				<NuqsAdapter>
-					<ConvexClientProvider>{children}</ConvexClientProvider>
-				</NuqsAdapter>
+				<ConvexAuthNextjsServerProvider>
+					<NuqsAdapter>
+						<ConvexClientProvider>{children}</ConvexClientProvider>
+					</NuqsAdapter>
+				</ConvexAuthNextjsServerProvider>
 			</body>
 		</html>
 	);

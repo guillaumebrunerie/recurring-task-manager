@@ -1,24 +1,40 @@
 "use client";
 
 import { useMutation } from "convex/react";
-import { useEffect, useState, useTransition } from "react";
+import {
+	useEffect,
+	useState,
+	useSyncExternalStore,
+	useTransition,
+} from "react";
 
 import { api } from "@/convex/_generated/api";
 
-function urlBase64ToUint8Array(base64String: string) {
+const urlBase64ToUint8Array = (base64String: string) => {
 	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
 	const base64 = (base64String + padding)
 		.replace(/-/g, "+")
 		.replace(/_/g, "/");
 
-	const rawData = window.atob(base64);
+	const rawData = atob(base64);
 	const outputArray = new Uint8Array(rawData.length);
 
 	for (let i = 0; i < rawData.length; ++i) {
 		outputArray[i] = rawData.charCodeAt(i);
 	}
 	return outputArray;
-}
+};
+
+const usePushManagerSupported = () => {
+	return useSyncExternalStore(
+		() => () => {},
+		() =>
+			"serviceWorker" in navigator && "PushManager" in window ?
+				"supported"
+			:	"unsupported",
+		() => "loading" as const,
+	);
+};
 
 type NotificationsState =
 	| "unsupported"
@@ -31,10 +47,8 @@ export type NotificationsProps = {
 	toggleSubscription: () => void;
 };
 
-const isPushManagerSupported =
-	"serviceWorker" in navigator && "PushManager" in window;
-
 export const usePushNotificationManager = (): NotificationsProps => {
+	const isPushManagerSupported = usePushManagerSupported();
 	const [subscription, setSubscription] = useState<PushSubscription | null>(
 		null,
 	);
@@ -42,7 +56,7 @@ export const usePushNotificationManager = (): NotificationsProps => {
 	const [isPending, startTransition] = useTransition();
 
 	useEffect(() => {
-		if (!isPushManagerSupported) {
+		if (isPushManagerSupported != "supported") {
 			return;
 		}
 
@@ -56,7 +70,7 @@ export const usePushNotificationManager = (): NotificationsProps => {
 		};
 
 		startTransition(registerServiceWorker);
-	}, []);
+	}, [isPushManagerSupported]);
 
 	const subscribeUser = useMutation(api.subscriptions.subscribe);
 	const unsubscribeUser = useMutation(api.subscriptions.unsubscribe);
@@ -91,12 +105,12 @@ export const usePushNotificationManager = (): NotificationsProps => {
 
 	return {
 		state:
-			!isPushManagerSupported ? "unsupported"
-			: isPending ? "pending"
+			isPushManagerSupported == "unsupported" ? "unsupported"
+			: isPending || isPushManagerSupported == "loading" ? "pending"
 			: subscription !== null ? "subscribed"
 			: "unsubscribed",
 		toggleSubscription:
-			isPushManagerSupported ?
+			isPushManagerSupported == "supported" ?
 				subscription ? unsubscribe
 				:	subscribe
 			:	() => {},

@@ -17,6 +17,8 @@ import {
 } from "@/shared/tasks";
 import { relativeDurationToString } from "@/shared/units";
 
+import type { User } from "@/shared/users";
+
 import { Modal } from "@/components/Modal";
 import { Spinner } from "@/components/Spinner";
 
@@ -29,7 +31,17 @@ const celebrateCompletionWithConfetti = () => {
 	void confetti({ particleCount: 100, spread: 70, origin: { y: 1 } });
 };
 
-export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
+export const TaskCard = ({
+	task,
+	now,
+	allUsers,
+	currentUser,
+}: {
+	task: Task;
+	now: number;
+	allUsers: User[];
+	currentUser: User;
+}) => {
 	const status = taskStatus(task, now);
 	const actualTimeInUnit = taskTimeDifferenceInUnit(task, now);
 	const addAccomplishment = useMutation(
@@ -86,9 +98,6 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 
 	const isPrivate = task.visibleTo.length == 1;
 
-	const allUsers = useQuery(api.users.getAllUsersQuery);
-	const currentUser = useQuery(api.users.getCurrentUserQuery);
-
 	const containerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
@@ -120,9 +129,6 @@ export const TaskCard = ({ task, now }: { task: Task; now: number }) => {
 		void setIsEditing(false, { history: "push" });
 	};
 
-	if (!currentUser || !allUsers) {
-		return;
-	}
 	const color = (
 		{
 			veryLate: "red",

@@ -10,5 +10,5 @@ export default defineConfig({
 		// restriction: "error",
 		// nursery: "error",
 	},
-	rules: {},
+	rules: { "no-shadow": "off" },
 });
