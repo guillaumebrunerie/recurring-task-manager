@@ -29,6 +29,14 @@ export default defineConfig([
 				"error",
 				{ ignoreArrowShorthand: true },
 			],
+			"no-restricted-properties": [
+				"error",
+				{
+					object: "process",
+					property: "env",
+					message: "Use the typed env module instead",
+				},
+			],
 		},
 	},
 	// Ignores

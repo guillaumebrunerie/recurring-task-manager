@@ -1,14 +1,12 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-	categories: {
-		correctness: "error",
-		suspicious: "error",
-		// pedantic: "error",
-		// perf: "error",
-		// style: "error",
-		// restriction: "error",
-		// nursery: "error",
+	categories: { correctness: "error", suspicious: "error" },
+	plugins: ["node"],
+	rules: {
+		"no-process-env": "error",
+		"no-shadow": "off",
+		"no-unsafe-type-assertion": "off",
 	},
-	rules: { "no-shadow": "off" },
+	options: { typeAware: true },
 });

@@ -16,7 +16,6 @@ import {
 } from "@/components/usePushNotificationManager";
 
 import * as styles from "./appWrapper.css";
-import * as common from "./common.css";
 
 type NotificationsButtonProps = { notifications: NotificationsProps };
 const NotificationsButton = ({ notifications }: NotificationsButtonProps) => {
@@ -90,7 +89,7 @@ export const AppWrapper = ({
 				<Unauthenticated>
 					<div />
 				</Unauthenticated>
-				<h1 className={common.title}>{title}</h1>
+				<h1 className={styles.title}>{title}</h1>
 				<AuthenticatedOrAuthLoading>
 					<SignOut
 						notifications={notifications}

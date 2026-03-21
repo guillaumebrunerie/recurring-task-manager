@@ -30,15 +30,19 @@ export const getTaskAccomplishments = async (
 	ctx: QueryCtx,
 	taskDoc: Doc<"tasks">,
 ): Promise<Accomplishment[]> => {
+	console.log(
+		"Temporal in queries:",
+		(window as unknown as { Temporal: unknown }).Temporal,
+	);
 	const accomplishmentDocs = await ctx.db
 		.query("accomplishments")
 		.withIndex("by_taskId", (q) => q.eq("taskId", taskDoc._id))
 		.collect();
 
+	accomplishmentDocs.sort((a, b) => b.completionTime - a.completionTime);
+
 	return Promise.all(
-		accomplishmentDocs
-			.sort((a, b) => b.completionTime - a.completionTime)
-			.map((a) => parseAccomplishment(ctx, a)),
+		accomplishmentDocs.map((a) => parseAccomplishment(ctx, a)),
 	);
 };
 

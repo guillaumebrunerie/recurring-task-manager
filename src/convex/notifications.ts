@@ -8,14 +8,17 @@ import type { Doc } from "./_generated/dataModel";
 import { internalAction, type ActionCtx } from "./_generated/server";
 
 import type { PushMessageData } from "@/shared/messages";
+import { publicEnv } from "@/shared/publicEnv";
 import type { Task } from "@/shared/tasks";
+
+import { privateEnv } from "./env";
 
 /** Configuration */
 
 webpush.setVapidDetails(
-	"mailto:guillaume.brunerie@gmail.com",
-	process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-	process.env.VAPID_PRIVATE_KEY,
+	privateEnv.VAPID_CONTACT_EMAIL,
+	publicEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+	privateEnv.VAPID_PRIVATE_KEY,
 );
 
 /** Helper functions */
@@ -39,7 +42,7 @@ const sendNotification = async ({
 			taskId: task.id,
 			taskName: task.name,
 			isLate,
-			convexUrl: process.env.CONVEX_CLOUD_URL,
+			convexUrl: publicEnv.NEXT_PUBLIC_CONVEX_URL,
 			subscription,
 		};
 		await webpush.sendNotification(
@@ -110,7 +113,7 @@ const doNotDisturb = () => {
 export const notifyAllUsers = internalAction({
 	args: {},
 	handler: async (ctx) => {
-		if (process.env.ENABLE_CRON_NOTIFICATIONS !== "true") {
+		if (privateEnv.CRON_NOTIFICATIONS_ENABLED !== "true") {
 			return;
 		}
 		if (doNotDisturb()) {
@@ -129,6 +132,10 @@ export const notifyAllUsers = internalAction({
 export const notifyTest = internalAction({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, { name }) => {
+		console.log(
+			"Temporal in node:",
+			(window as unknown as { Temporal: unknown }).Temporal,
+		);
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getByUserName,
 			{ userName: name || "Guillaume Brunerie" },

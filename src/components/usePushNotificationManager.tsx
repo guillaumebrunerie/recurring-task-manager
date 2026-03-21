@@ -10,6 +10,8 @@ import {
 
 import { api } from "@/convex/_generated/api";
 
+import { publicEnv } from "@/shared/publicEnv";
+
 const urlBase64ToUint8Array = (base64String: string) => {
 	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
 	const base64 = (base64String + padding)
@@ -81,7 +83,7 @@ export const usePushNotificationManager = (): NotificationsProps => {
 			const sub = await registration.pushManager.subscribe({
 				userVisibleOnly: true,
 				applicationServerKey: urlBase64ToUint8Array(
-					process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+					publicEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
 				),
 			});
 			setSubscription(sub);

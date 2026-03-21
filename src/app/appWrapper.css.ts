@@ -70,9 +70,7 @@ const searchInputBase = {
 	animationDuration: "0.2s",
 	animationTimingFunction: "ease",
 	animationFillMode: "both",
-	":focus": {
-		borderColor: colors.foreground,
-	},
+	":focus": { borderColor: colors.foreground },
 } as const;
 
 export const searchInput = style({
@@ -88,13 +86,17 @@ export const searchInputClosing = style({
 export const searchInputActive = style({
 	borderColor: colors.editButton,
 	borderWidth: "2px",
-	":focus": {
-		borderColor: colors.editButton,
-	},
+	":focus": { borderColor: colors.editButton },
 });
 
 export const contents = style({
 	overflow: "auto",
 	overscrollBehavior: "none",
 	paddingBottom: "3rem",
+});
+
+export const title = style({
+	fontSize: "1.5rem",
+	fontWeight: 600,
+	color: colors.hfforeground,
 });
