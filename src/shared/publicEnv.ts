@@ -2,12 +2,16 @@
 
 import { type } from "arktype";
 
-const publicEnvType = type({
-	NEXT_PUBLIC_CONVEX_URL: "string",
-	NEXT_PUBLIC_VAPID_PUBLIC_KEY: "string",
-});
+const string = type("string");
 
-export const publicEnv = publicEnvType.assert({
-	NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
-	NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-});
+// Note that process.env cannot be used as is, it needs to be used as
+// process.env.KEY. This is why we export each variable separately, instead of
+// exporting the whole process.env at once.
+
+export const NEXT_PUBLIC_CONVEX_URL = string.assert(
+	process.env.NEXT_PUBLIC_CONVEX_URL,
+);
+
+export const NEXT_PUBLIC_VAPID_PUBLIC_KEY = string.assert(
+	process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+);

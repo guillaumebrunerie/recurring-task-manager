@@ -133,7 +133,7 @@ export const notifyTest = internalAction({
 	handler: async (ctx, { name }) => {
 		console.log(
 			"Temporal in node:",
-			(window as unknown as { Temporal: unknown }).Temporal,
+			(globalThis as unknown as { Temporal: unknown }).Temporal,
 		);
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getByUserName,
