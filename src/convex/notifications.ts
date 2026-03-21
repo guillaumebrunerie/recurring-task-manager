@@ -8,17 +8,16 @@ import type { Doc } from "./_generated/dataModel";
 import { internalAction, type ActionCtx } from "./_generated/server";
 
 import type { PushMessageData } from "@/shared/messages";
-import { publicEnv } from "@/shared/publicEnv";
 import type { Task } from "@/shared/tasks";
 
-import { privateEnv } from "./env";
+import { convexEnv } from "./convexEnv";
 
 /** Configuration */
 
 webpush.setVapidDetails(
-	privateEnv.VAPID_CONTACT_EMAIL,
-	publicEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-	privateEnv.VAPID_PRIVATE_KEY,
+	convexEnv.VAPID_CONTACT_EMAIL,
+	convexEnv.VAPID_PUBLIC_KEY,
+	convexEnv.VAPID_PRIVATE_KEY,
 );
 
 /** Helper functions */
@@ -42,7 +41,7 @@ const sendNotification = async ({
 			taskId: task.id,
 			taskName: task.name,
 			isLate,
-			convexUrl: publicEnv.NEXT_PUBLIC_CONVEX_URL,
+			convexUrl: convexEnv.CONVEX_SITE_URL,
 			subscription,
 		};
 		await webpush.sendNotification(
@@ -113,7 +112,7 @@ const doNotDisturb = () => {
 export const notifyAllUsers = internalAction({
 	args: {},
 	handler: async (ctx) => {
-		if (privateEnv.CRON_NOTIFICATIONS_ENABLED !== "true") {
+		if (convexEnv.CRON_NOTIFICATIONS_ENABLED !== "true") {
 			return;
 		}
 		if (doNotDisturb()) {
