@@ -32,7 +32,7 @@ export const getTaskAccomplishments = async (
 ): Promise<Accomplishment[]> => {
 	console.log(
 		"Temporal in queries:",
-		(window as unknown as { Temporal: unknown }).Temporal,
+		(globalThis as unknown as { Temporal: unknown }).Temporal,
 	);
 	const accomplishmentDocs = await ctx.db
 		.query("accomplishments")
