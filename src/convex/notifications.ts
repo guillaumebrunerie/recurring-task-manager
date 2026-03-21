@@ -131,10 +131,6 @@ export const notifyAllUsers = internalAction({
 export const notifyTest = internalAction({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, { name }) => {
-		console.log(
-			"Temporal in node:",
-			(globalThis as unknown as { Temporal: unknown }).Temporal,
-		);
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getByUserName,
 			{ userName: name || "Guillaume Brunerie" },
