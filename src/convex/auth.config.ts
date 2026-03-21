@@ -1,8 +1,6 @@
-import { privateEnv } from "./env";
+import { authEnv } from "./authEnv";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-	providers: [
-		{ domain: privateEnv.CONVEX_SITE_URL, applicationID: "convex" },
-	],
+	providers: [{ domain: authEnv.CONVEX_SITE_URL, applicationID: "convex" }],
 };
