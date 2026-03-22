@@ -1,5 +1,3 @@
-"use client";
-
 import { useMutation } from "convex/react";
 import { useState, useTransition, type ReactNode } from "react";
 
@@ -19,10 +17,8 @@ import {
 import type { User } from "@/shared/users";
 
 import { BlueButton } from "@/components/Button";
-import { Modal } from "@/components/Modal";
 import { Spinner } from "@/components/Spinner";
 import { UserSelector } from "@/components/UserSelector";
-import { useModal } from "@/hooks/useModal";
 
 import * as styles from "./edit.css";
 
@@ -42,25 +38,6 @@ const Field = ({ title, children }: { title: string; children: ReactNode }) => {
 			<label className={styles.label}>{title}</label>
 			{children}
 		</div>
-	);
-};
-
-type NewTaskProps = { user: User; allUsers: User[] };
-
-export const NewTask = ({ user, allUsers }: NewTaskProps) => {
-	const { isNewTaskOpen, closeModal } = useModal();
-
-	return (
-		isNewTaskOpen && (
-			<Modal title="Nouvelle tâche" onClose={closeModal}>
-				<Edit
-					task={undefined}
-					user={user}
-					allUsers={allUsers}
-					closeModal={closeModal}
-				/>
-			</Modal>
-		)
 	);
 };
 

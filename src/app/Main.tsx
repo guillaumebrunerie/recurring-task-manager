@@ -14,8 +14,8 @@ import type { User } from "@/shared/users";
 import { SignIn } from "@/components/SignIn";
 import { useTimestamp } from "@/hooks/useTimestamp";
 
-import { NewTask } from "./Edit";
 import * as styles from "./main.css";
+import { NewTask } from "./NewTask";
 import { TaskCard } from "./TaskCard";
 
 type MainClientProps = {
