@@ -2,39 +2,6 @@ import { keyframes, style } from "@vanilla-extract/css";
 
 import { colors } from "./themes.css";
 
-export const container = style({
-	height: "100dvh",
-	display: "grid",
-	gridTemplateRows: "4rem 1fr auto",
-});
-
-export const header = style({
-	backgroundColor: colors.hfbackground,
-	borderBottom: "1px solid",
-	borderColor: colors.hfborder,
-	display: "grid",
-	paddingInline: "1rem",
-	gridTemplateColumns: "2rem 1fr 2rem",
-	placeItems: "center",
-	boxShadow: `0 3px 3px ${colors.hfshadow}`,
-	zIndex: 1,
-	"& svg": { width: "110%", height: "auto", strokeWidth: 1.3, fill: "white" },
-});
-
-export const footer = style({
-	display: "flex",
-	flexDirection: "row",
-	justifyContent: "space-between",
-	alignItems: "center",
-	backgroundColor: colors.hfbackground,
-	borderTop: "1px solid",
-	borderColor: colors.hfborder,
-	padding: "1rem",
-	paddingBottom: "calc(env(safe-area-inset-bottom) / 2 + 1rem)",
-	boxShadow: `0 -3px 3px ${colors.hfshadow}`,
-	zIndex: 2,
-});
-
 const expandInput = keyframes({
 	from: { width: 0, opacity: 0 },
 	to: { width: "9rem", opacity: 1 },
@@ -87,16 +54,4 @@ export const searchInputActive = style({
 	borderColor: colors.editButton,
 	borderWidth: "2px",
 	":focus": { borderColor: colors.editButton },
-});
-
-export const contents = style({
-	overflow: "auto",
-	overscrollBehavior: "none",
-	paddingBottom: "3rem",
-});
-
-export const title = style({
-	fontSize: "1.5rem",
-	fontWeight: 600,
-	color: colors.hfforeground,
 });

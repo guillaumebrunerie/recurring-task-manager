@@ -12,7 +12,7 @@
 		"typecheck-sw": "tsgo -p src/service-worker/tsconfig.json",
 		"knip": "knip",
 		"lint": "oxlint",
-		"test": "npm run typecheck && npm run typecheck-sw && npm run knip && npm run lint",
+		"test": "npm run typecheck && npm run typecheck-sw && npm run lint && npm run knip",
 		"typecheck-old": "tsc -p tsconfig.json",
 		"typecheck-sw-old": "tsc -p src/service-worker/tsconfig.json",
 		"lint-old": "eslint .",
@@ -32,6 +32,7 @@
 		"nuqs": "^2.4.3",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
+		"server-only": "^0.0.1",
 		"web-push": "^3.6.7"
 	},
 	"devDependencies": {

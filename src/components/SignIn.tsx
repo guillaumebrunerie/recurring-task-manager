@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuthActions } from "@convex-dev/auth/react";
 import Image from "next/image";
 

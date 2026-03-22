@@ -17,7 +17,10 @@ export default defineConfig({
 	rules: {
 		"no-process-env": "error",
 		"no-shadow": "off",
-		"no-unassigned-import": ["error", { allow: ["**/*.css"] }],
+		"no-unassigned-import": [
+			"error",
+			{ allow: ["**/*.css", "server-only"] },
+		],
 		"no-unsafe-type-assertion": "off",
 		"react-in-jsx-scope": "off",
 	},

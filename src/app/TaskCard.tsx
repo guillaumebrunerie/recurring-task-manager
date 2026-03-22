@@ -16,7 +16,6 @@ import {
 	type Task,
 } from "@/shared/tasks";
 import { relativeDurationToString } from "@/shared/units";
-
 import type { User } from "@/shared/users";
 
 import { Modal } from "@/components/Modal";
@@ -34,13 +33,13 @@ const celebrateCompletionWithConfetti = () => {
 export const TaskCard = ({
 	task,
 	now,
-	allUsers,
 	currentUser,
+	allUsers,
 }: {
 	task: Task;
 	now: number;
-	allUsers: User[];
 	currentUser: User;
+	allUsers: User[];
 }) => {
 	const status = taskStatus(task, now);
 	const actualTimeInUnit = taskTimeDifferenceInUnit(task, now);

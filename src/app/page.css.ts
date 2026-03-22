@@ -1,6 +1,39 @@
-import { createVar, style } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 
 import { colors } from "./themes.css";
+
+export const container = style({
+	height: "100dvh",
+	display: "grid",
+	gridTemplateRows: "4rem 1fr 4rem",
+});
+
+export const header = style({
+	backgroundColor: colors.hfbackground,
+	borderBottom: "1px solid",
+	borderColor: colors.hfborder,
+	display: "grid",
+	paddingInline: "1rem",
+	gridTemplateColumns: "2rem 1fr 2rem",
+	gridTemplateAreas: `"notifications title menu"`,
+	placeItems: "center",
+	boxShadow: `0 3px 3px ${colors.hfshadow}`,
+	zIndex: 1,
+	"& svg": { width: "110%", height: "auto", strokeWidth: 1.3, fill: "white" },
+});
+
+export const title = style({
+	gridArea: "title",
+	fontSize: "1.5rem",
+	fontWeight: 600,
+	color: colors.hfforeground,
+});
+
+export const contents = style({
+	overflow: "auto",
+	overscrollBehavior: "none",
+	paddingBottom: "3rem",
+});
 
 export const taskPage = style({
 	display: "flex",
@@ -10,32 +43,23 @@ export const taskPage = style({
 	paddingBottom: "3rem",
 });
 
-export const section = style({ display: "flex", flexDirection: "column" });
-
-export const sectionTitle = style({
-	fontSize: "1.2rem",
-	fontWeight: 600,
-	color: colors.sectionTitle,
-	marginBottom: "0.7rem",
-	cursor: "pointer",
-});
-
-export const arrow = style({
-	display: "inline-block",
-	transition: "rotate 0.3s ease",
-});
-
-export const arrowCollapsed = style({ rotate: "-90deg" });
-
-export const collapseDelayVar = createVar();
-
-export const taskList = style({
+export const loadingContainer = style({
 	display: "flex",
-	flexDirection: "column",
-	gap: "0.75rem",
-	interpolateSize: "allow-keywords",
-	transition: `all ${collapseDelayVar} ease`,
-	overflow: "hidden",
+	justifyContent: "center",
+	alignItems: "center",
+	height: "100%",
 });
 
-export const taskListCollapsed = style({ height: "0" });
+export const footer = style({
+	display: "flex",
+	flexDirection: "row",
+	justifyContent: "space-between",
+	alignItems: "center",
+	backgroundColor: colors.hfbackground,
+	borderTop: "1px solid",
+	borderColor: colors.hfborder,
+	padding: "1rem",
+	paddingBottom: "calc(env(safe-area-inset-bottom) / 2 + 1rem)",
+	boxShadow: `0 -3px 3px ${colors.hfshadow}`,
+	zIndex: 2,
+});

@@ -11,5 +11,4 @@ export const spinner = style({
 	animation: `${spin} 1.2s linear infinite`,
 	display: "inline-block",
 	verticalAlign: "middle",
-	marginRight: "0.5rem",
 });

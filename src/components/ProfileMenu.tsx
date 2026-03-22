@@ -36,7 +36,7 @@ export const ProfileMenu = ({
 
 	const notificationMessages = {
 		unsupported: "Notifications non supportées",
-		pending: <Spinner />,
+		pending: <Spinner noMarginRight />,
 		unsubscribed: "Notifications désactivées",
 		subscribed: "Notifications activées",
 	} as const;
