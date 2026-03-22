@@ -41,7 +41,7 @@ const sendNotification = async ({
 			taskId: task.id,
 			taskName: task.name,
 			isLate,
-			convexUrl: convexEnv.CONVEX_SITE_URL,
+			convexCloudUrl: convexEnv.CONVEX_CLOUD_URL,
 			subscription,
 		};
 		await webpush.sendNotification(

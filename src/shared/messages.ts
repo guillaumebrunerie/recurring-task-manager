@@ -6,7 +6,7 @@ export type PushMessageData = {
 	taskId: Id<"tasks">;
 	taskName: string;
 	isLate: boolean;
-	convexUrl: string;
+	convexCloudUrl: string;
 	subscription: string;
 };
 
