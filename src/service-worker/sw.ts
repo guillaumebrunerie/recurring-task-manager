@@ -21,7 +21,7 @@ self.addEventListener("activate", (event) => {
 
 type NotificationData = {
 	taskId: Id<"tasks">;
-	convexCloudUrl: string;
+	convexUrl: string;
 	subscription: string;
 	count: number;
 };
@@ -30,7 +30,7 @@ const openNotification = async ({
 	taskId,
 	taskName,
 	isLate,
-	convexCloudUrl,
+	convexUrl,
 	subscription,
 }: PushMessageData) => {
 	const notifications = await self.registration.getNotifications();
@@ -50,7 +50,7 @@ const openNotification = async ({
 		:	"À faire";
 	const notificationData: NotificationData = {
 		taskId,
-		convexCloudUrl,
+		convexUrl,
 		subscription,
 		count,
 	};
@@ -84,7 +84,7 @@ self.addEventListener("push", (event) => {
 const addAccomplishment = async (notification: Notification) => {
 	const { title, body, icon, tag } = notification;
 	const data = notification.data as NotificationData;
-	const { convexCloudUrl, taskId, subscription } = data;
+	const { convexUrl, taskId, subscription } = data;
 	await self.registration.showNotification(title, {
 		body,
 		badge: "/badge-loading.svg",
@@ -93,7 +93,7 @@ const addAccomplishment = async (notification: Notification) => {
 		tag,
 	});
 	try {
-		const convexClient = new ConvexClient(convexCloudUrl);
+		const convexClient = new ConvexClient(convexUrl);
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
