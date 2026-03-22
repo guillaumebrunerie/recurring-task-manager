@@ -3,7 +3,7 @@
 import { type } from "arktype";
 
 const convexEnvType = type({
-	CONVEX_URL: "string",
+	CONVEX_CLOUD_URL: "string",
 	CRON_NOTIFICATIONS_ENABLED: "string",
 	VAPID_CONTACT_EMAIL: "string",
 	VAPID_PRIVATE_KEY: "string",
