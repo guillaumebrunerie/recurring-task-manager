@@ -93,17 +93,22 @@ const addAccomplishment = async (notification: Notification) => {
 		tag,
 	});
 	try {
-		await self.registration.showNotification("URL: " + convexUrl, {
-			body: "URL: " + convexUrl,
+		const convexClient = new ConvexClient(convexUrl);
+		await self.registration.showNotification("Created convexClient", {
+			body: "URL: " + convexUrl + "\n" + convexClient.client.url,
 			badge: "/badge-sad.svg",
 			data,
 		});
-		const convexClient = new ConvexClient(convexUrl);
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
 			updateToBeDoneTime: true,
 			subscription,
+		});
+		await self.registration.showNotification("Send mutation", {
+			body: taskId,
+			badge: "/badge-sad.svg",
+			data,
 		});
 		notification.close();
 	} catch (error) {
