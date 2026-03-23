@@ -94,13 +94,13 @@ const addAccomplishment = async (notification: Notification) => {
 	});
 	try {
 		await self.registration.showNotification("Will create convexClient", {
-			body: "URL: " + convexUrl,
+			body: "Before: " + convexUrl,
 			badge: "/badge-sad.svg",
 			data,
 		});
 		const convexClient = new ConvexClient(convexUrl);
 		await self.registration.showNotification("Created convexClient", {
-			body: "URL: " + convexUrl + "\n" + convexClient.client.url,
+			body: "After: " + convexUrl + "\n" + convexClient.client.url,
 			badge: "/badge-sad.svg",
 			data,
 		});
