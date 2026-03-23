@@ -93,6 +93,11 @@ const addAccomplishment = async (notification: Notification) => {
 		tag,
 	});
 	try {
+		await self.registration.showNotification("URL: " + convexUrl, {
+			body: String(error),
+			badge: "/badge-sad.svg",
+			data,
+		});
 		const convexClient = new ConvexClient(convexUrl);
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
