@@ -94,7 +94,7 @@ const addAccomplishment = async (notification: Notification) => {
 	});
 	try {
 		await self.registration.showNotification("URL: " + convexUrl, {
-			body: String(error),
+			body: "URL: " + convexUrl,
 			badge: "/badge-sad.svg",
 			data,
 		});
