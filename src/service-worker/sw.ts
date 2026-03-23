@@ -1,4 +1,4 @@
-import { ConvexClient } from "convex/browser";
+import { ConvexClient, ConvexHttpClient } from "convex/browser";
 
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -93,7 +93,7 @@ const addAccomplishment = async (notification: Notification) => {
 		tag,
 	});
 	try {
-		const convexClient = new ConvexClient(convexUrl);
+		const convexClient = new ConvexHttpClient(convexUrl);
 		await self.registration.showNotification("Created convexClient");
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,

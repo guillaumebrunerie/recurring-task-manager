@@ -1,7 +1,5 @@
 import { convexAuthNextjsMiddleware } from "@convex-dev/auth/nextjs/server";
 
-export default convexAuthNextjsMiddleware();
-
-// export default convexAuthNextjsMiddleware(undefined, {
-// 	cookieConfig: { maxAge: 60 * 60 * 24 * 365 },
-// });
+export default convexAuthNextjsMiddleware(undefined, {
+	cookieConfig: { maxAge: 60 * 60 * 24 * 365 },
+});
