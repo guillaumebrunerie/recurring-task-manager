@@ -94,10 +94,7 @@ const addAccomplishment = async (notification: Notification) => {
 	});
 	try {
 		const convexClient = new ConvexClient(convexUrl);
-		await self.registration.showNotification(
-			"Created convexClient" +
-				api.accomplishments.addAccomplishment._componentPath,
-		);
+		await self.registration.showNotification("Created convexClient");
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
