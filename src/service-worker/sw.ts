@@ -95,7 +95,8 @@ const addAccomplishment = async (notification: Notification) => {
 	try {
 		const convexClient = new ConvexClient(convexUrl);
 		await self.registration.showNotification(
-			"Created convexClient" + api.accomplishments.addAccomplishment,
+			"Created convexClient" +
+				api.accomplishments.addAccomplishment._componentPath,
 		);
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
