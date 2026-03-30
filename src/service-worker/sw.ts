@@ -94,16 +94,31 @@ const addAccomplishment = async (notification: Notification) => {
 		tag,
 	});
 	try {
-		const convexClient = new ConvexHttpClient(convexUrl);
-		await self.registration.showNotification(
-			"Created convexHttpClient: " + convexUrl,
-		);
-		await convexClient.mutation(api.accomplishments.addAccomplishment, {
+		const args = {
 			taskId,
 			completionTime: Date.now(),
 			updateToBeDoneTime: true,
 			subscription,
+		};
+
+		// Raw fetch
+		await self.registration.showNotification("Raw fetch: " + convexUrl);
+		await fetch(convexUrl + "/run/accomplishments/addAccomplishment", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ args, format: "json" }),
 		});
+
+		// // Convex HTTP client
+		// const convexClient = new ConvexHttpClient(convexUrl);
+		// await self.registration.showNotification(
+		// 	"Created convexHttpClient: " + convexUrl,
+		// );
+		// await convexClient.mutation(
+		// 	api.accomplishments.addAccomplishment,
+		// 	args,
+		// );
+
 		await self.registration.showNotification("Sent accomplishment");
 		notification.close();
 	} catch (error) {
