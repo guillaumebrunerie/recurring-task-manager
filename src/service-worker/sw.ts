@@ -1,4 +1,4 @@
-import { ConvexClient, ConvexHttpClient } from "convex/browser";
+import { ConvexHttpClient } from "convex/browser";
 
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -67,6 +67,7 @@ const openNotification = async ({
 				title: "Marquer comme effectué",
 				type: "button",
 			},
+			{ action: "test", title: "TEST", type: "button" },
 		],
 	};
 	await self.registration.showNotification(title, options);
@@ -94,14 +95,48 @@ const addAccomplishment = async (notification: Notification) => {
 	});
 	try {
 		const convexClient = new ConvexHttpClient(convexUrl);
-		await self.registration.showNotification("Created convexClient");
+		await self.registration.showNotification(
+			"Created convexHttpClient: " + convexUrl,
+		);
 		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
 			updateToBeDoneTime: true,
 			subscription,
 		});
-		await self.registration.showNotification("Sent mutation");
+		await self.registration.showNotification("Sent accomplishment");
+		notification.close();
+	} catch (error) {
+		await self.registration.showNotification("Erreur", {
+			body: String(error),
+			badge: "/badge-sad.svg",
+			data,
+		});
+	}
+};
+
+// Clicking on the "Mark as done" button
+const test = async (notification: Notification) => {
+	const { title, body, icon, tag } = notification;
+	const data = notification.data as NotificationData;
+	const convexUrl = "https://grandiose-dragon-624.convex.cloud";
+	await self.registration.showNotification(title, {
+		body,
+		badge: "/badge-loading.svg",
+		data,
+		icon,
+		tag,
+	});
+	try {
+		const convexClient = new ConvexHttpClient(convexUrl);
+		await self.registration.showNotification(
+			"TEST Created convexHttpClient: " + convexUrl,
+		);
+		await convexClient.mutation(
+			api.accomplishments.addAccomplishment,
+			{} as never,
+		);
+		await self.registration.showNotification("TEST Sent accomplishment");
 		notification.close();
 	} catch (error) {
 		await self.registration.showNotification("Erreur", {
@@ -134,6 +169,9 @@ self.addEventListener("notificationclick", (event) => {
 	switch (action) {
 		case "add-accomplishment":
 			event.waitUntil(addAccomplishment(notification));
+			break;
+		case "test":
+			event.waitUntil(test(notification));
 			break;
 		default:
 			event.waitUntil(openUrl(notification));
