@@ -125,7 +125,8 @@ const addAccomplishment = async (notification: Notification) => {
 		);
 		await fetch(url, {
 			method: "POST",
-			// headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/json" },
+			mode: "cors",
 			body: JSON.stringify({ args, format: "json" }),
 		});
 
