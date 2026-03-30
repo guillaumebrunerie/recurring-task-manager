@@ -67,7 +67,7 @@ const openNotification = async ({
 				title: "Marquer comme effectué",
 				type: "button",
 			},
-			{ action: "test", title: "TEST", type: "button" },
+			// { action: "test", title: "TEST", type: "button" },
 		],
 	};
 	await self.registration.showNotification(title, options);
@@ -170,9 +170,9 @@ self.addEventListener("notificationclick", (event) => {
 		case "add-accomplishment":
 			event.waitUntil(addAccomplishment(notification));
 			break;
-		case "test":
-			event.waitUntil(test(notification));
-			break;
+		// case "test":
+		// 	event.waitUntil(test(notification));
+		// 	break;
 		default:
 			event.waitUntil(openUrl(notification));
 			break;
