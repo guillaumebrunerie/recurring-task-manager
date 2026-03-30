@@ -79,22 +79,22 @@ self.addEventListener("push", (event) => {
 	}
 });
 
-const log = async (...args: unknown[]) => {
-	await fetch("/api/log", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ args }),
-	});
-};
+// const log = async (...args: unknown[]) => {
+// 	await fetch("/api/log", {
+// 		method: "POST",
+// 		headers: { "Content-Type": "application/json" },
+// 		body: JSON.stringify({ args }),
+// 	});
+// };
 
-self.addEventListener("fetch", (event) => {
-	log("SW fetch:", event.request.url);
-	log("method:", event.request.method);
-	log("mode:", event.request.mode);
-	event.request.headers.forEach((value, key) => {
-		log(`header: ${key}=${value}`);
-	});
-});
+// self.addEventListener("fetch", (event) => {
+// 	log("SW fetch:", event.request.url);
+// 	log("method:", event.request.method);
+// 	log("mode:", event.request.mode);
+// 	event.request.headers.forEach((value, key) => {
+// 		log(`header: ${key}=${value}`);
+// 	});
+// });
 
 /** Clicking on notifications */
 
@@ -120,9 +120,7 @@ const addAccomplishment = async (notification: Notification) => {
 
 		// Raw fetch
 		const url = convexUrl + "/api/run/accomplishments/addAccomplishment";
-		await self.registration.showNotification(
-			"Raw fetch with no json: " + url,
-		);
+		await self.registration.showNotification("Raw fetch with cors: " + url);
 		await fetch(url, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
