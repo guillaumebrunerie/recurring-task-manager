@@ -67,7 +67,6 @@ const openNotification = async ({
 				title: "Marquer comme effectué",
 				type: "button",
 			},
-			// { action: "test", title: "TEST", type: "button" },
 		],
 	};
 	await self.registration.showNotification(title, options);
@@ -78,23 +77,6 @@ self.addEventListener("push", (event) => {
 		event.waitUntil(openNotification(event.data.json() as PushMessageData));
 	}
 });
-
-// const log = async (...args: unknown[]) => {
-// 	await fetch("/api/log", {
-// 		method: "POST",
-// 		headers: { "Content-Type": "application/json" },
-// 		body: JSON.stringify({ args }),
-// 	});
-// };
-
-// self.addEventListener("fetch", (event) => {
-// 	log("SW fetch:", event.request.url);
-// 	log("method:", event.request.method);
-// 	log("mode:", event.request.mode);
-// 	event.request.headers.forEach((value, key) => {
-// 		log(`header: ${key}=${value}`);
-// 	});
-// });
 
 /** Clicking on notifications */
 
@@ -111,66 +93,13 @@ const addAccomplishment = async (notification: Notification) => {
 		tag,
 	});
 	try {
-		const args = {
+		const convexClient = new ConvexHttpClient(convexUrl);
+		await convexClient.mutation(api.accomplishments.addAccomplishment, {
 			taskId,
 			completionTime: Date.now(),
 			updateToBeDoneTime: true,
 			subscription,
-		};
-
-		// Raw fetch
-		const url = convexUrl + "/api/run/accomplishments/addAccomplishment";
-		await self.registration.showNotification("Raw fetch with cors: " + url);
-		await fetch(url, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			mode: "cors",
-			body: JSON.stringify({ args, format: "json" }),
 		});
-
-		// // Convex HTTP client
-		// const convexClient = new ConvexHttpClient(convexUrl);
-		// await self.registration.showNotification(
-		// 	"Created convexHttpClient: " + convexUrl,
-		// );
-		// await convexClient.mutation(
-		// 	api.accomplishments.addAccomplishment,
-		// 	args,
-		// );
-
-		await self.registration.showNotification("Sent accomplishment");
-		notification.close();
-	} catch (error) {
-		await self.registration.showNotification("Erreur", {
-			body: String(error),
-			badge: "/badge-sad.svg",
-			data,
-		});
-	}
-};
-
-// Clicking on the "Mark as done" button
-const test = async (notification: Notification) => {
-	const { title, body, icon, tag } = notification;
-	const data = notification.data as NotificationData;
-	const convexUrl = "https://grandiose-dragon-624.convex.cloud";
-	await self.registration.showNotification(title, {
-		body,
-		badge: "/badge-loading.svg",
-		data,
-		icon,
-		tag,
-	});
-	try {
-		const convexClient = new ConvexHttpClient(convexUrl);
-		await self.registration.showNotification(
-			"TEST Created convexHttpClient: " + convexUrl,
-		);
-		await convexClient.mutation(
-			api.accomplishments.addAccomplishment,
-			{} as never,
-		);
-		await self.registration.showNotification("TEST Sent accomplishment");
 		notification.close();
 	} catch (error) {
 		await self.registration.showNotification("Erreur", {
@@ -204,9 +133,6 @@ self.addEventListener("notificationclick", (event) => {
 		case "add-accomplishment":
 			event.waitUntil(addAccomplishment(notification));
 			break;
-		// case "test":
-		// 	event.waitUntil(test(notification));
-		// 	break;
 		default:
 			event.waitUntil(openUrl(notification));
 			break;
