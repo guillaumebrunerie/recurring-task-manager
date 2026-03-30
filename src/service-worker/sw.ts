@@ -79,6 +79,19 @@ self.addEventListener("push", (event) => {
 	}
 });
 
+const log = async (...args: unknown[]) => {
+	await fetch("/log", { method: "POST", body: JSON.stringify({ args }) });
+};
+
+self.addEventListener("fetch", (event) => {
+	log("SW fetch:", event.request.url);
+	log("method:", event.request.method);
+	log("mode:", event.request.mode);
+	event.request.headers.forEach((value, key) => {
+		log(`header: ${key}=${value}`);
+	});
+});
+
 /** Clicking on notifications */
 
 // Clicking on the "Mark as done" button
