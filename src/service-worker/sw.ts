@@ -103,7 +103,7 @@ const addAccomplishment = async (notification: Notification) => {
 
 		// Raw fetch
 		await self.registration.showNotification("Raw fetch: " + convexUrl);
-		await fetch(convexUrl + "/run/accomplishments/addAccomplishment", {
+		await fetch(convexUrl + "/api/run/accomplishments/addAccomplishment", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ args, format: "json" }),
