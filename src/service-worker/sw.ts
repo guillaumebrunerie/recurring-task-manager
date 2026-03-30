@@ -80,7 +80,11 @@ self.addEventListener("push", (event) => {
 });
 
 const log = async (...args: unknown[]) => {
-	await fetch("/log", { method: "POST", body: JSON.stringify({ args }) });
+	await fetch("/api/log", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ args }),
+	});
 };
 
 self.addEventListener("fetch", (event) => {
