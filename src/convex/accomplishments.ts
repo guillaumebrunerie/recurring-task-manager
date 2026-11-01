@@ -98,10 +98,12 @@ export const addAccomplishment = mutation({
 				task.toBeDoneTime = calculateToBeDoneTimeFixed(task);
 			}
 		}
+		const completedByIds = completedBy || defaultCompletedBy(task, userId);
 		await ctx.db.insert("accomplishments", {
 			taskId,
 			completionTime,
-			completedBy: completedBy || defaultCompletedBy(task, userId),
+			completedBy: completedByIds,
+			isFailed: completedByIds.length === 0 ? true : undefined,
 		});
 		await ctx.db.patch("tasks", taskId, {
 			responsibleFor: await getNewResponsibles(ctx, taskDoc),

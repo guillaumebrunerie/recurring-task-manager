@@ -41,7 +41,27 @@ export const modalButtons2 = style({
 	gap: "0.5rem",
 });
 
-export const optionsSection = style({});
+export const optionsSection = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: "0.35rem",
+	marginTop: "-0.25rem",
+});
+
+export const actionsRow = style({
+	display: "flex",
+	alignItems: "center",
+	flexWrap: "wrap",
+	gap: "0.5rem",
+});
+
+export const quickButtons = style({
+	display: "flex",
+	flexWrap: "wrap",
+	marginLeft: "auto",
+	justifyContent: "flex-end",
+	gap: "0.5rem",
+});
 
 export const historySection = style({
 	borderTop: "1px solid #eee",
@@ -73,6 +93,13 @@ export const options = style({
 });
 
 export const optionsCollapsed = style({ height: "0" });
+
+export const advancedButtons = style({
+	display: "flex",
+	flexWrap: "wrap",
+	justifyContent: "flex-end",
+	gap: "0.5rem",
+});
 
 export const history = style({
 	overflow: "hidden",

@@ -11,7 +11,12 @@ import { defaultCompletedBy, type Task } from "@/shared/tasks";
 import { durationUnitToString, timeToString } from "@/shared/units";
 import type { User } from "@/shared/users";
 
-import { BlueButton, GreenButton } from "@/components/Button";
+import {
+	BlueButton,
+	GreenButton,
+	LightGreenButton,
+	RedButton,
+} from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 import { UserSelector } from "@/components/UserSelector";
 
@@ -38,12 +43,35 @@ export const Details = ({
 }: DetailsProps) => {
 	const [isOptionsCollapsed, setIsOptionsCollapsed] = useState(true);
 	const [isCompleting, startTransition] = useTransition();
+	const [pendingAction, setPendingAction] = useState<string | null>(null);
 	const [doneTime, setDoneTime] = useState(() =>
 		toLocalDateTimeString(Date.now()),
 	);
 	const [completedBy, setCompletedBy] = useState<Set<Id<"users">>>(
 		new Set(defaultCompletedBy(task, currentUser.id)),
 	);
+	const canMarkAsNotDone = task.isFixedSchedule;
+	const submit = ({
+		action,
+		doneTime,
+		completedBy,
+	}: {
+		action: string;
+		doneTime?: string;
+		completedBy?: Id<"users">[];
+	}) => {
+		if (isCompleting) {
+			return;
+		}
+		setPendingAction(action);
+		startTransition(async () => {
+			try {
+				await handleSubmit(doneTime, completedBy);
+			} finally {
+				setPendingAction(null);
+			}
+		});
+	};
 	return (
 		<>
 			<div className={styles.stuff}>
@@ -80,7 +108,7 @@ export const Details = ({
 			</div>
 			<TaskHistory history={history} />
 			<div className={styles.optionsSection}>
-				<div className={styles.modalButtons2}>
+				<div className={styles.actionsRow}>
 					<div
 						className={classNames(
 							styles.optionsButton,
@@ -98,23 +126,34 @@ export const Details = ({
 						>
 							▼
 						</span>
-						Options
+						Avancé
 					</div>
-					<GreenButton
-						onClick={() => {
-							startTransition(async () => {
-								await handleSubmit(
-									isOptionsCollapsed ? undefined : doneTime,
-									isOptionsCollapsed ? undefined : (
-										[...completedBy]
+					<div className={styles.quickButtons}>
+						<LightGreenButton
+							onClick={() =>
+								submit({
+									action: "done-yesterday",
+									doneTime: toLocalDateTimeString(
+										Date.now() - 24 * 60 * 60 * 1000,
 									),
-								);
-							});
-						}}
-					>
-						{isCompleting && <Spinner />}
-						Marquer comme effectuée
-					</GreenButton>
+								})
+							}
+						>
+							{isCompleting &&
+								pendingAction === "done-yesterday" && (
+									<Spinner />
+								)}
+							Effectué hier
+						</LightGreenButton>
+						<GreenButton
+							onClick={() => submit({ action: "done-now" })}
+						>
+							{isCompleting && pendingAction === "done-now" && (
+								<Spinner />
+							)}
+							Effectué
+						</GreenButton>
+					</div>
 				</div>
 				<div
 					className={classNames(
@@ -139,6 +178,35 @@ export const Details = ({
 							onChange={setCompletedBy}
 						/>
 					</label>
+					<div className={styles.advancedButtons}>
+						{canMarkAsNotDone && (
+							<RedButton
+								onClick={() =>
+									submit({
+										action: "not-done",
+										completedBy: [],
+									})
+								}
+							>
+								{isCompleting &&
+									pendingAction === "not-done" && <Spinner />}
+								Non effectué
+							</RedButton>
+						)}
+						<LightGreenButton
+							onClick={() =>
+								submit({
+									action: "done-custom",
+									doneTime,
+									completedBy: [...completedBy],
+								})
+							}
+						>
+							{isCompleting &&
+								pendingAction === "done-custom" && <Spinner />}
+							Effectué à cette date
+						</LightGreenButton>
+					</div>
 				</div>
 			</div>
 		</>

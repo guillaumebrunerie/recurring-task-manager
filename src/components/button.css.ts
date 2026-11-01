@@ -21,10 +21,20 @@ export const greenButton = style([
 	},
 ]);
 
+export const lightGreenButton = style([
+	button,
+	{ ":hover": { backgroundColor: "#2f7f5d" }, backgroundColor: "#3d9d75" },
+]);
+
 export const blueButton = style([
 	button,
 	{
 		":hover": { backgroundColor: "#005fa3" },
 		backgroundColor: colors.editButton,
 	},
+]);
+
+export const redButton = style([
+	button,
+	{ ":hover": { backgroundColor: "#a82a2a" }, backgroundColor: "#c43737" },
 ]);

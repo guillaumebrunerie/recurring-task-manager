@@ -75,7 +75,9 @@ export const TaskCard = ({
 				completedBy,
 				updateToBeDoneTime: true,
 			});
-			celebrateCompletionWithConfetti();
+			if (completedBy === undefined || completedBy.length > 0) {
+				celebrateCompletionWithConfetti();
+			}
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			navigator.serviceWorker?.controller?.postMessage(
 				taskCompleted(task.id),
