@@ -15,10 +15,12 @@ The deploy (on Vercel, Netlify, etc.) needs:
 
 The Convex deploy needs:
 - `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`: OAuth with Google
-- `JWKS` and `JWT_PRIVATE_KEY`: some auth stuff
-- `SITE_URL`: the URL of the website, to redirect to after authenticating
 - `CRON_NOTIFICATIONS_ENABLED`: whether to enable cron notifications (to disable
   them in the dev deploy)
+- `JWKS` and `JWT_PRIVATE_KEY`: some auth stuff
+- `SITE_URL`: the URL of the website, to redirect to after authenticating
+- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` (optional): send a Telegram alert
+  when push notification delivery fails
 - `VAPID_CONTACT_EMAIL`, `VAPID_PRIVATE_KEY`, and `VAPID_PUBLIC_KEY`: Vapid
   details
 

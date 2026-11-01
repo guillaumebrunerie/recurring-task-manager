@@ -8,6 +8,8 @@ const convexEnvType = type({
 	VAPID_CONTACT_EMAIL: "string",
 	VAPID_PRIVATE_KEY: "string",
 	VAPID_PUBLIC_KEY: "string",
+	"TELEGRAM_BOT_TOKEN?": "string",
+	"TELEGRAM_CHAT_ID?": "string",
 });
 
 // oxlint-disable-next-line node/no-process-env

@@ -28,11 +28,36 @@ type SendNotificationArgs = {
 	isLate: boolean;
 };
 
+type SendNotificationResult =
+	| { success: true }
+	| { success: false; removeSubscription: boolean; errorMessage: string };
+
+const getErrorMessage = (error: unknown) =>
+	error instanceof Error ? error.message : String(error);
+
+const sendTelegramNotification = async (message: string) => {
+	const { TELEGRAM_BOT_TOKEN: botToken, TELEGRAM_CHAT_ID: chatId } =
+		convexEnv;
+	if (!botToken || !chatId) {
+		return;
+	}
+	const response = await fetch(
+		`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${encodeURIComponent(chatId)}&text=${encodeURIComponent(message)}`,
+	);
+	if (!response.ok) {
+		console.error(
+			"Error sending Telegram notification:",
+			response.status,
+			await response.text(),
+		);
+	}
+};
+
 const sendNotification = async ({
 	subscription,
 	task,
 	isLate,
-}: SendNotificationArgs): Promise<{ removeSubscription: boolean }> => {
+}: SendNotificationArgs): Promise<SendNotificationResult> => {
 	try {
 		console.log(
 			`Sending notification for '${task.name}' (late: ${isLate})`,
@@ -48,16 +73,25 @@ const sendNotification = async ({
 			JSON.parse(subscription) as PushSubscription,
 			JSON.stringify(data),
 		);
+		return { success: true };
 	} catch (error) {
 		if (
 			error instanceof WebPushError &&
 			[404, 410].includes(error.statusCode)
 		) {
-			return { removeSubscription: true };
+			return {
+				success: false,
+				removeSubscription: true,
+				errorMessage: `Subscription expired (${error.statusCode})`,
+			};
 		}
 		console.error("Error sending push notification:", error);
+		return {
+			success: false,
+			removeSubscription: false,
+			errorMessage: getErrorMessage(error),
+		};
 	}
-	return { removeSubscription: false };
 };
 
 const notifyUser = async (
@@ -70,32 +104,65 @@ const notifyUser = async (
 		{ userId, ignoreLastNotified },
 	);
 	const user = await ctx.runQuery(api.users.getUserQuery, { userId });
+	const userName = user?.name || "(unknown)";
 	console.log(
-		`Notifying user ${user?.name || "(unknown)"}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
+		`Notifying user ${userName}: ${overdueTasks.length} overdue, ${dueTasks.length} due`,
 	);
-	for (const task of dueTasks) {
-		await sendNotification({ subscription, task, isLate: false });
-	}
-	for (const task of overdueTasks) {
-		const { removeSubscription } = await sendNotification({
-			subscription,
-			task,
-			isLate: true,
-		});
-		if (removeSubscription) {
-			await ctx.scheduler.runAfter(
-				1000,
-				internal.subscriptions.removeSubscription,
-				{ subscription },
+	const notifiedTaskIds: Task["id"][] = [];
+	const failedNotifications: string[] = [];
+	const processTasks = async (tasks: Task[], isLate: boolean) => {
+		for (const task of tasks) {
+			const result = await sendNotification({
+				subscription,
+				task,
+				isLate,
+			});
+			if (result.success) {
+				notifiedTaskIds.push(task.id);
+			} else {
+				failedNotifications.push(
+					`- ${task.name}: ${result.errorMessage}`,
+				);
+				if (result.removeSubscription) {
+					await ctx.scheduler.runAfter(
+						1000,
+						internal.subscriptions.removeSubscription,
+						{ subscription },
+					);
+				}
+			}
+		}
+	};
+	await processTasks(dueTasks, false);
+	await processTasks(overdueTasks, true);
+	if (failedNotifications.length > 0) {
+		const failuresToReport = failedNotifications.slice(0, 10);
+		const remainingFailuresCount =
+			failedNotifications.length - failuresToReport.length;
+		const telegramMessage = [
+			"⚠️ Happy Home: échec d'envoi de notification push",
+			`Utilisateur: ${userName}`,
+			`Date: ${new Date().toISOString()}`,
+			"Erreurs:",
+			...failuresToReport,
+			remainingFailuresCount > 0 ?
+				`- ... ${remainingFailuresCount} autres`
+			:	"",
+		]
+			.filter((line) => line.length > 0)
+			.join("\n");
+		try {
+			await sendTelegramNotification(telegramMessage);
+		} catch (error) {
+			console.error(
+				"Error notifying Telegram about push failure:",
+				error,
 			);
 		}
 	}
-	if (!ignoreLastNotified) {
+	if (!ignoreLastNotified && notifiedTaskIds.length > 0) {
 		await ctx.runMutation(internal.tasks.markTasksAsNotified, {
-			ids: [
-				...overdueTasks.map((task) => task.id),
-				...dueTasks.map((task) => task.id),
-			],
+			ids: notifiedTaskIds,
 			now: Date.now(),
 		});
 	}
