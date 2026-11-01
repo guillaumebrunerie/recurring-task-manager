@@ -96,7 +96,8 @@ const sendNotification = async ({
 
 const notifyUser = async (
 	ctx: ActionCtx,
-	{ userId, subscription }: Doc<"subscriptions">,
+	userId: Doc<"subscriptions">["userId"],
+	subscriptions: Doc<"subscriptions">[],
 	ignoreLastNotified = false,
 ) => {
 	const { overdueTasks, dueTasks } = await ctx.runQuery(
@@ -110,26 +111,40 @@ const notifyUser = async (
 	);
 	const notifiedTaskIds: Task["id"][] = [];
 	const failedNotifications: string[] = [];
+	const subscriptionsBeingRemoved = new Set<string>();
 	const processTasks = async (tasks: Task[], isLate: boolean) => {
 		for (const task of tasks) {
-			const result = await sendNotification({
-				subscription,
-				task,
-				isLate,
-			});
-			if (result.success) {
-				notifiedTaskIds.push(task.id);
-			} else {
+			let sentToAtLeastOneSubscription = false;
+			for (const [
+				subscriptionIndex,
+				{ subscription },
+			] of subscriptions.entries()) {
+				const result = await sendNotification({
+					subscription,
+					task,
+					isLate,
+				});
+				if (result.success) {
+					sentToAtLeastOneSubscription = true;
+					continue;
+				}
 				failedNotifications.push(
-					`- ${task.name}: ${result.errorMessage}`,
+					`- ${task.name} (abonnement ${subscriptionIndex + 1}): ${result.errorMessage}`,
 				);
-				if (result.removeSubscription) {
+				if (
+					result.removeSubscription &&
+					!subscriptionsBeingRemoved.has(subscription)
+				) {
+					subscriptionsBeingRemoved.add(subscription);
 					await ctx.scheduler.runAfter(
 						1000,
 						internal.subscriptions.removeSubscription,
 						{ subscription },
 					);
 				}
+			}
+			if (sentToAtLeastOneSubscription) {
+				notifiedTaskIds.push(task.id);
 			}
 		}
 	};
@@ -162,7 +177,7 @@ const notifyUser = async (
 	}
 	if (!ignoreLastNotified && notifiedTaskIds.length > 0) {
 		await ctx.runMutation(internal.tasks.markTasksAsNotified, {
-			ids: notifiedTaskIds,
+			ids: [...new Set(notifiedTaskIds)],
 			now: Date.now(),
 		});
 	}
@@ -189,8 +204,18 @@ export const notifyAllUsers = internalAction({
 		const subscriptions = await ctx.runQuery(
 			internal.subscriptions.getAllSubscriptions,
 		);
+		const subscriptionsByUser = new Map<
+			Doc<"subscriptions">["userId"],
+			Doc<"subscriptions">[]
+		>();
 		for (const subscription of subscriptions) {
-			await notifyUser(ctx, subscription);
+			const userSubscriptions =
+				subscriptionsByUser.get(subscription.userId) ?? [];
+			userSubscriptions.push(subscription);
+			subscriptionsByUser.set(subscription.userId, userSubscriptions);
+		}
+		for (const [userId, userSubscriptions] of subscriptionsByUser) {
+			await notifyUser(ctx, userId, userSubscriptions);
 		}
 	},
 });
@@ -202,8 +227,18 @@ export const notifyTest = internalAction({
 			internal.subscriptions.getByUserName,
 			{ userName: name || "Guillaume Brunerie" },
 		);
+		const subscriptionsByUser = new Map<
+			Doc<"subscriptions">["userId"],
+			Doc<"subscriptions">[]
+		>();
 		for (const subscription of subscriptions) {
-			await notifyUser(ctx, subscription, true);
+			const userSubscriptions =
+				subscriptionsByUser.get(subscription.userId) ?? [];
+			userSubscriptions.push(subscription);
+			subscriptionsByUser.set(subscription.userId, userSubscriptions);
+		}
+		for (const [userId, userSubscriptions] of subscriptionsByUser) {
+			await notifyUser(ctx, userId, userSubscriptions, true);
 		}
 	},
 });
